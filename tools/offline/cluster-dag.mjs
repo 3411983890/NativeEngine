@@ -21,6 +21,7 @@ export function buildClusterDag(manifest) {
       formatVersion: manifest.formatVersion,
       packageDigest: manifest.packageDigest,
       counts: manifest.counts,
+      capabilities: manifest.capabilities ?? null,
     },
     clusterLimits: { maxVertices: MAX_CLUSTER_VERTICES, maxTriangles: MAX_CLUSTER_TRIANGLES },
     bounds: manifest.bounds,
@@ -46,6 +47,9 @@ export function buildClusterDag(manifest) {
       indexOffset: cluster.indexOffset,
       triangleCount: cluster.triangleCount,
       bounds: cluster.bounds,
+      lodError: cluster.lodError ?? 0,
+      flags: cluster.flags ?? 0,
+      materialHandle: cluster.materialHandle ?? 0,
     })),
     runtimeLodSelector: false,
     streaming: false,
@@ -60,6 +64,8 @@ export function buildClusterDag(manifest) {
 export function clusterStats(manifest) {
   const levels = summarizeLodLevels(manifest);
   return {
+    formatVersion: manifest.formatVersion,
+    capabilities: manifest.capabilities ?? null,
     packageDigest: manifest.packageDigest,
     clusters: manifest.counts.clusters,
     sourceVertices: manifest.counts.sourceVertices,
@@ -74,6 +80,7 @@ export function clusterStats(manifest) {
       vertices: level.vertexCount,
       triangles: level.triangleCount,
       bounds: level.bounds,
+      lodError: level.lodError,
     })),
     runtimeLodSelector: false,
   };

@@ -5,10 +5,12 @@ import {
   commitScene, undoSceneFile, buildScene, recoverScene,
 } from '../engine/scene/index.mjs';
 import { lintScene } from '../engine/scene/lint.mjs';
+import { queryScene as querySceneLanguage } from '../engine/scene/query.mjs';
 
 const USAGE = `Scene tools (JSON output)
   node tools/scene.mjs validate <scene.json>
   node tools/scene.mjs query <scene.json> [--kind prop] [--name text] [--id uuid]
+  node tools/scene.mjs query <scene.json> --query '<json>' | --file <query.json>
   node tools/scene.mjs preview <scene.json> <transaction.json>
   node tools/scene.mjs apply <scene.json> <transaction.json>
   node tools/scene.mjs undo <scene.json> --project <uuid> --revision <integer>
@@ -17,6 +19,7 @@ const USAGE = `Scene tools (JSON output)
   node tools/scene.mjs lint <scene.json> [--json] [--max-entities N]
 Transactions: {projectId, expectedRevision, commands: [{op:"set", entityId, changes:{position:[0,1,0]}}]}
 lint: --json is the default (and only) output format; exits 1 if any error-severity finding exists.
+query: --query/--file uses the typed query language (docs/SCENE-QUERY.md); exits 1 on NG-E-QUERY-* errors.
 `;
 
 function fail(message) { throw new SceneError('INVALID_ARGUMENT', message); }
@@ -81,6 +84,21 @@ async function main() {
     // shape stable for callers and let the process exit code signal CI.
     if (!result.ok) process.exitCode = 1;
     return result;
+  }
+  if (command === 'query' && args.some((arg, index) => index % 2 === 0
+      && (arg === '--query' || arg === '--file'))) {
+    const opt = options(args, ['--query', '--file']);
+    if (opt['--query'] !== undefined && opt['--file'] !== undefined) {
+      fail('Provide either --query or --file, not both');
+    }
+    let query;
+    if (opt['--query'] !== undefined) {
+      try { query = JSON.parse(opt['--query']); }
+      catch { throw new SceneError('INVALID_JSON', '--query must contain valid JSON'); }
+    } else {
+      query = await json(opt['--file']);
+    }
+    return querySceneLanguage(await loadScene(file), query);
   }
   if (command === 'query') {
     const opt = options(args, ['--kind', '--name', '--id']);

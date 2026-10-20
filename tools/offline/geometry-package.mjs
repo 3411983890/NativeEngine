@@ -9,11 +9,35 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const TOOL_VERSION = '0.1.0';
-export const FORMAT_VERSION = 1;
+export const FORMAT_VERSION = 2;
+export const SUPPORTED_FORMAT_VERSIONS = Object.freeze([1, FORMAT_VERSION]);
 export const PACKAGE_KIND = 'nativegpu.geometry-package';
 export const MANIFEST_NAME = 'geometry.package.json';
 export const MAX_CLUSTER_VERTICES = 128;
 export const MAX_CLUSTER_TRIANGLES = 128;
+// v2 cluster capabilities. The values are frozen by docs/GEOMETRY-LAYOUT.md.
+export const CAPABILITIES = Object.freeze({
+  clusterPipeline: true,
+  lodError: true,
+  materialHandles: true,
+  flags: true,
+});
+export const CLUSTER_FLAG_BITS = Object.freeze({
+  skinned: 0,
+  worldPositionOffset: 1,
+  twoSided: 2,
+  alphaTest: 3,
+  translucent: 4,
+  destructible: 5,
+});
+export const CLUSTER_FLAG_NAMES = Object.freeze(Object.keys(CLUSTER_FLAG_BITS));
+export const CLUSTER_FLAG_MASK = 0x3f;
+export const MATERIAL_SLICE_BITS = 16;
+export const MATERIAL_PART_LIMIT = 0x10000;
+export const MATERIAL_HANDLE_MAX = 0xffffffff;
+// Missing v2 fields in a v1 (or pre-v2-shaped) manifest read as these values.
+const CLUSTER_V2_DEFAULTS = Object.freeze({ lodError: 0, flags: 0, materialHandle: 0 });
+const CLUSTER_V2_FIELDS = Object.freeze(Object.keys(CLUSTER_V2_DEFAULTS));
 export const ERROR_CODES = Object.freeze({
   TAMPERED: 'NG-E-GEOMETRY-TAMPERED',
   MISSING: 'NG-E-GEOMETRY-MISSING',
@@ -31,6 +55,8 @@ export class GeometryError extends Error {
     this.details = details;
   }
 }
+
+const fail = (code, message, details = []) => { throw new GeometryError(code, message, details); };
 
 // Canonical JSON: recursively sorted keys, compact separators, array order kept.
 export function stableJSON(value) {
@@ -76,6 +102,112 @@ const unionBounds = list => ({
   min: [0, 1, 2].map(axis => Math.min(...list.map(bounds => bounds.min[axis]))),
   max: [0, 1, 2].map(axis => Math.max(...list.map(bounds => bounds.max[axis]))),
 });
+
+// --- v2 cluster metadata ---------------------------------------------------
+
+// Diagonal of a cluster AABB in world space, computed with plain IEEE-754
+// doubles so the value depends only on the bounds (no platform trig).
+export function boundsDiagonal(bounds) {
+  const dx = bounds.max[0] - bounds.min[0];
+  const dy = bounds.max[1] - bounds.min[1];
+  const dz = bounds.max[2] - bounds.min[2];
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+// Documented v2 formula: LOD0 has zero error; every higher LOD reports its
+// bounds diagonal divided by the DAG height (`maxLod = lodLevels.length - 1`).
+// Parent bounds are the union of child bounds, so error is monotonic per chain.
+export function computeLodError(bounds, lod, maxLod) {
+  if (!Number.isSafeInteger(lod) || lod < 0) fail(ERROR_CODES.INPUT, `lod must be a non-negative integer, got ${lod}`);
+  if (lod === 0) return 0;
+  if (!Number.isSafeInteger(maxLod) || maxLod < 1) fail(ERROR_CODES.INPUT, `maxLod must be a positive integer, got ${maxLod}`);
+  if (lod > maxLod) fail(ERROR_CODES.INPUT, `lod ${lod} is above maxLod ${maxLod}`);
+  return boundsDiagonal(bounds) / maxLod;
+}
+
+// handle = (generation << 16) | sliceIndex; 0 is the default material.
+export function encodeMaterialHandle(generation, sliceIndex) {
+  if (!Number.isSafeInteger(generation) || generation < 0 || generation >= MATERIAL_PART_LIMIT) {
+    fail(ERROR_CODES.INPUT, `materialHandle generation must be an integer in [0, ${MATERIAL_PART_LIMIT - 1}], got ${generation}`);
+  }
+  if (!Number.isSafeInteger(sliceIndex) || sliceIndex < 0 || sliceIndex >= MATERIAL_PART_LIMIT) {
+    fail(ERROR_CODES.INPUT, `materialHandle sliceIndex must be an integer in [0, ${MATERIAL_PART_LIMIT - 1}], got ${sliceIndex}`);
+  }
+  return ((generation << MATERIAL_SLICE_BITS) | sliceIndex) >>> 0;
+}
+
+export function decodeMaterialHandle(handle) {
+  if (!Number.isSafeInteger(handle) || handle < 0 || handle > MATERIAL_HANDLE_MAX) {
+    fail(ERROR_CODES.INPUT, `materialHandle must be a uint32, got ${handle}`);
+  }
+  return { generation: handle >>> MATERIAL_SLICE_BITS, sliceIndex: handle & 0xffff };
+}
+
+function resolveMaterialHandle(value) {
+  if (value === undefined || value === null) return 0;
+  if (typeof value === 'number') {
+    if (!Number.isSafeInteger(value) || value < 0 || value > MATERIAL_HANDLE_MAX) {
+      fail(ERROR_CODES.INPUT, `sourceMetadata.materialHandle must be a uint32, got ${value}`);
+    }
+    return value;
+  }
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    for (const key of Object.keys(value)) {
+      if (key !== 'generation' && key !== 'sliceIndex') fail(ERROR_CODES.INPUT, `sourceMetadata.materialHandle has an unknown key: ${key}`);
+    }
+    if (!Object.hasOwn(value, 'generation') || !Object.hasOwn(value, 'sliceIndex')) {
+      fail(ERROR_CODES.INPUT, 'sourceMetadata.materialHandle requires generation and sliceIndex');
+    }
+    return encodeMaterialHandle(value.generation, value.sliceIndex);
+  }
+  fail(ERROR_CODES.INPUT, 'sourceMetadata.materialHandle must be a uint32 or {generation, sliceIndex}');
+}
+
+// Per-source metadata is declarative only: it never changes section bytes.
+// Accepted shape (flags nested, flat, or a pre-encoded bitfield):
+//   { flags: { skinned: true, ... }, materialHandle: { generation, sliceIndex } }
+//   { skinned: true, materialHandle: 0x00030011 }
+//   { flags: 0x21, materialHandle: 0 }
+export function resolveSourceMetadata(metadata) {
+  if (metadata === undefined || metadata === null) return { flags: 0, materialHandle: 0 };
+  if (typeof metadata !== 'object' || Array.isArray(metadata)) {
+    fail(ERROR_CODES.INPUT, 'sourceMetadata must be an object');
+  }
+  const allowed = new Set(['flags', 'materialHandle', ...CLUSTER_FLAG_NAMES]);
+  for (const key of Object.keys(metadata)) {
+    if (!allowed.has(key)) fail(ERROR_CODES.INPUT, `sourceMetadata has an unknown key: ${key}`);
+  }
+  const nested = Object.hasOwn(metadata, 'flags');
+  const flat = CLUSTER_FLAG_NAMES.filter(name => Object.hasOwn(metadata, name));
+  if (nested && flat.length) fail(ERROR_CODES.INPUT, 'sourceMetadata.flags cannot be combined with flat flag keys');
+  let flags = 0;
+  if (nested && typeof metadata.flags === 'number') {
+    const value = metadata.flags;
+    if (!Number.isSafeInteger(value) || value < 0 || value > 0xffffffff || (value & ~CLUSTER_FLAG_MASK) !== 0) {
+      fail(ERROR_CODES.INPUT, `sourceMetadata.flags must be a uint32 with only bits 0-5 set, got ${value}`);
+    }
+    flags = value >>> 0;
+  } else {
+    const flagSource = nested ? metadata.flags : metadata;
+    if (nested && (flagSource === null || typeof flagSource !== 'object' || Array.isArray(flagSource))) {
+      fail(ERROR_CODES.INPUT, 'sourceMetadata.flags must be an object or a uint32 bitfield');
+    }
+    if (nested) {
+      for (const key of Object.keys(flagSource)) {
+        if (!CLUSTER_FLAG_NAMES.includes(key)) fail(ERROR_CODES.INPUT, `sourceMetadata.flags has an unknown flag: ${key}`);
+      }
+    }
+    for (const name of CLUSTER_FLAG_NAMES) {
+      if (!Object.hasOwn(flagSource, name)) continue;
+      const value = flagSource[name];
+      if (value !== true && value !== false && value !== 0 && value !== 1) {
+        fail(ERROR_CODES.INPUT, `sourceMetadata flag ${name} must be a boolean (or 0/1), got ${JSON.stringify(value)}`);
+      }
+      if (value === true || value === 1) flags |= 1 << CLUSTER_FLAG_BITS[name];
+    }
+  }
+  return { flags: flags >>> 0, materialHandle: resolveMaterialHandle(metadata.materialHandle) };
+}
 
 const FACES = [
   { n: [1, 0, 0], u: [0, 1, 0], v: [0, 0, 1] },
@@ -227,12 +359,17 @@ function buildClusterLevels(source) {
 }
 
 function createPackageData(options = {}) {
+  if (options.sourceMetadata !== undefined && options.metadata !== undefined) {
+    fail(ERROR_CODES.INPUT, 'Pass either sourceMetadata or metadata, not both');
+  }
+  const metadata = resolveSourceMetadata(options.sourceMetadata ?? options.metadata);
   const source = proceduralSource(options.parameters ?? {});
   const sourceVertexBytes = encodeFloat32(interleave(source.positions, source.normals));
   const sourceIndexBytes = encodeUint32(source.indices);
   const sourceContentHash = sha256(Buffer.concat([sourceVertexBytes, sourceIndexBytes]));
   const levels = buildClusterLevels(source);
   const clusters = levels.flat();
+  const maxLod = levels.length - 1;
   const clusterVertexValues = [];
   const clusterIndexValues = [];
   for (const cluster of clusters) {
@@ -253,12 +390,15 @@ function createPackageData(options = {}) {
     vertexOffset: cluster.vertexOffset, vertexCount: cluster.positions.length / 3,
     indexOffset: cluster.indexOffset, triangleCount: cluster.triangleCount,
     bounds: cluster.bounds, sourceTriangleStart: cluster.sourceTriangleStart, sourceTriangleCount: cluster.sourceTriangleCount,
+    lodError: computeLodError(cluster.bounds, cluster.lod, maxLod),
+    flags: metadata.flags, materialHandle: metadata.materialHandle,
   }));
   const lodLevels = levels.map((list, level) => ({ level, clusterStart: list[0].id, clusterCount: list.length }));
   const vertexLayout = { fields: ['px', 'py', 'pz', 'nx', 'ny', 'nz'], format: 'float32le', strideBytes: 24 };
   const manifest = {
     formatVersion: FORMAT_VERSION,
     kind: PACKAGE_KIND,
+    capabilities: { ...CAPABILITIES },
     generator: { name: 'nativegpu-offline-geometry', version: TOOL_VERSION },
     source: { kind: 'procedural', generator: 'quad-grid+boxes', parameters: source.parameters, contentHash: sourceContentHash },
     layout: { vertex: vertexLayout, index: { format: 'uint32le', strideBytes: 4 },
@@ -291,7 +431,6 @@ export async function buildPackage(outputDirectory, options = {}) {
   };
 }
 
-const fail = (code, message, details = []) => { throw new GeometryError(code, message, details); };
 const isHash = value => typeof value === 'string' && /^[0-9a-f]{64}$/.test(value);
 const countKeys = ['sourceVertices', 'sourceTriangles', 'clusters', 'lodLevels', 'clusterVertices', 'clusterTriangles'];
 
@@ -308,9 +447,19 @@ function resolveInside(root, relativePath) {
 function assertManifest(manifest) {
   const bad = message => fail(ERROR_CODES.MANIFEST, message);
   if (manifest === null || typeof manifest !== 'object' || Array.isArray(manifest)) bad('Manifest must be a JSON object');
-  if (manifest.formatVersion !== FORMAT_VERSION) bad(`formatVersion must be ${FORMAT_VERSION}`);
+  if (!SUPPORTED_FORMAT_VERSIONS.includes(manifest.formatVersion)) {
+    bad(`formatVersion must be one of ${SUPPORTED_FORMAT_VERSIONS.join(', ')}`);
+  }
   if (manifest.kind !== PACKAGE_KIND) bad(`kind must be ${PACKAGE_KIND}`);
   if (!isHash(manifest.packageDigest)) bad('packageDigest must be a lowercase SHA-256 hex string');
+  if (manifest.capabilities !== undefined) {
+    if (manifest.capabilities === null || typeof manifest.capabilities !== 'object' || Array.isArray(manifest.capabilities)) {
+      bad('capabilities must be an object');
+    }
+    for (const key of Object.keys(CAPABILITIES)) {
+      if (typeof manifest.capabilities[key] !== 'boolean') bad(`capabilities.${key} must be a boolean`);
+    }
+  }
   if (!Array.isArray(manifest.sections) || !Array.isArray(manifest.clusters) || !Array.isArray(manifest.lodLevels)) {
     bad('sections, clusters and lodLevels must be arrays');
   }
@@ -330,12 +479,58 @@ function assertManifest(manifest) {
   }
 }
 
+// A v2 manifest that advertises capabilities must carry the v2 cluster fields.
+// Pre-v2-shaped manifests (formatVersion 1, or a transitional v2 without a
+// capabilities block) are read with the documented defaults instead.
+const isStrictV2 = manifest => manifest.formatVersion === 2 && manifest.capabilities !== undefined;
+
+function normalizeClusterFields(manifest) {
+  const missing = [];
+  const clusters = manifest.clusters.map((cluster, index) => {
+    const normalized = { ...cluster };
+    for (const field of CLUSTER_V2_FIELDS) {
+      if (Object.hasOwn(normalized, field)) continue;
+      normalized[field] = CLUSTER_V2_DEFAULTS[field];
+      missing.push({ cluster: index, field });
+    }
+    return normalized;
+  });
+  return {
+    manifest: { ...manifest, clusters },
+    missing,
+    defaultsApplied: missing.length > 0,
+    defaultedFields: [...new Set(missing.map(item => item.field))].sort(),
+    defaultedClusters: new Set(missing.map(item => item.cluster)).size,
+  };
+}
+
+function normalizeAndValidate(manifest) {
+  const normalized = normalizeClusterFields(manifest);
+  if (isStrictV2(manifest) && normalized.missing.length > 0) {
+    const [first] = normalized.missing;
+    fail(ERROR_CODES.MANIFEST, `v2 cluster ${first.cluster} is missing ${first.field}`,
+      normalized.missing.slice(0, 8).map(item => `cluster ${item.cluster}: ${item.field}`));
+  }
+  validateLayout(normalized.manifest);
+  return normalized;
+}
+
 function validateLayout(manifest) {
   const bad = message => fail(ERROR_CODES.MANIFEST, message);
   if (manifest.clusters.length !== manifest.counts.clusters) bad('counts.clusters does not match clusters.length');
   if (manifest.lodLevels.length !== manifest.counts.lodLevels) bad('counts.lodLevels does not match lodLevels.length');
   manifest.clusters.forEach((cluster, index) => {
     if (cluster.id !== index) bad(`Cluster ids must equal their array index (${index})`);
+    if (!Number.isSafeInteger(cluster.lod) || cluster.lod < 0) bad(`Cluster ${index} has an invalid lod`);
+    if (!Number.isFinite(cluster.lodError) || cluster.lodError < 0) bad(`Cluster ${index} has an invalid lodError`);
+    if (cluster.lod === 0 && cluster.lodError !== 0) bad(`Cluster ${index} is LOD0 and must have lodError 0`);
+    if (!Number.isSafeInteger(cluster.flags) || cluster.flags < 0 || cluster.flags > 0xffffffff
+      || (cluster.flags & ~CLUSTER_FLAG_MASK) !== 0) {
+      bad(`Cluster ${index} has invalid flags`);
+    }
+    if (!Number.isSafeInteger(cluster.materialHandle) || cluster.materialHandle < 0 || cluster.materialHandle > MATERIAL_HANDLE_MAX) {
+      bad(`Cluster ${index} has an invalid materialHandle`);
+    }
     if (!Number.isSafeInteger(cluster.vertexOffset) || !Number.isSafeInteger(cluster.vertexCount)
       || !Number.isSafeInteger(cluster.indexOffset) || !Number.isSafeInteger(cluster.triangleCount)
       || cluster.vertexCount < 1 || cluster.triangleCount < 1
@@ -375,7 +570,7 @@ function validateLayout(manifest) {
   if (start !== manifest.clusters.length) bad('LOD ranges do not cover every cluster');
 }
 
-export async function verifyPackage(manifestPath) {
+async function readManifestFile(manifestPath) {
   const file = path.resolve(manifestPath);
   let raw;
   try {
@@ -391,6 +586,30 @@ export async function verifyPackage(manifestPath) {
     fail(ERROR_CODES.MANIFEST, `Package manifest is not valid JSON: ${file}`);
   }
   assertManifest(manifest);
+  return { file, manifest };
+}
+
+// Read a package manifest without touching its sections. Both formatVersion 1
+// and 2 are accepted; the returned `manifest` is the logical v2 view with the
+// documented defaults filled in, while `rawManifest` is the on-disk shape whose
+// digest is `packageDigest`.
+export async function readPackage(manifestPath) {
+  const { file, manifest } = await readManifestFile(manifestPath);
+  const normalized = normalizeAndValidate(manifest);
+  return {
+    manifestPath: file,
+    formatVersion: manifest.formatVersion,
+    packageDigest: manifest.packageDigest,
+    manifest: normalized.manifest,
+    rawManifest: manifest,
+    defaultsApplied: normalized.defaultsApplied,
+    defaultedFields: normalized.defaultedFields,
+    defaultedClusters: normalized.defaultedClusters,
+  };
+}
+
+export async function verifyPackage(manifestPath) {
+  const { file, manifest } = await readManifestFile(manifestPath);
   const root = path.dirname(file);
   const sections = [];
   for (const section of manifest.sections) {
@@ -415,18 +634,27 @@ export async function verifyPackage(manifestPath) {
   if (digest !== manifest.packageDigest) {
     fail(ERROR_CODES.TAMPERED, 'Package digest mismatch', [`expected ${manifest.packageDigest}`, `actual ${digest}`]);
   }
-  validateLayout(manifest);
-  return { ok: true, manifestPath: file, manifest, packageDigest: digest, sections };
+  const normalized = normalizeAndValidate(manifest);
+  return {
+    ok: true, manifestPath: file, formatVersion: manifest.formatVersion,
+    manifest: normalized.manifest, rawManifest: manifest,
+    packageDigest: digest, sections,
+    defaultsApplied: normalized.defaultsApplied,
+    defaultedFields: normalized.defaultedFields,
+    defaultedClusters: normalized.defaultedClusters,
+  };
 }
 
 export function summarizeLodLevels(manifest) {
   return manifest.lodLevels.map(level => {
     const clusters = manifest.clusters.slice(level.clusterStart, level.clusterStart + level.clusterCount);
+    const lodErrors = clusters.map(cluster => cluster.lodError ?? 0);
     return {
       level: level.level, clusterStart: level.clusterStart, clusterCount: level.clusterCount,
       triangleCount: clusters.reduce((sum, cluster) => sum + cluster.triangleCount, 0),
       vertexCount: clusters.reduce((sum, cluster) => sum + cluster.vertexCount, 0),
       bounds: unionBounds(clusters.map(cluster => cluster.bounds)),
+      lodError: { min: Math.min(...lodErrors), max: Math.max(...lodErrors) },
     };
   });
 }
@@ -462,9 +690,15 @@ export async function selfTest() {
     const coverage = first.manifest.clusters.filter(cluster => cluster.lod === 0)
       .reduce((sum, cluster) => sum + cluster.sourceTriangleCount, 0) === first.manifest.counts.sourceTriangles;
     const roots = first.manifest.clusters.filter(cluster => cluster.parent === -1).length;
+    const v2Shape = first.manifest.formatVersion === FORMAT_VERSION
+      && Object.keys(CAPABILITIES).every(key => first.manifest.capabilities?.[key] === true)
+      && first.manifest.clusters.every(cluster => Number.isFinite(cluster.lodError) && cluster.lodError >= 0
+        && Number.isSafeInteger(cluster.flags) && Number.isSafeInteger(cluster.materialHandle)
+        && (cluster.lod !== 0 || cluster.lodError === 0));
     return {
-      ok: deterministic && verified.ok && tamperCode === ERROR_CODES.TAMPERED && coverage && roots === 1,
-      deterministic, packageDigest: first.packageDigest, counts: first.counts,
+      ok: deterministic && verified.ok && tamperCode === ERROR_CODES.TAMPERED && coverage && roots === 1 && v2Shape,
+      deterministic, v2Shape, packageDigest: first.packageDigest, counts: first.counts,
+      formatVersion: first.manifest.formatVersion, capabilities: first.manifest.capabilities,
       lodLevels: summarizeLodLevels(first.manifest), coverage, roots,
       tamper: { detected: tamperCode === ERROR_CODES.TAMPERED, code: tamperCode },
     };
@@ -509,9 +743,10 @@ async function main(args) {
     console.log([
       `self-test: ${result.ok ? 'PASS' : 'FAIL'}`,
       `package digest: ${result.packageDigest}`,
+      `format: v${result.formatVersion} (capabilities: ${Object.keys(result.capabilities).join(', ')})`,
       `source: ${result.counts.sourceVertices} vertices, ${result.counts.sourceTriangles} triangles`,
       `clusters: ${result.counts.clusters} across ${result.counts.lodLevels} LOD levels`,
-      ...result.lodLevels.map(level => `lod ${level.level}: ${level.clusterCount} clusters, ${level.triangleCount} triangles, ${level.vertexCount} vertices`),
+      ...result.lodLevels.map(level => `lod ${level.level}: ${level.clusterCount} clusters, ${level.triangleCount} triangles, ${level.vertexCount} vertices, lodError ${level.lodError.min}..${level.lodError.max}`),
       `coverage: ${result.coverage ? 'every LOD0 triangle in exactly one cluster' : 'BROKEN'}`,
       `roots: ${result.roots}`,
       `determinism: ${result.deterministic ? 'byte-identical rebuild' : 'MISMATCH'}`,

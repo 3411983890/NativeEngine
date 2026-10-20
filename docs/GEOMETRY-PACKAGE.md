@@ -179,3 +179,136 @@ node --test tests/gltf.test.mjs
 
 本节只覆盖几何导入；第 7 节“没有 glTF/资产导入”一条由本节取代，材质、UV、切线、蒙皮、
 动画和 Draco 仍不在范围内。
+
+## 9. Format v2（cluster 管线 / SDF 路径共用的冻结字段）
+
+本节追加在 v1 文档之后，**不重写**上面的历史描述：第 2 节中 `formatVersion` 的
+“当前为 1”在 v2 下由本节取代，其余 v1 字段说明仍然适用。v2 只增加清单字段与
+`capabilities`，section 二进制布局（第 3 节）完全不变。
+
+### 9.1 顶层版本与 capabilities
+
+v2 的 `formatVersion` 为 `2`，并新增顶层 `capabilities`：
+
+```json
+{
+  "clusterPipeline": true,
+  "lodError": true,
+  "materialHandles": true,
+  "flags": true
+}
+```
+
+`capabilities` 是能力声明，不是开关：四个值都为 `true` 表示清单已携带 cluster DAG、
+`lodError`、`materialHandle` 与 `flags`。写入端（`build`）只写 v2；读取端
+（`readPackage` / `verifyPackage`）同时接受 `formatVersion: 1` 和 `2`，见 9.4。
+
+### 9.2 cluster 新字段
+
+| 字段 | 类型 | 含义 |
+| --- | --- | --- |
+| `lodError` | JSON number（float） | 相对父 LOD 的世界空间误差；LOD0 恒为 `0` |
+| `flags` | uint32 位域 | bit0 `skinned`、bit1 `worldPositionOffset`、bit2 `twoSided`、bit3 `alphaTest`、bit4 `translucent`、bit5 `destructible` |
+| `materialHandle` | uint32 | `(generation << 16) \| sliceIndex`；`0` 表示默认材质 |
+
+**`lodError` 的精确公式**（实现见 `computeLodError()` / `boundsDiagonal()`）：
+
+```text
+dx = bounds.max[0] - bounds.min[0]
+dy = bounds.max[1] - bounds.min[1]
+dz = bounds.max[2] - bounds.min[2]
+diagonal = sqrt(dx*dx + dy*dy + dz*dz)
+maxLod   = lodLevels.length - 1          // DAG 高度，即“LOD level span”
+lodError = 0                             // lod === 0
+lodError = diagonal / maxLod              // lod > 0
+```
+
+- 单位与源网格坐标一致（世界空间）；只依赖 manifest 中的 cluster `bounds` 和
+  `lodLevels`，不含时间、随机数或平台相关格式化，因此重建/跨机器重算结果确定。
+- 父 cluster 的 `bounds` 是子 bounds 的并集，所以同一 DAG 链上
+  `parent.lodError >= child.lodError`；LOD0 恒为 `0`。
+- 只有一个 LOD 时 `maxLod = 0`，此时只有 LOD0，误差按定义全为 `0`。
+- 这是 **AABB 代理误差**：可被 N1 的 LOD 选择消费，但**不是**二次误差度量
+  （QEM）、不是屏幕空间误差，也没有简化质量保证。第 7 节的相关限制仍然成立。
+
+`flags` 只允许 bit0–bit5；v2 校验会拒绝 bit6 及以上（`flags & ~0x3f !== 0`）。
+程序化输入默认全 `0`。`materialHandle` 的两段都必须满足
+`0 <= generation < 65536`、`0 <= sliceIndex < 65536`；编码结果按 uint32 存储，
+越界时 `encodeMaterialHandle()` / `sourceMetadata` 抛 `NG-E-GEOMETRY-INPUT`，
+不做静默截断。句柄在本格式里是不透明 ID，包内没有材质表。
+
+`flags` 与 `materialHandle` 都是**声明性元数据**：只进入 manifest（因而进入
+package digest），不改变 `sections/*.bin` 的字节。
+
+### 9.3 `build` 的 per-source metadata
+
+```js
+await buildPackage('build/offline/v2', {
+  parameters: { gridQuads: 32 },
+  sourceMetadata: {
+    flags: { skinned: true, twoSided: true },
+    materialHandle: { generation: 3, sliceIndex: 17 },
+  },
+});
+```
+
+- `sourceMetadata` 作用于该源网格产出的**所有** cluster；`metadata` 是等价别名，
+  两者不能同时传。
+- `flags` 可写成嵌套对象（`flags: { skinned: true }`）、平铺键
+  （`skinned: true`）或预先编码的 uint32 位域（`flags: 0x21`，只允许 bit0–5）；
+  逐位写法值为 boolean 或 `0/1`。未知键/未知 flag/越界位抛
+  `NG-E-GEOMETRY-INPUT`。
+- `materialHandle` 可传 uint32，或 `{ generation, sliceIndex }` 由
+  `encodeMaterialHandle(generation, sliceIndex)` 编码后存储。
+- 不传 metadata 时，所有 cluster 为 `flags: 0`、`materialHandle: 0`。
+
+### 9.4 v1 兼容与读取语义
+
+- `readPackage(path)` 与 `verifyPackage(path)` 都接受 `formatVersion: 1`。缺失字段按
+  **`lodError: 0`、`flags: 0`、`materialHandle: 0`** 解释；返回值中
+  `defaultsApplied: true`，`defaultedFields` 列出补过的字段，
+  `defaultedClusters` 是补过值的 cluster 数。
+- `verifyPackage` 的 `packageDigest` 永远是对**磁盘上原始清单**（`rawManifest`）重算的
+  摘要。v1 包用它自己的 v1 形状计算，因此**仍然按自己的 digest 通过校验**；
+  返回的 `manifest` 是补全默认值后的逻辑 v2 视图，不能拿它反向重算 v1 的 digest。
+- 过渡规则：`formatVersion: 2` 但**没有** `capabilities` 的清单按 pre-v2 形状读取并补
+  默认值（供尚未写入新字段的写入端）；本工具的 `build` 不产生这种清单。v2 且带
+  `capabilities` 时，三个字段必须全部显式存在，缺失会报
+  `NG-E-GEOMETRY-MANIFEST`。
+- 写入端只写 v2。读取端同时接受 1 和 2（`SUPPORTED_FORMAT_VERSIONS`）。
+
+### 9.5 digest 语义的变化（不要假装 v1 摘要稳定）
+
+- v2 的 `packageDigest` 覆盖 `capabilities` 与每个 cluster 的
+  `lodError` / `flags` / `materialHandle`。
+- 因此**同一份几何**用 v2 代码重建后，`packageDigest` 与旧 v1 包不同；这是格式升级的
+  预期结果，不是回归。缓存键必须包含 `formatVersion`，不能拿 v1 digest 直接命中 v2 包。
+- section 的 `sha256` 只覆盖几何字节；metadata 全为默认值时，v1 与 v2 的 section 哈希
+  可以相同。`source.contentHash` 也不包含这两个新字段。
+- 确定性规则不变：相同输入（含相同 metadata）→ byte-identical 的 manifest/section，
+  无时间戳、键排序、统一 `\n`。`selfTest()` 与新测试都会重建两次并逐字节比较。
+
+### 9.6 cluster DAG sidecar 与 stats
+
+`cluster-dag.json` 的每个 `clusters[]` 条目现在额外输出 `lodError`、`flags`、
+`materialHandle`，`package` 块输出 `capabilities`。`node tools/offline/cluster-dag.mjs stats`
+的每个 `lodLevels[]` 条目新增 `lodError: { min, max }`；LOD0 必为 `{ "min": 0, "max": 0 }`，
+v1 包所有层都是 `{ "min": 0, "max": 0 }`。
+
+```powershell
+node tools/offline/geometry-package.mjs self-test
+node tools/offline/geometry-package.mjs build --out build/offline/v2
+node tools/offline/geometry-package.mjs verify --package build/offline/v2/geometry.package.json
+node tools/offline/cluster-dag.mjs stats --package build/offline/v2/geometry.package.json
+node --test tests/geometry-package-v2.test.mjs
+node --test tests/offline.test.mjs
+```
+
+### 9.7 v2 仍然不是什么
+
+- `lodError` 是 bounds 代理误差，不是实测简化误差/屏幕误差；没有误差阈值、边界锁定或
+  QEM 简化器。
+- `flags` / `materialHandle` 只是清单声明；`renderer/`、`host/`、`engine/` 没有新增消费者，
+  也没有 GPU 侧读取这些字段的代码。
+- 没有材质表、UV、切线、骨骼或蒙皮权重；`skinned` 等位只表示“该类几何需要走哪条路径”。
+- 没有压缩、流送、分页或运行时 LOD 选择；sidecar 仍是离线数据 dump。

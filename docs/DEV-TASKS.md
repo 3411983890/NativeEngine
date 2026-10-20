@@ -156,7 +156,7 @@
 | A04 | 编排：任务状态、检查点、幂等、成本上限 | ⬜ | 未开始 |
 | A05 | 模型适配：先一个模型，再同类替换与本地探针 | ⬜ | 未开始 |
 | A06 | 质量门禁：几何/权重/动画/编译/运行检查 | ⬜ | 未开始 |
-| A07 | 世界查询语言 + 类型化动作 DSL（创新 INN-08） | ⬜ | 先决：S3E-07；泳道 C；P2。现状 `queryScene` 只有 kind/entityId/name |
+| A07 | 世界查询语言（创新 INN-08 前半；动作 DSL 仍未做） | ✅ | `engine/scene/query.mjs`、`tests/query.test.mjs`（18 项）、`tools/scene.mjs query`、`docs/SCENE-QUERY.md` | 9 种操作 + select entity/material/light + 聚合；小院：墙 5、材质 brick 8/metal 6/checker 3、灯光强度和 9.7。**线性扫描无空间索引；类型化动作 DSL 未做** |
 | A08 | 语义 diff 影响分析（创新 INN-09） | ⬜ | 先决：A07；泳道 C；P2 |
 | **G4** | 关口 | ⬜ | 不满足 |
 
@@ -197,8 +197,8 @@
 | X4 | Houdini 适配 | ⬜ | 版本与授权清楚 | — |
 | X5 | 更多模型与非模板角色 | ⬜ | 先增加评测样例 | — |
 | X6 | 发布平台（Linux/受限网页预览） | ⬜ | 现有平台维护量可承受 | 依赖 S2 |
-| N0 | 离线 cluster DAG 构建（Nanite 第 0 步） | 🟡 | 需 glTF 输入 + 几何包格式 | 骨架完成：37 cluster / 6 LOD / 覆盖率与 DAG 结构 6 项测试通过；**无运行时 LOD 选择器** |
-| INN-14 | 内容寻址几何包格式 | ✅ | — | `tools/offline/geometry-package.mjs` + `docs/GEOMETRY-PACKAGE.md`；确定性重建与篡改检测有测试 |
+| N0 | 离线 cluster DAG 构建（Nanite 第 0 步） | 🟡 | 需 glTF 输入 + 几何包格式 | 产物已带 v2 字段：37 cluster / 6 LOD，lodError 按 LOD 单调（0 → 5.378）；**仍无运行时 LOD 选择器** |
+| INN-14 | 内容寻址几何包格式（v2） | ✅ | — | `tools/offline/geometry-package.mjs` v2：cluster 级 `lodError`/`flags`/`materialHandle` + `capabilities`；v1 仍可读并填默认值；本机包摘要 `f3ddb1e4…`；6 项 v2 测试 |
 | B7 | glTF 2.0 子集加载（离线） | ✅ | — | `tools/offline/gltf.mjs` + 可复现 fixtures + 6 项测试；支持嵌入/sibling buffer、索引三角形、POSITION/NORMAL；拒绝 skin/animation/扩展/稀疏/Draco/.glb 与非单位变换、多场景、实例化 |
 | L0 | SDF 烘焙（远场） | ✅ | — | `tools/offline/sdf-bake.mjs` + 8 项测试 + `docs/SDF-BAKE.md`；32³ 球面中心最大误差 0.0587 体素、盒角三线性 0.4984（插值固有）；**当前场景网格不封闭，符号用最近三角形法向，不是可靠内部场** |
 | B1 | compute 管线与 compute 队列 | 🟡 | — | `renderer/compute_pass.cpp` + `shaders/compute_probe.hlsl`（cs_6_6）；240 帧 240 次派发、240 次跨队列等待；报告 `probes.compute`；`tools/compute.ps1` 15 项。**结果尚未进入合成画面（B1b）**，无队列并行量化证据 |
