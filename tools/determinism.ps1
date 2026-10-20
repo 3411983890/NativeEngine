@@ -83,7 +83,7 @@ $expectedTicks = $Frames * 2
 
 Add-Check 'hash log written with a header and one line per frame' `
     ($linesA.Count -eq ($Frames + 1)) "lines=$($linesA.Count) expected=$($Frames + 1)"
-Add-Check 'hash log header records the seed' ($logA.StartsWith('# nativegpu-determinism v1 seed=20261020')) `
+Add-Check 'hash log header records the seed' ($logA.StartsWith('# nativegpu-replay v2 seed=20261020')) `
     ($linesA[0])
 Add-Check 'two runs with identical input produce byte-identical digests' ($logA -ceq $logB) `
     'digest logs differ'

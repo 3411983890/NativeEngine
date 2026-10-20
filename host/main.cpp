@@ -7,9 +7,11 @@
 #include "budget.hpp"
 #include "nativegpu_version.h"
 #include "../renderer/d3d12_renderer.h"
+#include "../renderer/rhi.hpp"
 #include "../engine/native/math.hpp"
 #include "../third_party/json.hpp"
 #include <chrono>
+#include <cstring>
 #include <cwchar>
 #include <cstdio>
 #include <cstdlib>
@@ -32,6 +34,13 @@ struct SceneStamp {
     std::uintmax_t size=0;
     bool valid=false;
 };
+// One recorded frame. Inputs are stored as exact float bit patterns so replay cannot
+// drift by a rounding step: a decimal or milli-unit encoding would change the state.
+struct ReplayFrame {
+    std::uint64_t hash=0;
+    float forward=0.0f,right=0.0f,yaw=0.0f,pitch=0.0f;
+    bool run=false,jump=false,interact=false;
+};
 SceneStamp stampOf(const std::filesystem::path& path) {
     std::error_code ec;
     const auto size=std::filesystem::file_size(path,ec);
@@ -48,6 +57,8 @@ struct App {
     HFONT font=nullptr,titleFont=nullptr;
     HBRUSH background=nullptr;
     nativegpu::Renderer renderer;
+    // Frame path goes through the RHI boundary; the raw renderer stays for test hooks.
+    std::unique_ptr<nativegpu::rhi::Device> rhi;
     host::SceneDocument document;
     engine::Game game;
     std::filesystem::path scenePath="assets/courtyard.scene.json", reportPath="reports/native-session.json";
@@ -84,6 +95,16 @@ struct App {
     std::string hashLogPath,finalHash;
     std::ofstream hashLog;
     unsigned long long hashLines=0;
+    std::uint64_t lastDigest=0;
+    // Replay and black-box recorder (E08).
+    std::string recordPath,replayPath;
+    bool replayEnabled=false,replayStrict=false,recordEnabled=false;
+    std::vector<ReplayFrame> replayFrames;
+    std::size_t replayIndex=0;
+    unsigned replayMismatches=0,replayFirstMismatch=0,replayCompared=0;
+    bool blackboxTriggered=false,blackboxWritten=false;
+    unsigned blackboxFrame=0,stallFrame=0,stallMs=0;
+    double blackboxDtMs=0.0,blackboxStallMs=25.0;
     // Frame budget governor. Disabled unless --budget auto is passed.
     host::BudgetGovernor budget;
     bool budgetMode=false;
@@ -125,16 +146,84 @@ std::string narrow(const wchar_t* s) {
     return out;
 }
 void setText(HWND h,const std::wstring& text){SetWindowTextW(h,text.c_str());}
-// One digest line per simulated frame. The format is intentionally boring: frame,tick,hash.
-// E08 will add the input columns needed for replay; nothing here reads the log back.
-void writeHashLine(){
-    if(!app.hashEnabled||!app.hashLog.is_open())return;
+unsigned floatBits(float value){unsigned bits=0;std::memcpy(&bits,&value,sizeof(bits));return bits;}
+float bitsFloat(unsigned bits){float value=0.0f;std::memcpy(&value,&bits,sizeof(value));return value;}
+// One line per simulated frame: frame,tick,hash,input bits. The input columns are the
+// difference between a digest log and a replayable recording.
+void writeReplayLine(const engine::Input& input){
+    // The digest is always computed: replay compares it even when this run writes no log.
     engine::determinism::Hasher hasher;
     app.game.digest(hasher);
+    app.lastDigest=hasher.value();
     app.finalHash=hasher.hex();
-    app.hashLog<<app.frames<<','<<app.game.ticks()<<','<<app.finalHash<<'\n';
+    if(!app.hashEnabled||!app.hashLog.is_open())return;
+    char buffer[192];
+    std::snprintf(buffer,sizeof(buffer),"%u,%llu,%016llx,%08x,%08x,%d,%d,%d,%08x,%08x",
+                  app.frames,static_cast<unsigned long long>(app.game.ticks()),
+                  static_cast<unsigned long long>(app.lastDigest),
+                  floatBits(input.forward),floatBits(input.right),
+                  input.run?1:0,input.jump?1:0,input.interact?1:0,
+                  floatBits(input.yawDelta),floatBits(input.pitchDelta));
+    app.hashLog<<buffer<<'\n';
     app.hashLog.flush();
     ++app.hashLines;
+}
+bool loadReplay(const std::string& path,std::uint64_t& seed,std::string& error){
+    std::ifstream in(path,std::ios::binary);
+    if(!in){error="cannot open replay: "+path;return false;}
+    std::string line;
+    while(std::getline(in,line)){
+        if(line.empty())continue;
+        if(line[0]=='#'){
+            const auto position=line.find("seed=");
+            if(position!=std::string::npos){
+                seed=std::strtoull(line.c_str()+position+5,nullptr,10);
+            }
+            continue;
+        }
+        unsigned frame=0,forward=0,right=0,yaw=0,pitch=0;
+        unsigned long long tick=0,hash=0;
+        int run=0,jump=0,interact=0;
+        if(std::sscanf(line.c_str(),"%u,%llu,%llx,%x,%x,%d,%d,%d,%x,%x",
+                       &frame,&tick,&hash,&forward,&right,&run,&jump,&interact,
+                       &yaw,&pitch)!=10){
+            error="malformed replay line: "+line;
+            return false;
+        }
+        ReplayFrame recorded;
+        recorded.hash=hash;
+        recorded.forward=bitsFloat(forward);
+        recorded.right=bitsFloat(right);
+        recorded.yaw=bitsFloat(yaw);
+        recorded.pitch=bitsFloat(pitch);
+        recorded.run=run!=0;
+        recorded.jump=jump!=0;
+        recorded.interact=interact!=0;
+        app.replayFrames.push_back(recorded);
+    }
+    if(app.replayFrames.empty()){
+        error="replay contains no frames: "+path;
+        return false;
+    }
+    return true;
+}
+// Anomaly sidecar written the moment a frame exceeds the stall threshold. It carries the
+// recording path, so the recording itself stays a plain replay log.
+void writeAnomaly(){
+    if(!app.recordEnabled||app.blackboxWritten||app.recordPath.empty())return;
+    app.blackboxWritten=true;
+    const std::filesystem::path path(app.recordPath+".anomaly.json");
+    std::ofstream out(path,std::ios::binary);
+    if(!out)return;
+    out<<"{\n  \"schema\": \"nativegpu.blackbox/1\",\n"
+       <<"  \"trigger\": \"stall\",\n"
+       <<"  \"frame\": "<<app.blackboxFrame<<",\n"
+       <<"  \"tick\": "<<app.game.ticks()<<",\n"
+       <<"  \"dtMs\": "<<app.blackboxDtMs<<",\n"
+       <<"  \"thresholdMs\": "<<app.blackboxStallMs<<",\n"
+       <<"  \"hash\": \""<<app.finalHash<<"\",\n"
+       <<"  \"recording\": \""<<app.recordPath<<"\",\n"
+       <<"  \"replayCommand\": \"--replay "<<app.recordPath<<" --replay-strict\"\n}\n";
 }
 HWND label(const wchar_t* text,int x,int y,int w,int h,DWORD extra=0) {
     auto control=CreateWindowExW(0,L"STATIC",text,WS_CHILD|WS_VISIBLE|extra,x,y,w,h,app.window,nullptr,nullptr,nullptr);
@@ -201,22 +290,26 @@ void pollScene(){
 }
 bool restartRenderer(){
     app.ready=false;
-    app.renderer.shutdown();
-    app.renderer.setValidationEnabled(app.validationRequested);
-    if(!app.renderer.initialize(app.viewport,app.width,app.height,app.error)){
+    if(app.rhi)app.rhi->shutdown();
+    nativegpu::rhi::Descriptor descriptor;
+    descriptor.window=app.viewport;
+    descriptor.width=app.width;
+    descriptor.height=app.height;
+    descriptor.validation=app.validationRequested;
+    if(!app.rhi||!app.rhi->initialize(descriptor,app.error)){
         app.errorCode="NG-E-RENDERER-INIT";diagnostic(app.error);app.running=false;return false;
     }
     // The DXR state object is rebuilt from scratch, so the requested toggle has to be
     // re-applied and re-read for the report.
-    app.renderer.setRtShadows(app.rtShadowRequested);
-    app.renderer.setCompositeDebugView(app.debugView);
-    app.renderer.setMeshShaders(app.meshRequested);
+    app.rhi->setRtShadows(app.rtShadowRequested);
+    app.rhi->setCompositeDebugView(app.debugView);
+    app.rhi->setMeshShaders(app.meshRequested);
     // Injection must happen after initialize(), which rebuilds the renderer state. It is
     // armed exactly once so the recovery run is a clean renderer.
     if(app.deviceRemovalMode&&app.deviceRemovalAtFrame>0&&!app.deviceRemovalDetected){
         app.renderer.injectDeviceRemovalAtFrame(static_cast<unsigned>(app.deviceRemovalAtFrame));
     }
-    app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
+    app.rtShadowEnabled=app.rhi->rtShadowsEnabled();
     app.ready=true;++app.restarts;return true;
 }
 void layout(){
@@ -243,7 +336,7 @@ void layout(){
     MoveWindow(GetDlgItem(app.window,201),x,296,270,20,TRUE);
     MoveWindow(GetDlgItem(app.window,202),16,r.bottom-28,static_cast<int>(app.width)-32,22,TRUE);
     if(app.ready && !app.minimized){
-        if(!app.renderer.resize(app.width,app.height,app.error)){
+        if(!app.rhi->resize(app.width,app.height,app.error)){
             diagnostic(app.error);app.running=false;
         } else ++app.resizes;
     }
@@ -299,13 +392,13 @@ LRESULT CALLBACK windowProc(HWND h,UINT msg,WPARAM w,LPARAM l){
         }
         if(w==VK_F11){
             app.meshRequested=!app.meshRequested;
-            app.renderer.setMeshShaders(app.meshRequested);
-            app.liveStatus=app.renderer.meshShadersEnabled()?L"Mesh Shader 路径已开启":L"Mesh Shader 已关闭（顶点路径）";
+            app.rhi->setMeshShaders(app.meshRequested);
+            app.liveStatus=app.rhi->meshShadersEnabled()?L"Mesh Shader 路径已开启":L"Mesh Shader 已关闭（顶点路径）";
         }
         if(w==VK_F10){
             app.rtShadowRequested=!app.rtShadowRequested;
-            app.renderer.setRtShadows(app.rtShadowRequested);
-            app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
+            app.rhi->setRtShadows(app.rtShadowRequested);
+            app.rtShadowEnabled=app.rhi->rtShadowsEnabled();
             app.liveStatus=app.rtShadowEnabled?L"DXR 阴影已开启":L"DXR 阴影已关闭（光栅回退）";
         }
         return 0;
@@ -333,7 +426,7 @@ void updateUi(){
     task+=app.game.complete()?L"✓ 已到达终点！F5 重新体验":L"○ 穿过门，进入绿色终点";
     setText(app.mission,task);
     std::wostringstream s;
-    auto stats=app.renderer.stats();
+    auto stats=app.rhi->stats();
     s<<std::fixed<<std::setprecision(2)<<L"CPU 提交 "<<stats.cpuMs<<L" ms   GPU ";
     if(stats.gpuValid)s<<stats.gpuMs<<L" ms";else s<<L"采样中";
     s<<L"\n位置 "<<p.x<<L", "<<p.y<<L", "<<p.z;
@@ -400,8 +493,16 @@ void report(bool success){
                 {"screenshotFrame",app.screenshotFrame},
                 {"screenshotPath",app.screenshotPath},
                 {"screenshotError",app.screenshotError}}},
-            {"capabilities",json::parse(app.renderer.capabilitiesJson())},
-            {"probes",json::parse(app.renderer.probesJson())}
+            {"capabilities",app.rhi?json::parse(app.rhi->capabilitiesJson()):json(nullptr)},
+            {"probes",app.rhi?json::parse(app.rhi->probesJson()):json(nullptr)}
+        };
+        json rhiBackends=json::array();
+        for(const auto& name:nativegpu::rhi::backends())rhiBackends.push_back(name);
+        r["rhi"]={
+            {"backend",app.rhi?app.rhi->backend():"none"},
+            {"supported",rhiBackends},
+            {"framePathThroughInterface",app.rhi!=nullptr},
+            {"nativeHandleUsedForTestHooks",true}
         };
         json rngStreams=json::array();
         for(const auto& stream:engine::determinism::registry().streams()){
@@ -441,6 +542,24 @@ void report(bool success){
             {"ladder",budgetLadder},
             {"steps",budgetSteps}
         };
+        r["replay"]={
+            {"enabled",app.replayEnabled},
+            {"source",app.replayPath},
+            {"frames",static_cast<unsigned>(app.replayFrames.size())},
+            {"compared",app.replayCompared},
+            {"mismatches",app.replayMismatches},
+            {"firstMismatchFrame",app.replayFirstMismatch},
+            {"strict",app.replayStrict}
+        };
+        r["blackbox"]={
+            {"enabled",app.recordEnabled},
+            {"path",app.recordPath},
+            {"triggered",app.blackboxTriggered},
+            {"frame",app.blackboxFrame},
+            {"dtMs",app.blackboxDtMs},
+            {"thresholdMs",app.blackboxStallMs},
+            {"anomalyWritten",app.blackboxWritten}
+        };
         if(!app.reportPath.parent_path().empty())std::filesystem::create_directories(app.reportPath.parent_path());
         std::ofstream out(app.reportPath,std::ios::binary);out<<r.dump(2)<<"\n";
     }catch(...){/* Reporting must not hide the original device diagnostic. */}
@@ -472,6 +591,20 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         else if(arg==L"--no-stress")app.noStress=true;
         else if(arg==L"--seed"&&i+1<argc)app.seed=_wcstoui64(argv[++i],nullptr,10);
         else if(arg==L"--hash-log"&&i+1<argc)app.hashLogPath=narrow(argv[++i]);
+        else if(arg==L"--record"&&i+1<argc){
+            app.recordPath=narrow(argv[++i]);
+            app.hashLogPath=app.recordPath;
+            app.recordEnabled=true;
+        }
+        else if(arg==L"--replay"&&i+1<argc){
+            app.replayPath=narrow(argv[++i]);
+            app.replayEnabled=true;
+            app.smoke=true;
+        }
+        else if(arg==L"--replay-strict")app.replayStrict=true;
+        else if(arg==L"--stall-frame"&&i+1<argc)app.stallFrame=static_cast<unsigned>(std::max(0,_wtoi(argv[++i])));
+        else if(arg==L"--stall-ms"&&i+1<argc)app.stallMs=static_cast<unsigned>(std::max(1,_wtoi(argv[++i])));
+        else if(arg==L"--blackbox-stall-ms"&&i+1<argc)app.blackboxStallMs=_wtof(argv[++i]);
         else if(arg==L"--budget"&&i+1<argc)app.budgetMode=(std::wstring(argv[++i])!=L"off");
         else if(arg==L"--budget-target-ms"&&i+1<argc)app.budgetTargetMs=_wtof(argv[++i]);
         else if(arg==L"--budget-cpu-ms"&&i+1<argc)app.budgetCpuMs=_wtof(argv[++i]);
@@ -534,6 +667,21 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         app.reportPath=folder/"reports/native-session.json";
     }
     if(!reloadScene(app.scenePath)){report(false);return 2;}
+    // The frame path talks to this device, not to Renderer directly, so a second backend
+    // only has to implement nativegpu::rhi::Device (docs/RHI.md).
+    app.rhi=nativegpu::rhi::wrap("d3d12",app.renderer,app.error);
+    if(!app.rhi){
+        app.errorCode="NG-E-RHI-BACKEND";diagnostic(app.error);report(false);return 4;
+    }
+    if(app.replayEnabled){
+        std::uint64_t replaySeed=0;
+        if(!loadReplay(app.replayPath,replaySeed,app.error)){
+            app.errorCode="NG-E-REPLAY-READ";diagnostic(app.error);report(false);return 6;
+        }
+        // A replay must use the seed the recording used, otherwise the streams differ.
+        if(replaySeed!=0)app.seed=replaySeed;
+        app.targetFrames=std::max(app.targetFrames,static_cast<unsigned>(app.replayFrames.size()));
+    }
     // Determinism: the run seed owns every random stream. Streams are registered up front
     // so the report proves which consumers exist even before they draw any numbers.
     engine::determinism::registry().reset(app.seed);
@@ -549,7 +697,8 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             report(false);return 6;
         }
         app.hashEnabled=true;
-        app.hashLog<<"# nativegpu-determinism v1 seed="<<app.seed<<" step=1/120\n";
+        app.hashLog<<"# nativegpu-replay v2 seed="<<app.seed<<" step=1/120 mode="
+                   <<(app.recordEnabled?"record":"hash")<<"\n";
         app.hashLog.flush();
     }
     if(app.faultTest){
@@ -598,19 +747,23 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
     button(L"打开场景",ID_OPEN,1120,644);
     button(L"重建渲染器  /  F8",ID_RESTART,980,688,268);
     refreshList();layout();
-    app.renderer.setValidationEnabled(app.validationRequested);
-    if(!app.renderer.initialize(app.viewport,app.width,app.height,app.error)){
+    nativegpu::rhi::Descriptor descriptor;
+    descriptor.window=app.viewport;
+    descriptor.width=app.width;
+    descriptor.height=app.height;
+    descriptor.validation=app.validationRequested;
+    if(!app.rhi->initialize(descriptor,app.error)){
         diagnostic(app.error);report(false);return 4;
     }
-    app.renderer.setRtShadows(app.rtShadowRequested);
-    app.renderer.setCompositeDebugView(app.debugView);
-    app.renderer.setMeshShaders(app.meshRequested);
+    app.rhi->setRtShadows(app.rtShadowRequested);
+    app.rhi->setCompositeDebugView(app.debugView);
+    app.rhi->setMeshShaders(app.meshRequested);
     // Injection must happen after initialize(), which rebuilds the renderer state. It is
     // armed exactly once so the recovery run is a clean renderer.
     if(app.deviceRemovalMode&&app.deviceRemovalAtFrame>0&&!app.deviceRemovalDetected){
         app.renderer.injectDeviceRemovalAtFrame(static_cast<unsigned>(app.deviceRemovalAtFrame));
     }
-    app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
+    app.rtShadowEnabled=app.rhi->rtShadowsEnabled();
     // Budget policy is configured after the renderer so the ladder only contains steps
     // that can actually change quality in this run.
     if(app.budgetMode){
@@ -637,12 +790,24 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             TranslateMessage(&msg);DispatchMessageW(&msg);
         }
         if(!app.running)break;
+        // Fault injection for the black-box recorder: a real wall-clock stall on one frame.
+        if(app.stallFrame>0&&app.frames==app.stallFrame)Sleep(app.stallMs);
         const auto now=Clock::now();
         float dt=std::chrono::duration<float>(now-app.last).count();app.last=now;
         if(app.minimized){Sleep(30);continue;}
         pollScene();
         engine::Input input;
-        if(!app.smoke && GetForegroundWindow()==app.window){
+        if(app.replayEnabled){
+            if(app.replayIndex>=app.replayFrames.size())break;
+            const ReplayFrame& recorded=app.replayFrames[app.replayIndex];
+            input.forward=recorded.forward;
+            input.right=recorded.right;
+            input.run=recorded.run;
+            input.jump=recorded.jump;
+            input.interact=recorded.interact;
+            input.yawDelta=recorded.yaw;
+            input.pitchDelta=recorded.pitch;
+        } else if(!app.smoke && GetForegroundWindow()==app.window){
             input.forward=static_cast<float>(down('W'))-static_cast<float>(down('S'));
             input.right=static_cast<float>(down('D'))-static_cast<float>(down('A'));
             input.run=down(VK_SHIFT);
@@ -655,7 +820,28 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         app.yawDelta=0;app.pitchDelta=0;
         if(!app.paused){
             app.game.update(input,app.smoke?1.f/60.f:dt);
-            writeHashLine();
+            writeReplayLine(input);
+            if(app.replayEnabled&&app.replayIndex<app.replayFrames.size()){
+                const ReplayFrame& recorded=app.replayFrames[app.replayIndex];
+                ++app.replayCompared;
+                if(recorded.hash!=app.lastDigest){
+                    if(app.replayMismatches==0)app.replayFirstMismatch=app.frames;
+                    ++app.replayMismatches;
+                }
+                ++app.replayIndex;
+            }
+            // Black box: the first frame over the stall threshold writes the snapshot next
+            // to the recording, so a bug report is a replayable file plus its trigger.
+            if(app.recordEnabled&&!app.blackboxTriggered&&dt*1000.0>app.blackboxStallMs){
+                app.blackboxTriggered=true;
+                app.blackboxFrame=app.frames;
+                app.blackboxDtMs=dt*1000.0;
+                writeAnomaly();
+            }
+            if(app.replayEnabled&&app.replayIndex>=app.replayFrames.size()){
+                success=true;
+                break;
+            }
         }
         auto p=app.game.playerPosition();
         const float yaw=app.game.yaw(),pitch=app.game.pitch();
@@ -697,13 +883,13 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             lights.push_back(light);
         }
         const bool shotFrame=app.screenshotRequested&&!app.screenshotAttempted&&(app.frames+1)>=app.screenshotFrame;
-        if(shotFrame&&!app.renderer.requestScreenshot(app.screenshotPath,app.screenshotError)){
+        if(shotFrame&&!app.rhi->requestScreenshot(app.screenshotPath,app.screenshotError)){
             success=false;app.screenshotAttempted=true;
             app.liveStatus=L"截图准备失败："+wide(app.screenshotError);
             if(app.smoke)break;
         }
         const float eyePosition[3]={eye.x,eye.y,eye.z};
-        if(!app.renderer.render(viewProjection,eyePosition,draws,lights,app.error)){
+        if(!app.rhi->submit(viewProjection,eyePosition,draws,lights,app.error)){
             // Device-removal path: stop rendering, record the failure, rebuild the renderer
             // once and keep going if recovery works. The scene file is never touched.
             if(app.deviceRemovalMode&&app.error.find("DEVICE_REMOVED")!=std::string::npos){
@@ -724,7 +910,7 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         ++app.frames;
         if(shotFrame){
             app.screenshotAttempted=true;
-            if(!app.renderer.captureScreenshot(app.screenshotPath,app.screenshotError)){
+            if(!app.rhi->captureScreenshot(app.screenshotPath,app.screenshotError)){
                 success=false;
                 app.liveStatus=L"截图失败："+wide(app.screenshotError);
                 if(app.smoke)break;
@@ -733,7 +919,7 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
                 app.liveStatus=L"截图已保存";
             }
         }
-        auto stats=app.renderer.stats();
+        auto stats=app.rhi->stats();
         if(app.frames>30){
             app.cpuTimes.push_back(stats.cpuMs);
             app.cpuSubmitTimes.push_back(stats.cpuSubmitMs);
@@ -745,16 +931,16 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         // governor only decides when; the host applies the vertex-path toggle here and
         // records the step so the report can prove what changed and why.
         if(app.budget.config().enabled){
-            const unsigned long long vram=app.renderer.videoMemoryBytes();
+            const unsigned long long vram=app.rhi->videoMemoryBytes();
             const char* step=app.budget.observe(app.frames,stats.gpuMs,stats.gpuValid,
                                                 stats.cpuSubmitMs,vram);
             if(step&&step[0]){
                 const std::string name(step);
                 if(name=="rt-shadows-off"){
-                    app.renderer.setRtShadows(false);
-                    app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
+                    app.rhi->setRtShadows(false);
+                    app.rtShadowEnabled=app.rhi->rtShadowsEnabled();
                 } else if(name=="mesh-path-off"){
-                    app.renderer.setMeshShaders(false);
+                    app.rhi->setMeshShaders(false);
                 }
                 app.budget.noteApplied(name,app.frames,app.budget.pendingReason());
                 app.liveStatus=L"预算超限降档："+wide(name);
@@ -764,8 +950,8 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         // and video-memory trend after each shutdown.
         if(app.lifecycleCycles>0&&app.frames>0&&app.frames%8==0&&app.lifecycleDone<app.lifecycleCycles){
             // Video memory must be sampled while the device is still alive.
-            const unsigned long long vram=app.renderer.videoMemoryBytes();
-            app.renderer.shutdown();
+            const unsigned long long vram=app.rhi->videoMemoryBytes();
+            if(app.rhi)app.rhi->shutdown();
             app.ready=false;
             const long liveAfterShutdown=nativegpu::Renderer::liveObjectCount();
             const unsigned long long created=nativegpu::Renderer::objectsCreatedCount();
@@ -800,7 +986,15 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         if(app.cpuTimes.size()>60000){app.cpuTimes.erase(app.cpuTimes.begin(),app.cpuTimes.begin()+30000);app.gpuTimes.clear();app.frameTimes.clear();}
     }
     if(app.smoke){
-        if(app.lifecycleCycles>0){
+        if(app.replayEnabled){
+            // A replay succeeds when every recorded frame was compared. Strict mode also
+            // requires a zero mismatch count: a diverged replay is not evidence.
+            success=success&&(app.replayCompared==app.replayFrames.size());
+            if(app.replayStrict&&app.replayMismatches>0){
+                success=false;
+                app.errorCode="NG-E-REPLAY-MISMATCH";
+            }
+        } else if(app.lifecycleCycles>0){
             // The lifecycle run ends when the requested cycles are complete.
             success=success&&app.lifecycleDone>=app.lifecycleCycles;
         } else if(app.deviceRemovalMode){
@@ -810,7 +1004,7 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         }
     }
     report(success);
-    app.renderer.shutdown();app.ready=false;
+    if(app.rhi)app.rhi->shutdown();app.ready=false;
     DestroyWindow(app.window);DeleteObject(app.font);DeleteObject(app.titleFont);DeleteObject(app.background);
     return success?0:5;
 }

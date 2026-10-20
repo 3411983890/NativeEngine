@@ -10,6 +10,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'native_scene_tests failed.' }
     & '.\build\budget_tests.exe'
     if ($LASTEXITCODE -ne 0) { throw 'budget_tests failed.' }
+    & '.\build\rhi_conformance_tests.exe'
+    if ($LASTEXITCODE -ne 0) { throw 'rhi_conformance_tests failed.' }
 } finally {
     Pop-Location
 }
