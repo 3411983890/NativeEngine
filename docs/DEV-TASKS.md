@@ -183,7 +183,7 @@
 | Q05 | 安装更新：签名/校验、发布包、升级回滚 | ⬜ | 只有 zip，无签名/安装器/更新/回滚 |
 | Q06 | 文档：教程、支持矩阵、限制、错误与诊断 | 🟡 | `README`/`STATUS`/`CI`/`TOOLCHAIN`/`CAPTURE`/`PERF-BASELINE` 齐全；无用户教程 |
 | Q07 | 契约注册表：确定性/误差/性能统一登记与执行（创新 INN-05） | ⬜ | 先决：E07 + R07 + R08 三条契约各落地；泳道 C；P2 |
-| Q08 | 图像回归门禁：SSIM/ΔE + 固定种子 + 历史重置（创新 INN-11） | ⬜ | 先决：R07 阈值 + Q01；泳道 C；P2 |
+| Q08 | 图像回归门禁：块 SSIM + 历史基线（创新 INN-11） | ✅ | `tools/image-regression.ps1`、`tests/image-baselines.json`、`docs/IMAGE-REGRESSION.md` | 4 项指标（meanAbsError/changedPercent/maxChannelDelta/块 SSIM）+ 差异图；`-Accept` 才更新基线；本机基线 ssim 1.0。**基线在 gitignored 的 reports/ 下，干净检出首次运行会自动引导基线并如实报告** |
 | Q09 | 能力-契约-证据发布门（G1 模式产品化，创新 INN-13） | ⬜ | 先决：Q07 + Q08；泳道 C；P3 |
 | **G6** | 关口 | ⬜ | 不满足 |
 

@@ -1,0 +1,57 @@
+{
+    "schema":  "nativegpu.image-baselines/1",
+    "frames":  240,
+    "pixelThreshold":  8,
+    "ssim":  {
+                 "blockSize":  8,
+                 "k1":  0.01,
+                 "k2":  0.03,
+                 "dynamicRange":  255,
+                 "luminanceWeights":  [
+                                          0.2126,
+                                          0.7152,
+                                          0.0722
+                                      ]
+             },
+    "measurement":  {
+                        "recordedAt":  "2026-10-20",
+                        "adapter":  "NVIDIA GeForce RTX 5060 Laptop GPU",
+                        "driverVersion":  "32.0.16.1714",
+                        "tool":  "tools/image-regression.ps1",
+                        "method":  "Capture --probe at the declared fixed view, measure the full frame against the accepted baseline, then set each ceiling/floor to the measured value plus a documented margin. Measured on 2026-10-20: meanAbsError 0, changedPercent 0, maxChannelDelta 0, SSIM 1.0; see docs/IMAGE-REGRESSION.md section 4."
+                    },
+    "baselines":  [
+                      {
+                          "id":  "courtyard-default",
+                          "description":  "Default renderer path (DXR shadows on, mesh path default) at the fixed courtyard view used by tools/error-contract.ps1. Pins the accepted frame; any unexplained drift in lighting, geometry, or composition fails the gate.",
+                          "scene":  "assets/courtyard.scene.json",
+                          "camera":  "9,5.5,10,-2,0.8,0",
+                          "resolution":  "1280x720",
+                          "screenshotFrame":  200,
+                          "captureArgs":  [
+
+                                          ],
+                          "metrics":  {
+                                          "meanAbsError":  {
+                                                               "max":  0.1,
+                                                               "measured":  0
+                                                           },
+                                          "changedPercent":  {
+                                                                 "max":  0.01,
+                                                                 "measured":  0
+                                                             },
+                                          "maxChannelDelta":  {
+                                                                  "max":  1,
+                                                                  "measured":  0
+                                                              },
+                                          "ssim":  {
+                                                       "min":  0.999,
+                                                       "measured":  1
+                                                   }
+                                      },
+                          "sourceCommit":  "16ea86ae324de382deac14ef7a17725ef8d543c1",
+                          "acceptedAtUtc":  "2026-10-20T14:03:36.2420780Z",
+                          "sha256":  "baca62f4a954864ff5177b7775ce5b19b5e811cb07a3e273f4bbea25a24088f3"
+                      }
+                  ]
+}
