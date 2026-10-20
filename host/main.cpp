@@ -9,6 +9,8 @@
 #include "../renderer/d3d12_renderer.h"
 #include "../renderer/rhi.hpp"
 #include "../engine/native/math.hpp"
+#include "../engine/native/geometry_class.hpp"
+#include "../engine/native/material_handle.hpp"
 #include "../third_party/json.hpp"
 #include <chrono>
 #include <cstring>
@@ -505,6 +507,34 @@ void report(bool success){
             {"supported",rhiBackends},
             {"framePathThroughInterface",app.rhi!=nullptr},
             {"nativeHandleUsedForTestHooks",true}
+        };
+        // Geometry routing contract (docs/GEOMETRY-LAYOUT.md §3): every entity is
+        // classified so a report proves which raster path the content actually needs.
+        json geometryCounts=json::object();
+        for(const char* name:{"cluster","simple","deformable","transparent","effect"}){
+            geometryCounts[name]=0;
+        }
+        const unsigned unitCubeTriangles=12;
+        for(const auto& entity:app.document.scene.entities){
+            engine::GeometryHints hints;
+            hints.triangles=unitCubeTriangles;
+            hints.animated=(entity.kind=="player");
+            const char* className=engine::geometryClassName(engine::classifyGeometry(hints));
+            geometryCounts[className]=geometryCounts[className].get<unsigned>()+1u;
+        }
+        r["geometryClasses"]={
+            {"thresholdTriangles",engine::kClusterTriangleThreshold},
+            {"unitCubeTriangles",unitCubeTriangles},
+            {"counts",geometryCounts},
+            {"note","current content is unit cubes; the cluster path has no work yet"}
+        };
+        std::uint32_t defaultHandle=engine::kMaterialHandleDefault;
+        engine::encodeMaterialHandle(0,0,defaultHandle);
+        r["materialHandle"]={
+            {"default",defaultHandle},
+            {"sliceBits",engine::kMaterialSliceBits},
+            {"encoding","generation<<16 | slice"},
+            {"gpuDecodesSliceOnly",true}
         };
         json rngStreams=json::array();
         for(const auto& stream:engine::determinism::registry().streams()){

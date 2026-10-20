@@ -28,7 +28,7 @@
 | S4 AI/Blender | G4 | 0 | 1 | 7 | ⬜ |
 | S5 闭环整合 | G5 | 0 | 3 | 3 | ⬜ |
 | S6 稳定发布 | G6 | 0 | 3 | 6 | ⬜ |
-| X1–X6 扩展 | — | 3 | 3 | 6 | ⬜ |
+| X1–X6 扩展 | — | 3 | 3 | 10 | ⬜ |
 
 20 条创新点**不再单列**，已全部落成上表中的工作包（R07/R08、E07–E10、S3E-07、H07、A07/A08、Q07–Q09、X1 的 B/N/L 子项），每条的先决条件、优先级与并行泳道见 §12，泳道划分见 §13。
 
@@ -203,6 +203,10 @@
 | L0 | SDF 烘焙（远场） | ✅ | — | `tools/offline/sdf-bake.mjs` + 8 项测试 + `docs/SDF-BAKE.md`；32³ 球面中心最大误差 0.0587 体素、盒角三线性 0.4984（插值固有）；**当前场景网格不封闭，符号用最近三角形法向，不是可靠内部场** |
 | B1 | compute 管线与 compute 队列 | 🟡 | — | `renderer/compute_pass.cpp` + `shaders/compute_probe.hlsl`（cs_6_6）；240 帧 240 次派发、240 次跨队列等待；报告 `probes.compute`；`tools/compute.ps1` 15 项。**结果尚未进入合成画面（B1b）**，无队列并行量化证据 |
 | B3 | bindless 堆真实现（SM 6.6） | 🟡 | — | `ResourceDescriptorHeap` 索引 32–35 与描述符表采样**逐位一致**（4/4，maxDelta 0）；缺 `CBV_SRV_UAV_HEAP_DIRECTLY_INDEXED` 时 PSO 报 E_INVALIDARG 已记录。**材质主路径仍在 8 槽有界表**，迁移需先用 DXC 编译光栅着色器（B3b） |
+| B3b | 材质主路径 heap 索引（DXC 光栅变体） | ⬜ | — | 先决：B5；见 `docs/GEOMETRY-LAYOUT.md` §10 |
+| B2 | ExecuteIndirect（含 DispatchRays） | ⬜ | — | 先决：B1 ✅；N1 的第一道硬门 |
+| B4 | HZB 生成（上帧深度降采样） | ⬜ | — | 先决：B2；N2 两阶段遮挡的输入 |
+| B5 | visibility buffer + resolve | ⬜ | — | 先决：B3 + B4；cluster 与顶点两条光栅的共同输出 |
 
 ## 10. 常驻工程任务（每周/每版本）
 
@@ -383,16 +387,17 @@ R07/R08、E07–E10、S3E-07、H07、A07/A08、Q07–Q09 不是 docx 的要求�
 
 ## 15. 分批开工方案（按依赖排序，批次内可并行）
 
-| 批次 | 并行任务 | 完成判据 | 为什么现在做 |
+| 批次 | 并行任务 | 状态 | 说明 |
 | --- | --- | --- | --- |
-| **第 1 批**（现在） | A: R08；B: E07；C: INN-14 格式 + N0 骨架；D: H07 文档 | 四个提交，各自带验收脚本；量级 1–2 周 | 三条地基契约（预算/确定性/几何包）互不抢文件，且是后面一切证据的前提 |
-| **第 2 批** | A: R06 → R07；B: E08；C: B7 + L0 + S3E-07 | X2 有启动条件；Q08 有阈值；L1 有 SDF 输入 | 离线线（C）继续填满等待 GPU 的时间 |
-| **第 3 批** | A: B1 + B3；C: A07 + Q08 + N0 产物；B: E09 | compute 与 bindless 堆跑通；N0 产物可被 N1 消费 | B1/B3 是 N1/L1 的硬门，必须早于图形扩展 |
-| **第 4 批** | A: N1 → N2/N3 → N4 → INN-15/16/17/18/19；B: E10；C: A08 + Q07；L: L1 → L2 → L3 → L4 | 按 §12.2 拓扑顺序逐行验收 | 图形扩展进入正题，此时已有预算与误差基线兜底 |
+| **第 1 批** | A: R08；B: E07；C: INN-14 + N0 骨架；D: H07 文档 | ✅ 0.7.0 | verify 15/15 |
+| **第 2 批** | A: R06 → R07；B: E08；C: B7 + L0 + S3E-07 | ✅ 0.8.0 | verify 18/18 |
+| **第 3 批** | A: B1 + B3；C: A07 + Q08 + N0 产物；B: E09 | 🟡 | B1/B3 已落地（0.9.0，compute 15/15）；A07/Q08 在 0.10.0；**E09 未开始** |
+| **第 4 批** | A: B2 → B4 → B5 → B3b → N1 → N2/N3/N4；L: L1 → L2 → L3 → L4；B: E10；C: A08 + Q07 | ⬜ 待开工 | 顺序由 `docs/GEOMETRY-LAYOUT.md` §10 冻结的硬门决定 |
+| **架构冻结** | `docs/GEOMETRY-LAYOUT.md` + 几何包 v2 + `GeometryClass` 路由 + 32 位材质句柄 | ✅ 0.10.0 | 数据/句柄格式已冻结；剔除策略与 HZB 参数未冻结 |
 
 **S2 不在任何批次里。** H07 只是写输出契约文档（防止将来返工），不等于开工 Chromium；H01–H06 只有你确认后才会进入排期。
 
-**为什么不是先做 Nanite/Lumen**：N1/L1 的硬门是 B1（compute）+ B3（bindless 堆）+ N0/L0（离线产物）。跳过这些直接写 GPU 剔除，会在没有 compute 管线、没有 cluster 数据的情况下空转。**离线线（N0/L0/B7/INN-14）现在就能开工，是唯一不受 GPU 阻塞的高价值工作。**
+**第 4 批的顺序不是建议而是硬门**（`docs/GEOMETRY-LAYOUT.md` §10）：B2（ExecuteIndirect）→ B4（HZB）→ B5（visibility buffer + resolve）→ B3b（材质主路径 heap 索引）→ N1（cluster 剔除）→ L1（屏幕+SDF 追踪）。跳过任何一步，N1 都只能在没有间接绘制 / 没有共同输出 / 没有材质句柄的情况下空转。
 
 ## 16. 台账维护规则
 

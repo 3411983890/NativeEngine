@@ -1,4 +1,6 @@
 #include "../engine/native/game.hpp"
+#include "../engine/native/geometry_class.hpp"
+#include "../engine/native/material_handle.hpp"
 #include "../engine/native/math.hpp"
 
 #include <cassert>
@@ -354,6 +356,76 @@ void testGameDigest() {
     first.reset();
     assert(first.ticks() == 0);
 }
+
+// ------------------------------------------------------------------ layout contracts
+
+void testGeometryRouting() {
+    using engine::GeometryClass;
+    using engine::GeometryHints;
+    using engine::classifyGeometry;
+
+    GeometryHints cube;
+    cube.triangles = 12;
+    assert(classifyGeometry(cube) == GeometryClass::Simple);
+
+    GeometryHints dense;
+    dense.triangles = engine::kClusterTriangleThreshold;
+    assert(classifyGeometry(dense) == GeometryClass::Cluster);
+
+    GeometryHints justUnder;
+    justUnder.triangles = engine::kClusterTriangleThreshold - 1;
+    assert(classifyGeometry(justUnder) == GeometryClass::Simple);
+
+    // Translucency wins over density: the cluster pipeline has no ordering.
+    GeometryHints glass;
+    glass.triangles = 200000;
+    glass.translucent = true;
+    assert(classifyGeometry(glass) == GeometryClass::Transparent);
+
+    // Deforming meshes stay on the vertex path until cluster skinning is proven.
+    GeometryHints skinned;
+    skinned.triangles = 200000;
+    skinned.animated = true;
+    assert(classifyGeometry(skinned) == GeometryClass::Deformable);
+
+    GeometryHints both;
+    both.triangles = 200000;
+    both.animated = true;
+    both.translucent = true;
+    assert(classifyGeometry(both) == GeometryClass::Transparent);
+
+    assert(std::string(engine::geometryClassName(GeometryClass::Cluster)) == "cluster");
+    assert(std::string(engine::geometryClassName(GeometryClass::Transparent)) == "transparent");
+}
+
+void testMaterialHandles() {
+    using engine::decodeMaterialHandle;
+    using engine::encodeMaterialHandle;
+
+    std::uint32_t handle = 0xFFFFFFFFu;
+    assert(encodeMaterialHandle(3, 7, handle));
+    assert(handle == ((7u << 16) | 3u));
+    const auto parts = decodeMaterialHandle(handle);
+    assert(parts.slice == 3 && parts.generation == 7);
+
+    // The default handle must decode to slice 0 / generation 0, not to a sentinel.
+    const auto defaultParts = decodeMaterialHandle(engine::kMaterialHandleDefault);
+    assert(defaultParts.slice == 0 && defaultParts.generation == 0);
+
+    // A handle that does not fit must be rejected instead of silently truncated.
+    std::uint32_t rejected = 1234u;
+    assert(!encodeMaterialHandle(0x10000u, 1, rejected));
+    assert(rejected == engine::kMaterialHandleDefault);
+    rejected = 1234u;
+    assert(!encodeMaterialHandle(1, 0x10000u, rejected));
+    assert(rejected == engine::kMaterialHandleDefault);
+
+    // Extremes round-trip exactly.
+    assert(encodeMaterialHandle(0xFFFFu, 0xFFFFu, handle));
+    assert(handle == 0xFFFFFFFFu);
+    const auto extremes = decodeMaterialHandle(handle);
+    assert(extremes.slice == 0xFFFFu && extremes.generation == 0xFFFFu);
+}
 } // namespace
 
 int main() {
@@ -366,7 +438,9 @@ int main() {
     testHasherGrid();
     testStreams();
     testGameDigest();
+    testGeometryRouting();
+    testMaterialHandles();
     std::cout << "Native simulation: fixed-step movement, jumping, swept contacts, "
                  "key/gate/exit, reset, bounds, matrices, deterministic hashing and "
-                 "RNG streams passed.\n";
+                 "RNG streams, geometry routing and material handles passed.\n";
 }
