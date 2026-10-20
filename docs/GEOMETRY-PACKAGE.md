@@ -125,3 +125,57 @@ node tools/offline/cluster-dag.mjs stats --package build/offline/geometry.packag
 - **哈希不是签名**：`packageDigest` 只能发现未同步更新哈希的改动；能重算全部哈希的
   主动篡改无法被无密钥的 SHA-256 阻止，这里不做真实性/来源认证。
 - **没有 D3D12/HLSL 侧消费者**：`renderer/`、`shaders/`、`host/` 未做任何修改。
+
+## 8. glTF 2.0 子集（B7）
+
+`tools/offline/gltf.mjs` 是最小 glTF 2.0 导入器，把 `.gltf` 读成
+`{ positions: Float32Array, indices: Uint32Array, normals: Float32Array|null, source }`；
+`buildPackageFromMesh()` 再把同一份网格接到本文件定义的几何包（manifest 中
+`source.kind = "gltf"`），`createMeshDocument()` 则产出 `nativegpu.gltf-mesh` 中间文档。
+fixture 由 `tools/offline/make-fixtures.mjs` 从数字数组现算生成，不是手工拷贝的二进制。
+
+**支持的输入**
+
+- 仅 glTF 2.0 `.gltf` JSON（`asset.version === "2.0"`）；`.glb` 容器被拒绝。
+- buffer：`data:...;base64` 内嵌，或与 `.gltf` 同目录的相对 `.bin`；允许多个 buffer。
+- 恰好一个 scene；从 `scene.nodes` 可达的 node 图（可多层），node 变换必须是单位变换
+  （`matrix` 为单位矩阵，或 `translation/rotation/scale` 为单位值）；同一 mesh 不能被多个 node 实例化。
+- 一个或多个 mesh/primitive，`mode` 为 `4`（TRIANGLES）；`POSITION` 必需，`NORMAL` 可选；
+  `indices` 必需，分量类型 `UNSIGNED_SHORT`/`UNSIGNED_INT`。
+- `accessor.byteOffset`、`bufferView.byteOffset`、`bufferView.byteStride` 均生效；
+  fixture 使用 stride 24 的交错 POSITION+NORMAL，因此交错布局不需要重排。
+- 多 primitive/mesh 按 node traversal 顺序拼接；`TEXCOORD_*`、`COLOR_*`、`TANGENT`、材质、
+  贴图、相机被忽略（只导入几何）。
+- 缺少 `NORMAL` 时 `load()` 返回 `normals: null`；包适配器写 `(0,0,0)` 法线并记录
+  `source.hasNormals: false`。
+
+**拒绝的输入（稳定错误码）**
+
+| 错误码 | 触发条件 |
+| --- | --- |
+| `NG-E-GLTF-MISSING` | `.gltf` 文件或同目录 `.bin` 不存在；`asset` 元数据缺失 |
+| `NG-E-GLTF-UNSUPPORTED` | 非 2.0 版本；`extensionsUsed`/`extensionsRequired`/顶层、node 或 primitive 的 `extensions` 非空（含 Draco）；skins 或 `node.skin`；animations；morph targets/`mesh.weights`；`mode != 4`；无 `indices`；sparse accessor；无 `bufferView` 的 accessor；非 `FLOAT`/`VEC3` 的 POSITION/NORMAL；索引分量不是 `UNSIGNED_SHORT`/`UNSIGNED_INT`；多 scene；非单位 node 变换；mesh 实例化；`.glb` |
+| `NG-E-GLTF-BUFFER` | base64 非法；buffer 实际字节少于 `byteLength`；bufferView 超出 buffer；外部 URI 为绝对路径、逃出 `.gltf` 目录或使用文件/网络协议；无 `uri` 的 buffer（GLB chunk） |
+| `NG-E-GLTF-ACCESSOR` | JSON 无法解析；`POSITION` 缺失；accessor/bufferView 索引不存在；`count`/`byteOffset` 非法；对齐或 `byteStride` 非法；accessor 读取范围超出 bufferView；索引值超出顶点数；索引数不是 3 的倍数；出现非有限浮点值 |
+
+CLI 参数错误使用 `NG-E-GLTF-ARGUMENT`；未归类的本地 I/O 错误使用 `NG-E-GLTF-IO`。
+命令失败时进程退出码为 1，成功为 0。
+
+**命令**
+
+```powershell
+node tools/offline/make-fixtures.mjs
+node tools/offline/gltf.mjs load --in tools/offline/fixtures/quad.gltf
+node tools/offline/gltf.mjs export --in tools/offline/fixtures/quad.gltf --out build/offline/gltf.mesh.json
+node --test tests/gltf.test.mjs
+```
+
+`export` 写的 `nativegpu.gltf-mesh` 文档包含 `source`、`counts`、`bounds`、`contentHash`、
+`packageDigest`，以及 `positions`/`normals`/`indices` 扁平数组（与 `proceduralSource()` 同形）。
+`buildPackageFromMesh()` 生成的包沿用同一 `formatVersion`/`kind`/section 布局，哈希复用导入的
+`computePackageDigest()`，并可用 `node tools/offline/geometry-package.mjs verify --package ...`
+校验（若只有 `nativegpu.gltf-mesh` 文档，先用 `meshFromDocument()` 还原网格）。`tests/gltf.test.mjs` 断言：同一 fixture 重建两次的 manifest、各 section 字节与
+`packageDigest` 完全一致，且中间文档 round-trip 后 digest 不变。
+
+本节只覆盖几何导入；第 7 节“没有 glTF/资产导入”一条由本节取代，材质、UV、切线、蒙皮、
+动画和 Draco 仍不在范围内。
