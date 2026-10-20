@@ -10,11 +10,12 @@
 #include <string>
 #include <vector>
 
+#include "matrix_math.h"
+
 namespace nativegpu {
 
 // Matrices are column-major, with column vectors: clip = viewProjection * model * position.
 struct Vertex { float x, y, z, nx, ny, nz, u, v; };
-struct Mat4 { float m[16]; };
 struct DrawItem {
     Mat4 model;
     float color[4];
@@ -34,6 +35,9 @@ struct FrameStats {
     double cpuMs = 0.0;
     double gpuMs = 0.0;
     bool gpuValid = false;
+    // Time spent inside the DXR shadow dispatch for the most recent completed frame.
+    double gpuRtMs = 0.0;
+    bool gpuRtValid = false;
 };
 
 class Renderer {
@@ -43,11 +47,33 @@ public:
     Renderer(const Renderer&) = delete;
     Renderer& operator=(const Renderer&) = delete;
 
+    // Enables the D3D12 validation layer for the next initialize(). Must be called first.
+    void setValidationEnabled(bool enabled);
+
     bool initialize(HWND window, unsigned width, unsigned height, std::string& error);
     bool resize(unsigned width, unsigned height, std::string& error);
-    bool render(const Mat4& viewProjection, const std::vector<DrawItem>& items,
-                const std::vector<LightDesc>& lights, std::string& error);
+    // `cameraPosition` is the world-space eye used by the DXR shadow pass to orient
+    // reconstructed normals; it has no effect on the raster path.
+    bool render(const Mat4& viewProjection, const float cameraPosition[3],
+                const std::vector<DrawItem>& items, const std::vector<LightDesc>& lights,
+                std::string& error);
     void shutdown();
+
+    // Runtime toggle for the DXR static shadow pass. When disabled (or when the pass
+    // cannot be built) rendering falls back to the raster path with a full visibility
+    // mask, and every report field records that fallback.
+    void setRtShadows(bool enabled);
+    bool rtShadowsEnabled() const;
+    bool rtShadowsImplemented() const;
+
+    // 0 final, 1 shadow mask, 2 key light, 3 ambient surface. Diagnostic evidence only.
+    void setCompositeDebugView(unsigned view);
+
+    // Screenshots are captured in two steps so the copy happens inside the frame
+    // submission: request before render(), capture after render().
+    bool requestScreenshot(const std::string& path, std::string& error);
+    bool captureScreenshot(const std::string& path, std::string& error);
+
     std::string capabilitiesJson() const;
     std::string probesJson() const;
     FrameStats stats() const;

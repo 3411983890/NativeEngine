@@ -1,6 +1,15 @@
-{
+﻿{
   "$schema": "./manifest.schema.json",
-  "version": 1,
-  "comment": "Authoritative shader build list. Every blob is compiled by the pinned DXC from tools/bootstrap-dxc.ps1 and embedded into the native binary.",
-  "blobs": []
+  "version": 3,
+  "comment": "Authoritative shader build list. Every blob is compiled by the pinned DXC from tools/bootstrap-dxc.ps1 and embedded into the native binary. Raster and composite shaders are compiled with D3DCompile (SM 5.1) from embedded source so the base renderer never depends on DXC.",
+  "blobs": [
+    {
+      "symbol": "kRaytracingShadows",
+      "source": "shaders/rt_shadows.hlsl",
+      "target": "lib_6_5",
+      "entry": "",
+      "defines": [],
+      "description": "DXR static shadow library: ray generation, miss and closest hit"
+    }
+  ]
 }

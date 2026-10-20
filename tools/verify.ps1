@@ -60,6 +60,8 @@ Invoke-Step 'Native tests' {
     if ($LASTEXITCODE -ne 0) { throw 'native_simulation_tests failed.' }
     & '.\build\native_scene_tests.exe'
     if ($LASTEXITCODE -ne 0) { throw 'native_scene_tests failed.' }
+    & '.\build\renderer_math_tests.exe'
+    if ($LASTEXITCODE -ne 0) { throw 'renderer_math_tests failed.' }
 }
 
 Invoke-Step 'Scene contract validation' {
@@ -96,6 +98,27 @@ Invoke-Step 'Native S1 probe' {
     if ($null -ne $tier -and "$tier" -ne 'unsupported' -and -not $data.probes.raytracingAccelerationStructures.built) {
         throw "DXR acceleration structures were available but not built: $($data.probes.raytracingAccelerationStructures.error)"
     }
+    # The probe run has the shadow pass enabled by default, so the effect must be real.
+    $shadows = $data.probes.raytracingShadows
+    if ($null -ne $tier -and "$tier" -ne 'unsupported' -and $shadows.dxcAvailable) {
+        if (-not $shadows.rtpsoCreated) { throw "DXR shadow RTPSO was not created: $($shadows.error)" }
+        if (-not $shadows.sbtCreated) { throw 'DXR shadow shader binding table was not created.' }
+        if (-not $shadows.effectImplemented) { throw 'DXR shadow pass did not report effectImplemented=true.' }
+        if ($shadows.dispatchedFrames -lt 1) { throw 'DXR shadow pass dispatched no frames.' }
+        if (-not $data.capabilities.implemented.raytracing) { throw 'capabilities.implemented.raytracing stayed false while the pass ran.' }
+    }
+}
+
+Invoke-Step 'DXR shadow evidence' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'rt-shadows.ps1') -SkipBuild
+    if ($LASTEXITCODE -ne 0) { throw 'DXR shadow evidence checks failed.' }
+    $evidence = Join-Path 'reports\latest' 'rt-shadows-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'DXR shadow evidence report is missing.' }
+    $parsed = Get-Content -LiteralPath $evidence -Raw | ConvertFrom-Json
+    if (-not $parsed.success) { throw 'DXR shadow evidence reported success=false.' }
+    # The evidence script writes its own versioned run; carry the summary into this run.
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'rt-shadows-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'rt-shadows-evidence.json') | Out-Null
 }
 
 $hotReloadReport = Join-Path $context.directory 'verify-hot-reload.json'
@@ -161,6 +184,9 @@ if (Test-Path -LiteralPath $probeReport) {
         $adapterFromProbe = $probeData.capabilities.adapter
     } catch { }
 }
+# The build ran inside this script, so the build identity must be re-read before the
+# manifest decides whether this evidence came from the current commit.
+$context.build = Get-BuildIdentity
 
 $summary = [pscustomobject]@{
     schema = 'nativegpu.verify/2'

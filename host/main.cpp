@@ -9,6 +9,7 @@
 #include "../engine/native/math.hpp"
 #include "../third_party/json.hpp"
 #include <chrono>
+#include <cwchar>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -51,9 +52,18 @@ struct App {
     std::string error,sceneError;
     bool paused=false,running=true,ready=false,minimized=false,dragging=false,smoke=false,watch=true,probe=false;
     bool resizeTest=false,restartTest=false,jumpDown=false,interactDown=false;
+    // DXR static shadow toggle. `rtShadowRequested` is what the caller asked for;
+    // `rtShadowEnabled` is what the renderer could actually enable after creation.
+    bool rtShadowRequested=true,rtShadowEnabled=false;
+    bool screenshotRequested=false,screenshotTaken=false,screenshotAttempted=false;
     int mouseX=0,mouseY=0;
     float yawDelta=0,pitchDelta=0;
     unsigned width=960,height=720,targetFrames=360,frames=0,restarts=0,resizes=0,hotReloads=0;
+    unsigned forcedWidth=0,forcedHeight=0,screenshotFrame=150,debugView=0;
+    bool validationRequested=false;
+    bool hasCameraOverride=false;
+    float cameraEye[3]={0,0,0},cameraTarget[3]={0,0,0};
+    std::string screenshotPath,screenshotError;
     SceneStamp sceneStamp;
     std::vector<double> cpuTimes,gpuTimes,frameTimes;
     Clock::time_point began=Clock::now(),last=began,lastUi=began,lastWatch=began;
@@ -64,6 +74,30 @@ std::wstring wide(const std::string& s) {
     int n=MultiByteToWideChar(CP_UTF8,0,s.data(),static_cast<int>(s.size()),nullptr,0);
     std::wstring out(static_cast<size_t>(n),L'\0');
     MultiByteToWideChar(CP_UTF8,0,s.data(),static_cast<int>(s.size()),out.data(),n);
+    return out;
+}
+// Parses "a,b,c" into up to `max` floats and returns how many were found.
+int parseFloatList(const std::wstring& text, float* out, int max) {
+    int found = 0;
+    size_t start = 0;
+    for (size_t index = 0; index <= text.size() && found < max; ++index) {
+        if (index == text.size() || text[index] == L',') {
+            if (index > start) {
+                out[found++] = static_cast<float>(_wtof(text.substr(start, index - start).c_str()));
+            }
+            start = index + 1;
+        }
+    }
+    return found;
+}
+// UTF-8 for command-line paths that are handed to the renderer and the JSON report.
+std::string narrow(const wchar_t* s) {
+    if(!s||!*s) return {};
+    const int length=static_cast<int>(wcslen(s));
+    const int n=WideCharToMultiByte(CP_UTF8,0,s,length,nullptr,0,nullptr,nullptr);
+    if(n<=0) return {};
+    std::string out(static_cast<size_t>(n),'\0');
+    WideCharToMultiByte(CP_UTF8,0,s,length,out.data(),n,nullptr,nullptr);
     return out;
 }
 void setText(HWND h,const std::wstring& text){SetWindowTextW(h,text.c_str());}
@@ -133,9 +167,15 @@ void pollScene(){
 bool restartRenderer(){
     app.ready=false;
     app.renderer.shutdown();
+    app.renderer.setValidationEnabled(app.validationRequested);
     if(!app.renderer.initialize(app.viewport,app.width,app.height,app.error)){
         diagnostic(app.error);app.running=false;return false;
     }
+    // The DXR state object is rebuilt from scratch, so the requested toggle has to be
+    // re-applied and re-read for the report.
+    app.renderer.setRtShadows(app.rtShadowRequested);
+    app.renderer.setCompositeDebugView(app.debugView);
+    app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
     app.ready=true;++app.restarts;return true;
 }
 void layout(){
@@ -144,6 +184,8 @@ void layout(){
     int panel=310;
     app.width=static_cast<unsigned>(std::max(160L,r.right-panel));
     app.height=static_cast<unsigned>(std::max(160L,r.bottom));
+    // --render-size pins the render resolution for reproducible timing and screenshots.
+    if(app.forcedWidth&&app.forcedHeight){app.width=app.forcedWidth;app.height=app.forcedHeight;}
     MoveWindow(app.viewport,0,0,app.width,app.height,TRUE);
     const int x=static_cast<int>(app.width)+20;
     MoveWindow(app.title,x,20,270,60,TRUE);
@@ -214,6 +256,12 @@ LRESULT CALLBACK windowProc(HWND h,UINT msg,WPARAM w,LPARAM l){
             app.watch=!app.watch;app.lastWatch=Clock::now();
             app.liveStatus=app.watch?L"热重载已开启":L"热重载已关闭";
         }
+        if(w==VK_F10){
+            app.rtShadowRequested=!app.rtShadowRequested;
+            app.renderer.setRtShadows(app.rtShadowRequested);
+            app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
+            app.liveStatus=app.rtShadowEnabled?L"DXR 阴影已开启":L"DXR 阴影已关闭（光栅回退）";
+        }
         return 0;
     case WM_ACTIVATE:
         if(LOWORD(w)==WA_INACTIVE){app.dragging=false;ReleaseCapture();app.yawDelta=0;app.pitchDelta=0;}
@@ -245,6 +293,7 @@ void updateUi(){
     s<<L"\n位置 "<<p.x<<L", "<<p.y<<L", "<<p.z;
     s<<L"\n"<<(app.paused?L"已暂停":L"运行中")<<L"  ·  revision "<<app.document.revision;
     s<<L"  ·  "<<(app.watch?L"热重载开":L"热重载关");
+    s<<L"\nDXR 阴影 "<<(app.rtShadowEnabled?L"开启":L"关闭 / 回退");
     if(!app.liveStatus.empty())s<<L"\n"<<app.liveStatus;
     if(!app.sceneError.empty())s<<L"\n错误 "<<wide(app.sceneError);
     setText(app.stats,s.str());
@@ -270,6 +319,15 @@ void report(bool success){
             {"frameIntervalP95Ms",percentile(app.frameTimes,.95)},
             {"gpuSamples",app.gpuTimes.size()},
             {"game",{{"hasKey",app.game.hasKey()},{"doorOpen",app.game.doorOpen()},{"complete",app.game.complete()}}},
+            {"rtShadows",{
+                {"requested",app.rtShadowRequested},
+                {"enabled",app.rtShadowEnabled},
+                {"implemented",app.renderer.rtShadowsImplemented()},
+                {"screenshotRequested",app.screenshotRequested},
+                {"screenshotTaken",app.screenshotTaken},
+                {"screenshotFrame",app.screenshotFrame},
+                {"screenshotPath",app.screenshotPath},
+                {"screenshotError",app.screenshotError}}},
             {"capabilities",json::parse(app.renderer.capabilitiesJson())},
             {"probes",json::parse(app.renderer.probesJson())}
         };
@@ -292,12 +350,46 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         else if(arg==L"--frames"&&i+1<argc)app.targetFrames=std::max(240,_wtoi(argv[++i]));
         else if(arg==L"--watch"){app.watch=true;watchExplicit=true;}
         else if(arg==L"--no-watch"){app.watch=false;watchExplicit=true;}
+        else if(arg==L"--validation")app.validationRequested=true;
+        else if(arg==L"--rt-shadows"&&i+1<argc){
+            const std::wstring mode=argv[++i];
+            if(mode==L"off")app.rtShadowRequested=false;
+            else app.rtShadowRequested=true;
+        }
+        else if(arg==L"--screenshot"&&i+1<argc){app.screenshotPath=narrow(argv[++i]);app.screenshotRequested=true;}
+        else if(arg==L"--debug-view"&&i+1<argc){
+            const std::wstring view=argv[++i];
+            if(view==L"mask")app.debugView=1;
+            else if(view==L"key")app.debugView=2;
+            else if(view==L"base")app.debugView=3;
+            else if(view==L"solid")app.debugView=4;
+            else app.debugView=0;
+        }
+        else if(arg==L"--screenshot-frame"&&i+1<argc)app.screenshotFrame=static_cast<unsigned>(std::max(1,_wtoi(argv[++i])));
+        else if(arg==L"--camera"&&i+1<argc){
+            float values[6]={0,0,0,0,0,0};
+            if(parseFloatList(argv[++i],values,6)==6){
+                app.hasCameraOverride=true;
+                for(int axis=0;axis<3;++axis){app.cameraEye[axis]=values[axis];app.cameraTarget[axis]=values[axis+3];}
+            }
+        }
+        else if(arg==L"--render-size"&&i+1<argc){
+            const std::wstring size=argv[++i];
+            const auto split=size.find(L'x');
+            if(split!=std::wstring::npos){
+                app.forcedWidth=static_cast<unsigned>(std::max(160,_wtoi(size.substr(0,split).c_str())));
+                app.forcedHeight=static_cast<unsigned>(std::max(160,_wtoi(size.substr(split+1).c_str())));
+                app.width=app.forcedWidth;app.height=app.forcedHeight;
+            }
+        }
     }
     if(app.probe){
         app.smoke=true;
         if(!watchExplicit)app.watch=false;
         app.targetFrames=std::max(app.targetFrames,240u);
     } else if(!watchExplicit)app.watch=!app.smoke;
+    // A screenshot needs a rendered frame to read back from.
+    if(app.screenshotRequested)app.targetFrames=std::max(app.targetFrames,app.screenshotFrame+2);
     LocalFree(argv);
     if(!explicitScene && !std::filesystem::exists(app.scenePath)){
         wchar_t exe[32768];GetModuleFileNameW(nullptr,exe,32768);
@@ -339,9 +431,13 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
     button(L"打开场景",ID_OPEN,1120,644);
     button(L"重建渲染器  /  F8",ID_RESTART,980,688,268);
     refreshList();layout();
+    app.renderer.setValidationEnabled(app.validationRequested);
     if(!app.renderer.initialize(app.viewport,app.width,app.height,app.error)){
         diagnostic(app.error);report(false);return 4;
     }
+    app.renderer.setRtShadows(app.rtShadowRequested);
+    app.renderer.setCompositeDebugView(app.debugView);
+    app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
     app.ready=true;
     if(!app.smoke){ShowWindow(app.window,show);UpdateWindow(app.window);}
     app.began=app.last=Clock::now();
@@ -373,7 +469,13 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         auto p=app.game.playerPosition();
         const float yaw=app.game.yaw(),pitch=app.game.pitch();
         engine::Vec3 eye={p.x-std::sin(yaw)*7.f*std::cos(pitch),p.y+1.4f+std::sin(pitch)*7.f,p.z+std::cos(yaw)*7.f*std::cos(pitch)};
-        auto view=engine::lookAtLH(eye,{p.x,p.y+1.1f,p.z});
+        engine::Vec3 lookAt{p.x,p.y+1.1f,p.z};
+        // --camera pins the viewpoint so shadow evidence is reproducible frame to frame.
+        if(app.hasCameraOverride){
+            eye={app.cameraEye[0],app.cameraEye[1],app.cameraEye[2]};
+            lookAt={app.cameraTarget[0],app.cameraTarget[1],app.cameraTarget[2]};
+        }
+        auto view=engine::lookAtLH(eye,lookAt);
         auto projection=engine::perspectiveLH(1.05f,float(app.width)/float(app.height),.1f,120.f);
         auto vp=engine::multiply(projection,view);
         nativegpu::Mat4 viewProjection;std::copy(vp.m,vp.m+16,viewProjection.m);
@@ -394,8 +496,26 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             light.intensity=source.intensity;light.range=source.range;
             lights.push_back(light);
         }
-        if(!app.renderer.render(viewProjection,draws,lights,app.error)){diagnostic(app.error);success=false;break;}
+        const bool shotFrame=app.screenshotRequested&&!app.screenshotAttempted&&(app.frames+1)>=app.screenshotFrame;
+        if(shotFrame&&!app.renderer.requestScreenshot(app.screenshotPath,app.screenshotError)){
+            success=false;app.screenshotAttempted=true;
+            app.liveStatus=L"截图准备失败："+wide(app.screenshotError);
+            if(app.smoke)break;
+        }
+        const float eyePosition[3]={eye.x,eye.y,eye.z};
+        if(!app.renderer.render(viewProjection,eyePosition,draws,lights,app.error)){diagnostic(app.error);success=false;break;}
         ++app.frames;
+        if(shotFrame){
+            app.screenshotAttempted=true;
+            if(!app.renderer.captureScreenshot(app.screenshotPath,app.screenshotError)){
+                success=false;
+                app.liveStatus=L"截图失败："+wide(app.screenshotError);
+                if(app.smoke)break;
+            } else {
+                app.screenshotTaken=true;
+                app.liveStatus=L"截图已保存";
+            }
+        }
         auto stats=app.renderer.stats();
         if(app.frames>30){
             app.cpuTimes.push_back(stats.cpuMs);

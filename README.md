@@ -1,6 +1,6 @@
 # NativeGPU / AI 原生游戏引擎
 
-版本 **0.3.1**。一个可运行、可验证的 Windows D3D12 原生游戏样板，以及供编辑器和 AI Agent 共用的确定性场景事务层。当前重点不是宣称“已经完成 AI 引擎”，而是把一条真实闭环做通：
+版本 **0.4.0**。一个可运行、可验证的 Windows D3D12 原生游戏样板，以及供编辑器和 AI Agent 共用的确定性场景事务层。当前重点不是宣称“已经完成 AI 引擎”，而是把一条真实闭环做通：
 
 > 读取场景 → 预览事务 → 原子提交 → 运行中的原生编辑器热重载 → 原生冒烟测试 → 返回可审计报告
 
@@ -8,11 +8,12 @@
 
 - **原生第三人称样板**：D3D12 交换链、深度测试、固定 120 Hz 物理（走跑跳、扫掠碰撞、拾取钥匙、开门、到达终点）。
 - **材质与灯光**：3 槽有界材质纹理表（checker/brick/metal）、粗糙度/金属度、最多 4 盏场景点光；场景 JSON 直接携带材质和灯光。
-- **DXR 加速结构探针**：真实创建 BLAS/TLAS（本机 4 个实例、约 2.5 KB/6.3 KB），报告字节数、实例数和错误；尚未接追踪着色器。
+- **DXR 加速结构与静态阴影**：真实创建 BLAS/TLAS（本机 33 个方盒实例），用固定 DXC 编译 ray generation / miss / closest-hit 库并创建 RTPSO 与 SBT，逐像素追踪一条硬阴影光线；`F10` 或 `--rt-shadows on/off` 切换，关闭时与纯光栅图像逐像素一致。细节见 [docs/RT-SHADOWS.md](docs/RT-SHADOWS.md)。
 - **确定性场景工具**：校验、查询、预览、提交、撤销、崩溃恢复、内容寻址构建；失败不会半写入，旧 revision 会被拒绝。
 - **运行中热重载**：`scene apply` 写入成功后，原生编辑器自动加载新 revision；无效写入会保留上一有效场景并报告错误，不弹模态框阻塞运行。
 - **AI 工具入口**：本地 MCP stdio 服务暴露 8 个工具，Agent 可独立调用，不需要聊天壳或模型凭证。
 - **可重复验证**：13 项 Node 测试、原生测试、原生冒烟、S1 探针、热重载集成测试和 MCP 协议冒烟都在 `tools/verify.ps1` 中执行。
+- **DXR 静态阴影证据（0.4.0 新增）**：`tools/rt-shadows.ps1` 用固定机位与固定分辨率跑开/关两遍，保存 final/mask/key 截图、逐像素对比并断言报告字段，23 项检查全部通过。
 - **可重放工程基线（0.3.1 新增）**：Git 版本冻结、固定 DXC 1.9.2609 与哈希、`tools/ci.ps1` 一条命令从干净状态重放全部检查、证据按 `<version>/<commit>/<timestamp>` 归档且不覆盖历史。
 
 ## 快速开始
@@ -46,7 +47,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/ci.ps1 -Clean
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1
 ```
 
-交互按键：`WASD` 移动、`Shift` 跑、`Space` 跳、`E` 交互、右键拖动或方向键转镜头、`F5` 重置玩法、`F6` 暂停、`F8` 重建渲染器、`F9` 开关热重载。
+交互按键：`WASD` 移动、`Shift` 跑、`Space` 跳、`E` 交互、右键拖动或方向键转镜头、`F5` 重置玩法、`F6` 暂停、`F8` 重建渲染器、`F9` 开关热重载、`F10` 开关 DXR 阴影。
 
 ## 场景事务
 
@@ -135,8 +136,8 @@ docs/             当前阶段状态、工具链冻结表与 CI/证据说明
 | 确定性场景事务 | 已完成 | Node 测试覆盖冲突、原子性、撤销、恢复、构建 |
 | 热重载 | 已完成 | `verify.ps1` 集成测试检查 revision 与 `hotReloads` |
 | 材质表与场景灯光 | 已完成 | 3 槽纹理数组、粗糙度/金属度、最多 4 盏点光；探针 `implemented=true` |
-| DXR 加速结构 | 已完成 | 真实 BLAS/TLAS 构建，报告字节数与实例数 |
-| DXR 追踪效果 | 未实现 | 尚无 ray generation / hit shader；`effectImplemented=false` |
+| DXR 加速结构 | 已完成 | 单位方盒 BLAS + 33 实例 TLAS，每帧按刚体变换重建 |
+| DXR 静态阴影 | 已完成（0.4.0） | DXC `lib_6_5` + RTPSO + SBT + 可见性贴图；`F10` 切换，关闭走纯光栅回退；23 项证据检查 |
 | AI 工具入口 | 已完成 | MCP stdio，8 个工具，协议冒烟测试 |
 | 版本冻结与 CI（0.3.1） | 已完成 | Git tag `v0.3.0`、固定 DXC 1.9.2609、`tools/ci.ps1` 可本机重放、版本化证据目录 |
 | Mesh Shader / Meshlet | 未实现 | 本机查询到 Mesh Shader Tier 10；尚未接入 DXC 与样例 |
@@ -145,7 +146,12 @@ docs/             当前阶段状态、工具链冻结表与 CI/证据说明
 | Blender/资产管线 | 未实现 | 文档中的 S4 阶段 |
 | 模型接入 | 未接模型 | 只提供模型无关的 MCP 工具面；不伪造 AI 能力 |
 
-本机探针证据（AMD Radeon 890M，D3D12）：`raytracingTier=1.1`、`meshShaderTier=10`、`shaderModel=6.8`、`resourceBindingTier=3`；`materialTable.implemented=true`、`sceneLights.implemented=true`、`accelerationStructures.built=true`（BLAS 2492 字节、TLAS 6336 字节、4 个实例）。`implemented.raytracing=false`，因为还没有追踪着色器效果；能力查询和加速结构构建不等于光追效果已完成。
+本机探针证据（AMD Radeon 890M，D3D12）：`raytracingTier=1.1`、`meshShaderTier=10`、`shaderModel=6.8`、`resourceBindingTier=3`；
+`materialTable.implemented=true`、`sceneLights.implemented=true`、`accelerationStructures.built=true`；
+开启阴影时 `probes.raytracingShadows.effectImplemented=true`、`rtpsoCreated=true`、`sbtCreated=true`、
+`fallbackUsed=false`、`gpuRtMs≈0.10 ms`、1280×720 下 GPU P95 比关闭时多 0.25 ms；关闭阴影时
+`effectImplemented=false`、`fallbackUsed=true`，`capabilities.implemented.raytracing=false`。
+能力查询与加速结构构建不等于效果完成，字段刻意分开。
 
 ## 测试与报告
 
@@ -168,7 +174,7 @@ npm run package                # 在 outputs/ 生成目录与 zip
 - 场景工具是受信本地开发工具，不是网络服务或安全沙箱；不要把它暴露到不可信网络。
 - 热重载会重新初始化玩法状态；当前不做运行中状态迁移。
 - 材质表是 3 个固定槽位，不是无上限 Bindless；没有材质资源回收或槽位代际。
-- DXR 只构建了 BLAS/TLAS，没有 ray generation / closest-hit / miss shader，也没有阴影或反射输出。
+- DXR 阴影是静态硬阴影：一条光线/像素、可见性 0/1，没有软阴影、降噪、透明投影或点光源投影；TLAS 每帧按刚体变换重建，不含蒙皮。
 - 打包产物没有代码签名、安装器、自动更新和崩溃上传。
 - CI 工作流只在本地完整重放过；GitHub 托管 runner 没有 D3D12 GPU，显卡相关步骤在远程会退化为 WARP 并允许失败，不能替代本机显卡证据。
 - 下一阶段优先级：用 DXC 编译一个可切换的 DXR 静态阴影 pass，再补 Mesh Shader 样例和完整 Bindless 槽位管理；之后进入 Chromium 共享纹理宿主。

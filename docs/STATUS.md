@@ -1,72 +1,71 @@
 # 项目状态与移交说明
 
-- 版本：0.3.1（工程基线，工作包 1/4）
+- 版本：0.4.0（工作包 2/4：DXR 静态阴影）
 - 日期：2026-10-20
-- 当前形态：Windows 11 x64 + D3D12 独立原生宿主 + Node.js 确定性场景事务层 + 本地 MCP 工具服务 + 可重放 CI
-- 不包含：Chromium 接入、DXR 追踪效果、Mesh Shader 效果、完整 Bindless、资产导入、骨骼动画、模型调用
+- 当前形态：Windows 11 x64 + D3D12 独立原生宿主（光栅 + DXR 静态阴影）+ Node.js 确定性场景事务层 + 本地 MCP 工具服务 + 可重放 CI
+- 不包含：Chromium 接入、Mesh Shader 效果、完整 Bindless、设备丢失/生命周期压力、资产导入、骨骼动画、模型调用
 
-## 1. 本次推进内容（工作包 1：Git / CI / 版本冻结 / 版本化报告）
+## 1. 本次推进内容（工作包 2：DXR 静态阴影）
 
-1. **Git 版本冻结**：项目根目录建立 `main` 分支，0.3.0 基线提交并打 annotated tag `v0.3.0`；
-   `.gitignore` 排除 `.tools/`、`build/`、`reports/`、`outputs/`、`work/`、`dist/`、临时文件。
-   之后每个工作包一个提交、一个 tag。
-2. **DXC 与工具链冻结**：新增 `tools/bootstrap-dxc.ps1`，固定 DXC `1.9.2609`
-   （归档 SHA-256 `ad31b1fc…a7e7f1`、`dxcompiler.dll`、`dxil.dll` 哈希都记入 `.tools/dxc/1.9.2609/dxc.json`）。
-   新增 `tools/compile-shaders.ps1`，按 `shaders/manifest.json` 编译并内嵌 DXIL blob；DXC 缺失时生成
-   `kDxcAvailable=false` 的头文件，运行报告必须给出 `dxcUnavailable`，不允许静默回退。
-   版本表写入 [TOOLCHAIN.md](TOOLCHAIN.md)。
-3. **CI**：新增 `tools/ci.ps1`（唯一入口，本机可完整重放）与 `.github/workflows/windows.yml`。
-   CI 依次执行 bootstrap → DXC → `verify.ps1` → DXR 阴影证据 → G1 可靠性 → Mesh/Bindless → 打包，
-   成功写 `reports/ci-<commit12>.json`，失败保留完整步骤日志。
-4. **版本化报告**：`tools/report-lib.ps1` 把证据写入
-   `reports/<version>/<commit12>/<UTC时间戳>/`，同时维护 `reports/latest/` 与旧别名；
-   `run.json` 记录 commit、`worktreeDirty`、`staleBuild`、Node、PowerShell、OS、适配器、DXC、场景哈希和每个产物的 SHA-256。
-   同一次输入重跑不会覆盖历史证据。布局见 [CI.md](CI.md)。
-5. **构建可追溯**：`VERSION` 是唯一版本来源；构建生成 `build/generated/nativegpu_version.h`，
-   原生报告带 `version` 与 `build.commit`/`build.dirty`；`package.json` 版本不一致时打包直接失败。
-6. **DXC 负路径自检**：`tools/compile-shaders.ps1 -SelfTest` 故意编译坏着色器，要求 DXC 失败并保留诊断，
-   已接入 `verify.ps1`，防止“编译器失败被当成成功”。
-7. 保留 0.3.0 的 13 项 Node 测试、19 项原生场景检查、原生冒烟、S1 探针、热重载、MCP 协议与打包。
+1. **着色器与管线**：新增 `shaders/rt_shadows.hlsl`（raygen / miss / closest-hit），用固定 DXC 1.9.2609
+   编译为 `lib_6_5` DXIL 并内嵌；创建 RTPSO（DXIL library + hit group + shader config + pipeline config +
+   global root signature）和 192 字节 Shader Binding Table。
+2. **渲染帧图**：光栅 pass 改为双渲染目标（`sceneBaseColor` = 环境光 + 点光，`sceneKeyLight` = key light 项），
+   深度改为 `R32_TYPELESS`（DSV `D32_FLOAT` / SRV `R32_FLOAT`）；DXR pass 从深度重建世界坐标逐像素发射遮挡光线，
+   写入 `R16_FLOAT` 可见性贴图；合成 pass 计算 `base + key * mask` 并复制到交换链。
+3. **回退与开关**：`F10` 与 `--rt-shadows on/off`；关闭时把 mask 清成 1，结果与 0.3.0 纯光栅图像逐像素一致，
+   不需要第二条渲染路径。
+4. **真实实例输入**：TLAS 从当前帧的刚体 `DrawItem` 变换构建（本机 33 个实例），每帧重建；
+   单位方盒 BLAS 复用，不含蒙皮。
+5. **报告字段**：`probes.raytracingShadows` 区分 `probeAvailable`、`dxcAvailable`、`requested`、`enabled`、
+   `rtpsoCreated`、`sbtCreated`、`effectImplemented`、`fallbackUsed`、`shadowTextureBytes`、`dispatchedFrames`、
+   `fallbackFrames`、`dispatchFailures`、`gpuRtMs`、`tlasInstances`、`tlasRebuilds`、`error`。
+   `capabilities.implemented.raytracing` 只在本次运行真的派发过光线时为 true。
+6. **截图**：`--screenshot` / `--screenshot-frame` / `--camera` / `--render-size` / `--debug-view`；
+   PNG 由内置无依赖编码器写出，截图复制在帧内记录、帧栅栏后读取。
+7. **证据脚本**：`tools/rt-shadows.ps1` 跑开启/关闭/mask/key 四遍，逐像素对比、记录时序、断言报告字段，
+   23 项检查全部通过；`tools/ci.ps1` 已把它纳入 CI。
+8. **渲染数学测试**：新增 `renderer/matrix_math.{h,cpp}` 与 `tests/renderer_math.cpp`，
+   覆盖单位矩阵、奇异矩阵、view-projection 往返、仿射往返（11 项），防止阴影重建矩阵写错。
+
+本机数字（AMD Radeon 890M，1280x720，33 实例）：开启阴影 GPU P95 0.717 ms，关闭 0.467 ms
+（+0.250 ms）；DispatchRays 窗口 0.105 ms；可见性贴图 5,529,600 字节；3.30% 像素因阴影改变。
+CPU P95 约 17.2 ms，含 `Present(1,0)` 垂直同步等待，不代表 CPU 成本。
 
 ## 2. 阶段关口
 
 | 阶段 | 状态 | 现有证据 | 主要缺口 |
 | --- | --- | --- | --- |
 | S0 准备 | 已完成（0.3.1） | Git + tag、可重放 CI、固定 DXC/工具链版本表、版本化证据目录 | 远程仓库尚未建立，CI 仅在本地完整重放 |
-| S1 原生图形 | 部分完成 | D3D12 设备/交换链/深度/纹理数组/Fence/时间戳；3 槽材质表与场景灯光；真实 BLAS/TLAS 构建；探针报告；DXC 编译管线 | 尚无 DXR 追踪着色器、Mesh Shader 样例、完整 Bindless；无 PIX/RenderDoc 捕获 |
+| S1 原生图形 | 部分完成 | D3D12 双目标光栅、深度可采样、3 槽材质表、场景灯光、DXR 静态阴影（RTPSO/SBT/mask/合成/回退/截图/时序）、DXC 管线 | 尚无 Mesh Shader 样例、完整 Bindless、PIX/RenderDoc 捕获、设备丢失与生命周期证据 |
 | S2 Chromium | 未开始 | 无 | Mojo、隔离服务、共享纹理、合成与恢复；Chromium commit 未冻结 |
-| S3 游戏核心 | 部分完成 | 第三人称走跑跳、扫掠碰撞、交互、重置、场景事务、构建包 | 无资产导入、动画、音频、脚本、编辑器 UI；场景工具与原生运行仍是文件级同步 |
+| S3 游戏核心 | 部分完成 | 第三人称走跑跳、扫掠碰撞、交互、重置、场景事务、构建包 | 无资产导入、动画、音频、脚本、编辑器 UI |
 | S4 AI/Blender | 未开始 | MCP 工具面可被 Agent 调用 | 无 Blender Worker、无资产规范、无质量门禁、无模型适配器 |
-| S5 闭环整合 | 部分完成 | 预览→提交→热重载→冒烟→报告的本地闭环 | 无自然语言任务编排、无代码补丁、无候选预览 UI、无费用/取消 |
+| S5 闭环整合 | 部分完成 | 预览→提交→热重载→冒烟→报告的本地闭环 | 无自然语言任务编排、无代码补丁、无候选预览 UI |
 | S6 稳定发布 | 未开始 | 可生成 zip 包 | 无签名、安装器、更新、长时稳定性与安全评审 |
 
 ## 3. 本机验证证据
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/ci.ps1 -Clean
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/rt-shadows.ps1
 ```
 
 检查：
 
 - `reports/<version>/<commit>/<timestamp>/run.json`：环境、DXC、适配器、场景哈希、产物 SHA-256。
-- 同目录 `verify.json`：每一步的 ok、耗时、错误。
-- `verify-native-smoke.json`：帧数、revision、能力查询、CPU/GPU 时序、`build.commit`。
-- `verify-probe.json`：材质表、场景灯光、DXR 加速结构与 Mesh Shader 探针。
-- `verify-hot-reload.json`：热重载后的 revision 与 `hotReloads` 证据。
-- `reports/latest/` 与 `reports/verify.json`：最新别名，方便旧文档引用。
+- `rt-shadows-evidence.json`：开关两遍的报告字段、时序、截图路径、逐像素对比、23 项检查。
+- `artifacts/shadow-on.png`、`shadow-off.png`、`shadow-mask.png`、`shadow-key.png`：固定机位证据。
+- `verify.json` / `verify-native-smoke.json` / `verify-probe.json` / `verify-hot-reload.json`：既有各层证据。
+- `reports/latest/` 与 `reports/verify.json` 等别名：最新一次运行。
 
-本机探针信息只作为测试环境记录：AMD Radeon 890M，驱动 32.0.21036.1002，DXR 1.1，Mesh Shader Tier 10，
-Shader Model 6.8，Resource Binding Tier 3。`materialTable.implemented=true`、`sceneLights.implemented=true`、
-`accelerationStructures.built=true`（BLAS 2492 字节，TLAS 6336 字节，4 个实例）；
-`effectImplemented=false`、`implemented.raytracing=false`、`implemented.meshShaders=false`，
-因为尚无追踪或 Mesh Shader 着色器。能力查询和加速结构构建不等于效果已完成。
+阴影设计、字段表、验收对照与踩坑记录见 [RT-SHADOWS.md](RT-SHADOWS.md)。
 
 ## 4. 后续工作包
 
-按 [NEXT-PHASE.md](NEXT-PHASE.md) 顺序推进，每个工作包都必须构建、测试、更新报告并保留可运行版本：
+按 [NEXT-PHASE.md](NEXT-PHASE.md) 顺序推进：
 
-- 工作包 2：DXR 静态阴影（DXC、RTPSO、SBT、阴影输出、光栅回退、开关与报告字段）。
-- 工作包 3：G1 可靠性（设备丢失、资源生命周期、非法状态、PIX/RenderDoc 捕获、性能基线）。
+- 工作包 3：G1 可靠性（设备丢失、资源生命周期 50 次、非法状态与错误输入、PIX/RenderDoc 捕获、性能基线）。
 - 工作包 4：Mesh Shader 样例与 Bindless 槽位管理。
 - 工作包 5：只有 G1 放行后才开始 Chromium S2，且必须先冻结 Chromium commit。
 
@@ -81,4 +80,5 @@ Shader Model 6.8，Resource Binding Tier 3。`materialTable.implemented=true`、
 
 ## 6. 下个对话目标
 
-按 NEXT-PHASE 依次完成工作包 2–4 并通过 G1 放行检查；G1 通过后停止图形扩展，等用户确认再进入第 5 项 Chromium。
+依次完成工作包 3–4 并通过 G1 放行检查；G1 通过后停止图形扩展，等用户确认再进入第 5 项 Chromium。
+

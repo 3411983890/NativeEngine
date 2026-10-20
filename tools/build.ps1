@@ -60,8 +60,9 @@ try {
         }
     }
 
-    Invoke-Compile 'nativegpu' @('host/main.cpp','host/scene_loader.cpp','renderer/d3d12_renderer.cpp','engine/native/game.cpp','-municode','-mwindows','-o','build/NativeGPU.exe','-ld3d12','-ldxgi','-ld3dcompiler','-luser32','-lgdi32','-lcomdlg32','-lshell32','-lole32','-luuid')
+    Invoke-Compile 'nativegpu' @('host/main.cpp','host/scene_loader.cpp','renderer/d3d12_renderer.cpp','renderer/rt_shadows.cpp','renderer/matrix_math.cpp','renderer/png_writer.cpp','engine/native/game.cpp','-municode','-mwindows','-o','build/NativeGPU.exe','-ld3d12','-ldxgi','-ld3dcompiler','-luser32','-lgdi32','-lcomdlg32','-lshell32','-lole32','-luuid')
     Invoke-Compile 'simulation-tests' @('tests/native_simulation.cpp','engine/native/game.cpp','-o','build/native_simulation_tests.exe')
     Invoke-Compile 'scene-tests' @('tests/native_scene.cpp','host/scene_loader.cpp','-o','build/native_scene_tests.exe')
+    Invoke-Compile 'renderer-math-tests' @('tests/renderer_math.cpp','renderer/matrix_math.cpp','-o','build/renderer_math_tests.exe')
     Write-Host "Built build\NativeGPU.exe and native tests (version $version, commit $commit, dirty $dirty)."
 } finally { Pop-Location }

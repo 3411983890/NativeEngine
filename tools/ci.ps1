@@ -180,6 +180,9 @@ if (-not $SkipPackage) {
 }
 
 $durationSeconds = ((Get-Date).ToUniversalTime() - $startedUtc).TotalSeconds
+# The build happened inside the Verify step; re-read its identity so staleBuild reflects
+# the binary that actually produced the evidence.
+$context.build = Get-BuildIdentity
 $report = [pscustomobject]@{
     schema = 'nativegpu.ci/2'
     version = $context.version
