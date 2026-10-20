@@ -777,10 +777,10 @@ $sceneHash = (Get-SceneHash $entry.scene)
 $checksArray = $checks.ToArray()
 $violationsArray = $violations.ToArray()
 
-# Built incrementally rather than as one large nested literal: Windows PowerShell 5.1
-# throws a non-descriptive "Argument types do not match" when converting a very large
-# nested [pscustomobject] literal in this script. An ordered dictionary serializes to the
-# same JSON object and keeps the evidence field order stable for humans.
+# Built incrementally rather than as one large nested literal so a bad value fails on its
+# own line; Windows PowerShell 5.1 otherwise surfaces some construction failures as a
+# non-descriptive "Argument types do not match" at an unrelated property. An ordered
+# dictionary serializes to the same JSON object and keeps the evidence field order stable.
 $summary = [ordered]@{}
 $summary['schema'] = 'nativegpu.image-regression/1'
 $summary['version'] = $context.version
