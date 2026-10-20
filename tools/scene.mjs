@@ -4,6 +4,7 @@ import {
   SceneError, validateScene, loadScene, queryScene, previewTransaction,
   commitScene, undoSceneFile, buildScene, recoverScene,
 } from '../engine/scene/index.mjs';
+import { lintScene } from '../engine/scene/lint.mjs';
 
 const USAGE = `Scene tools (JSON output)
   node tools/scene.mjs validate <scene.json>
@@ -13,7 +14,9 @@ const USAGE = `Scene tools (JSON output)
   node tools/scene.mjs undo <scene.json> --project <uuid> --revision <integer>
   node tools/scene.mjs recover <scene.json>
   node tools/scene.mjs build <scene.json> <output-directory>
+  node tools/scene.mjs lint <scene.json> [--json] [--max-entities N]
 Transactions: {projectId, expectedRevision, commands: [{op:"set", entityId, changes:{position:[0,1,0]}}]}
+lint: --json is the default (and only) output format; exits 1 if any error-severity finding exists.
 `;
 
 function fail(message) { throw new SceneError('INVALID_ARGUMENT', message); }
@@ -23,6 +26,30 @@ function options(args, allowed) {
   for (let i = 0; i < args.length; i += 2) {
     if (!allowed.includes(args[i]) || Object.hasOwn(parsed, args[i])) fail(`Unknown or duplicate option: ${args[i]}`);
     parsed[args[i]] = args[i + 1];
+  }
+  return parsed;
+}
+function lintOptions(args) {
+  const parsed = {};
+  for (let i = 0; i < args.length; i += 1) {
+    if (args[i] === '--json') {
+      if (Object.hasOwn(parsed, '--json')) fail('Duplicate option: --json');
+      parsed['--json'] = true;
+      continue;
+    }
+    if (args[i] === '--max-entities') {
+      if (Object.hasOwn(parsed, '--max-entities')) fail('Duplicate option: --max-entities');
+      const value = args[i + 1];
+      if (value === undefined) fail('--max-entities requires a value');
+      parsed['--max-entities'] = value;
+      i += 1;
+      continue;
+    }
+    fail(`Unknown option: ${args[i]}`);
+  }
+  if (parsed['--max-entities'] !== undefined
+      && (!/^[1-9]\d*$/.test(parsed['--max-entities']) || !Number.isSafeInteger(Number(parsed['--max-entities'])))) {
+    fail('--max-entities must be a positive integer');
   }
   return parsed;
 }
@@ -45,6 +72,15 @@ async function main() {
     const result = validateScene(scene);
     if (!result.valid) throw new SceneError('INVALID_SCENE', 'Scene validation failed', result.errors);
     return { valid: true, projectId: scene.projectId, revision: scene.revision, entityCount: scene.entities.length };
+  }
+  if (command === 'lint') {
+    const opt = lintOptions(args);
+    const result = lintScene(await json(file), opt['--max-entities'] === undefined
+      ? {} : { maxEntities: Number(opt['--max-entities']) });
+    // Findings are a successful command with a failing gate: keep the envelope
+    // shape stable for callers and let the process exit code signal CI.
+    if (!result.ok) process.exitCode = 1;
+    return result;
   }
   if (command === 'query') {
     const opt = options(args, ['--kind', '--name', '--id']);

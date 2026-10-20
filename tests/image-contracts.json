@@ -1,0 +1,115 @@
+{
+  "schema": "nativegpu.image-contracts/1",
+  "scene": "assets/courtyard.scene.json",
+  "frames": 240,
+  "pixelThreshold": 8,
+  "measurement": {
+    "recordedAt": "2026-10-20",
+    "adapter": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "driverVersion": "32.0.16.1714",
+    "dxcVersion": "1.9.2609",
+    "tool": "tools/error-contract.ps1",
+    "method": "Capture both runs for real, measure with System.Drawing, round the measured value, then add a margin. No threshold is estimated without a run."
+  },
+  "contracts": [
+    {
+      "id": "shadows-off-vs-raster",
+      "description": "Two independent runs with --rt-shadows off must produce exactly the same final image (meanAbsError 0). This proves the raster fallback is bit-stable across processes, not just within one process.",
+      "reference": ["--rt-shadows", "off"],
+      "candidate": ["--rt-shadows", "off"],
+      "metric": "meanAbsError",
+      "expect": "identical",
+      "tolerance": 0,
+      "measured": 0,
+      "measuredMetrics": {
+        "meanAbsError": 0,
+        "changedPercent": 0,
+        "maxChannelDelta": 0
+      },
+      "resolution": "1280x720",
+      "camera": "9,5.5,10,-2,0.8,0",
+      "screenshotFrame": 200
+    },
+    {
+      "id": "shadow-on-vs-off",
+      "description": "Enabling DXR shadows must change a visible but bounded fraction of the frame: changedPercent must stay inside the measured interval. A value near zero means the pass silently stopped contributing; a value far above the ceiling means the image broke rather than gained shadows.",
+      "reference": ["--rt-shadows", "off"],
+      "candidate": ["--rt-shadows", "on"],
+      "metric": "changedPercent",
+      "expect": "changed",
+      "tolerance": {
+        "min": 10.0,
+        "max": 14.0
+      },
+      "measured": 11.73,
+      "measuredMetrics": {
+        "meanAbsError": 6.0698,
+        "changedPercent": 11.73,
+        "maxChannelDelta": 121
+      },
+      "resolution": "1280x720",
+      "camera": "9,5.5,10,-2,0.8,0",
+      "screenshotFrame": 200
+    },
+    {
+      "id": "mesh-off-vs-vertex",
+      "description": "Vertex fallback (--mesh-shaders off) vs the default mesh path, with DXR shadows off in both runs so only the geometry path differs. This is deliberately NOT identical: the mesh path is known to be darker (see docs/MESH-BINDLESS.md). The contract pins the measured divergence, so an unreviewed fix fails just as loudly as a regression.",
+      "reference": ["--rt-shadows", "off", "--mesh-shaders", "off"],
+      "candidate": ["--rt-shadows", "off"],
+      "metric": "changedPercent",
+      "expect": "changed",
+      "tolerance": {
+        "min": 50.0,
+        "max": 70.0
+      },
+      "measured": 59.25,
+      "measuredMetrics": {
+        "meanAbsError": 36.3978,
+        "changedPercent": 59.25,
+        "maxChannelDelta": 241
+      },
+      "resolution": "1280x720",
+      "camera": "9,5.5,10,-2,0.8,0",
+      "screenshotFrame": 200
+    },
+    {
+      "id": "mesh-fallback-stability",
+      "description": "Two independent runs with --mesh-shaders off must be exactly identical (meanAbsError 0). This covers what mesh-off-vs-vertex cannot: the vertex fallback itself is deterministic and does not depend on the mesh path.",
+      "reference": ["--rt-shadows", "off", "--mesh-shaders", "off"],
+      "candidate": ["--rt-shadows", "off", "--mesh-shaders", "off"],
+      "metric": "meanAbsError",
+      "expect": "identical",
+      "tolerance": 0,
+      "measured": 0,
+      "measuredMetrics": {
+        "meanAbsError": 0,
+        "changedPercent": 0,
+        "maxChannelDelta": 0
+      },
+      "resolution": "1280x720",
+      "camera": "9,5.5,10,-2,0.8,0",
+      "screenshotFrame": 200
+    },
+    {
+      "id": "debug-mask-only",
+      "description": "The shadow-mask debug view must not be identical to the final frame. This proves --debug-view mask is actually plumbed into the composite output instead of being accepted and ignored.",
+      "reference": ["--rt-shadows", "on"],
+      "candidate": ["--rt-shadows", "on", "--debug-view", "mask"],
+      "metric": "changedPercent",
+      "expect": "changed",
+      "tolerance": {
+        "min": 95.0,
+        "max": 100.0
+      },
+      "measured": 100.0,
+      "measuredMetrics": {
+        "meanAbsError": 212.2275,
+        "changedPercent": 100.0,
+        "maxChannelDelta": 255
+      },
+      "resolution": "1280x720",
+      "camera": "9,5.5,10,-2,0.8,0",
+      "screenshotFrame": 200
+    }
+  ]
+}
