@@ -1,6 +1,6 @@
 # 项目状态与移交说明
 
-- 版本：0.9.0（第三批：compute 队列与 SM 6.6 堆索引探针）
+- 版本：0.10.0（第 4 批：几何/材质架构冻结、几何包 v2、查询 DSL、图像回归门禁）
 - 日期：2026-10-20
 - 当前形态：Windows 11 x64 + D3D12 独立原生宿主（光栅 + DXR 静态阴影）+ Node.js 确定性场景事务层 + 本地 MCP 工具服务 + 可重放 CI
 - 不包含：Chromium 接入、SM 6.6 直接堆索引、放大剔除、资产导入、骨骼动画、模型调用、运行时 Nanite/Lumen
@@ -15,6 +15,16 @@
 | H07 输出契约 | `docs/OUTPUT-CONTRACT.md` | 逐条对照真实渲染器符号，未实现项全部按"S2 要求"标注 |
 
 详见 `docs/DETERMINISM.md`、`docs/BUDGET.md`、`docs/GEOMETRY-PACKAGE.md`、`docs/OUTPUT-CONTRACT.md`。
+
+## 1f. 第 4 批（0.10.0）
+
+| 工作包 | 产物 | 证据 |
+| --- | --- | --- |
+| 架构冻结 | `docs/GEOMETRY-LAYOUT.md`：48B ClusterRecord、InstanceRef/ClusterRef、可见性缓冲、32 位材质句柄、v1→v2 迁移、B2→B4→B5→B3b→N1→L1 硬门 | 文档 + `GeometryClass` 路由与句柄单测（17 项断言） |
+| 几何分类 | `engine/native/geometry_class.*`、报告 `geometryClasses` | 小院 17 实体：16 Simple + 1 Deformable + **0 Cluster**（12 三角形方盒无 cluster 收益） |
+| 材质句柄 | `engine/native/material_handle.*`、报告 `materialHandle` | 越界编码返回 false 而非截断；极值往返正确 |
+| 几何包 v2 | `lodError`/`flags`/`materialHandle` + `capabilities`，v1 可读 | 摘要 `f3ddb1e4…`；v1 verify exit 0；6 项 v2 测试 |
+| 查询 DSL | `engine/scene/query.mjs` + `scene query` | 18 项测试；小院墙 5、材质 3 组、灯光强度和 9.7 |
 
 ## 1e. 第三批（0.9.0）
 

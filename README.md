@@ -153,6 +153,9 @@ docs/             当前阶段状态、工具链冻结表与 CI/证据说明
 | 设计期 lint（0.8.0） | 已完成 | 12 条规则 + 可达性 BFS，`npm run scene -- lint`，见 [docs/SCENE-LINT.md](docs/SCENE-LINT.md) |
 | compute 队列（0.9.0） | 部分完成 | 独立 COMPUTE 队列 + 跨队列 fence + 回读校验；结果尚未进入画面，见 [docs/COMPUTE.md](docs/COMPUTE.md) |
 | SM 6.6 堆索引（0.9.0） | 部分完成 | `ResourceDescriptorHeap[32..35]` 与描述符表逐位一致；材质主路径迁移待 DXC 光栅变体 |
+| 几何/材质架构（0.10.0） | 已冻结 | cluster 记录/工作队列/可见性缓冲/材质句柄 + 几何分类路由，见 [docs/GEOMETRY-LAYOUT.md](docs/GEOMETRY-LAYOUT.md) |
+| 几何包 v2（0.10.0） | 已完成 | `lodError`/`flags`/`materialHandle`，v1 仍可读；本机 37 cluster / 6 LOD |
+| 世界查询（0.10.0） | 已完成 | 9 种操作 + 聚合，`npm run scene -- query`，见 [docs/SCENE-QUERY.md](docs/SCENE-QUERY.md) |
 | Chromium 编辑器与共享纹理 | 未实现 | 文档中的 S2 阶段，当前仍是独立 Win32 宿主 |
 | Blender/资产管线 | 未实现 | 文档中的 S4 阶段 |
 | 模型接入 | 未接模型 | 只提供模型无关的 MCP 工具面；不伪造 AI 能力 |

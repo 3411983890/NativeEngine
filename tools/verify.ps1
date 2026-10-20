@@ -89,6 +89,19 @@ Invoke-Step 'Scene design lint' {
     if (-not $parsed.ok -or -not $parsed.result.ok) { throw 'Courtyard lint returned ok=false.' }
 }
 
+Invoke-Step 'Scene query CLI' {
+    $query = Join-Path $env:TEMP ('nativegpu-query-' + [guid]::NewGuid().ToString('N') + '.json')
+    try {
+        '{"where":[{"field":"kind","op":"eq","value":"wall"}]}' | Set-Content -LiteralPath $query -Encoding ascii
+        $result = & $node.Source 'tools\scene.mjs' query 'assets\courtyard.scene.json' --file $query
+        if ($LASTEXITCODE -ne 0) { throw 'Scene query failed.' }
+        $parsed = $result | ConvertFrom-Json
+        if (-not $parsed.ok -or [int]$parsed.result.count -lt 1) { throw 'Scene query returned no wall entities.' }
+    } finally {
+        if (Test-Path -LiteralPath $query) { Remove-Item -LiteralPath $query -Force }
+    }
+}
+
 Invoke-Step 'Scene contract validation' {
     $output = & $node.Source 'tools\scene.mjs' validate 'assets\courtyard.scene.json'
     $parsed = $output | ConvertFrom-Json
@@ -199,6 +212,23 @@ Invoke-Step 'Image error contracts' {
     if (-not (Test-Path -LiteralPath $evidence)) { throw 'Error contract evidence is missing.' }
     Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'error-contract-evidence.json') -Force
     Register-Report -Context $context -Path (Join-Path $context.directory 'error-contract-evidence.json') | Out-Null
+}
+
+Invoke-Step 'Image regression gate' {
+    # Baselines live under the gitignored reports/ tree, so a fresh checkout has none.
+    # Bootstrapping is explicit and reported instead of silently passing: the first run
+    # accepts the current frame, the second one compares against it.
+    $baselinePath = Join-Path 'reports\image-baselines' 'courtyard-default.png'
+    if (-not (Test-Path -LiteralPath $baselinePath)) {
+        & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'image-regression.ps1') -SkipBuild -Accept
+        if ($LASTEXITCODE -ne 0) { throw 'Image regression baseline bootstrap failed.' }
+    }
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'image-regression.ps1') -SkipBuild
+    if ($LASTEXITCODE -ne 0) { throw 'Image regression gate failed.' }
+    $evidence = Join-Path 'reports\latest' 'image-regression-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'Image regression evidence is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'image-regression-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'image-regression-evidence.json') | Out-Null
 }
 
 Invoke-Step 'Compute queue and heap indexing' {
