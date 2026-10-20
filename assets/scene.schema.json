@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nativegpu.local/schemas/scene.schema.json",
+  "title": "NativeGPU Scene v1",
+  "description": "Authoritative shape of a NativeGPU scene. The runtime additionally enforces unique entity UUIDs, exactly one player spawn and at least one ground; JSON Schema cannot express those cross-object invariants portably.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId", "name", "revision", "entities", "settings"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "projectId": { "$ref": "#/$defs/uuid" },
+    "name": { "$ref": "#/$defs/name" },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "items": { "$ref": "#/$defs/entity" },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "properties": { "kind": { "const": "player" } },
+            "required": ["kind"]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": { "kind": { "const": "ground" } },
+            "required": ["kind"]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": { "kind": { "const": "light" } },
+            "required": ["kind"]
+          },
+          "minContains": 0,
+          "maxContains": 4
+        }
+      ]
+    },
+    "settings": { "$ref": "#/$defs/settings" }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^(?=.*\\S)[^\\u0000-\\u001f]+$"
+    },
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "color": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number", "minimum": 0, "maximum": 1 }
+    },
+    "position": {
+      "allOf": [
+        { "$ref": "#/$defs/vector3" },
+        {
+          "items": {
+            "type": "number",
+            "minimum": -100000,
+            "maximum": 100000
+          }
+        }
+      ]
+    },
+    "scale": {
+      "allOf": [
+        { "$ref": "#/$defs/vector3" },
+        {
+          "items": {
+            "type": "number",
+            "minimum": 0.001,
+            "maximum": 10000
+          }
+        }
+      ]
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["albedo", "roughness", "metalness", "pattern"],
+      "properties": {
+        "albedo": { "$ref": "#/$defs/color" },
+        "roughness": { "type": "number", "minimum": 0, "maximum": 1 },
+        "metalness": { "type": "number", "minimum": 0, "maximum": 1 },
+        "pattern": { "enum": ["checker", "brick", "metal"] }
+      }
+    },
+    "light": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["color", "intensity", "range"],
+      "properties": {
+        "color": { "$ref": "#/$defs/color" },
+        "intensity": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 },
+        "range": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000 }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "kind", "position", "scale", "color", "collider"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "name": { "$ref": "#/$defs/name" },
+        "kind": {
+          "enum": ["ground", "wall", "prop", "player", "key", "door", "goal", "light"]
+        },
+        "position": { "$ref": "#/$defs/position" },
+        "scale": { "$ref": "#/$defs/scale" },
+        "color": { "$ref": "#/$defs/color" },
+        "material": { "$ref": "#/$defs/material" },
+        "light": { "$ref": "#/$defs/light" },
+        "collider": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "light" } }, "required": ["kind"] },
+          "then": { "required": ["light"] },
+          "else": { "not": { "required": ["light"] } }
+        }
+      ]
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["walkSpeed", "runSpeed", "jumpSpeed", "gravity"],
+      "properties": {
+        "walkSpeed": { "type": "number", "minimum": 0.1, "maximum": 30 },
+        "runSpeed": { "type": "number", "minimum": 0.1, "maximum": 60 },
+        "jumpSpeed": { "type": "number", "minimum": 0.1, "maximum": 30 },
+        "gravity": { "type": "number", "minimum": 0.1, "maximum": 100 }
+      },
+      "description": "runSpeed must also be greater than or equal to walkSpeed; the runtime validates that relation."
+    }
+  }
+}

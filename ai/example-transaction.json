@@ -1,0 +1,11 @@
+{
+  "projectId": "a1e00000-0000-4000-8000-000000000001",
+  "expectedRevision": 0,
+  "commands": [
+    {
+      "op": "set",
+      "entityId": "a1e00000-0000-4000-8000-000000000030",
+      "changes": { "position": [-4, 0.6, 1] }
+    }
+  ]
+}

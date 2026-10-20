@@ -1,0 +1,152 @@
+# NativeGPU / AI 原生游戏引擎
+
+版本 **0.3.0**。一个可运行、可验证的 Windows D3D12 原生游戏样板，以及供编辑器和 AI Agent 共用的确定性场景事务层。当前重点不是宣称“已经完成 AI 引擎”，而是把一条真实闭环做通：
+
+> 读取场景 → 预览事务 → 原子提交 → 运行中的原生编辑器热重载 → 原生冒烟测试 → 返回可审计报告
+
+## 现在能做什么
+
+- **原生第三人称样板**：D3D12 交换链、深度测试、固定 120 Hz 物理（走跑跳、扫掠碰撞、拾取钥匙、开门、到达终点）。
+- **材质与灯光**：3 槽有界材质纹理表（checker/brick/metal）、粗糙度/金属度、最多 4 盏场景点光；场景 JSON 直接携带材质和灯光。
+- **DXR 加速结构探针**：真实创建 BLAS/TLAS（本机 4 个实例、约 2.5 KB/6.3 KB），报告字节数、实例数和错误；尚未接追踪着色器。
+- **确定性场景工具**：校验、查询、预览、提交、撤销、崩溃恢复、内容寻址构建；失败不会半写入，旧 revision 会被拒绝。
+- **运行中热重载**：`scene apply` 写入成功后，原生编辑器自动加载新 revision；无效写入会保留上一有效场景并报告错误，不弹模态框阻塞运行。
+- **AI 工具入口**：本地 MCP stdio 服务暴露 8 个工具，Agent 可独立调用，不需要聊天壳或模型凭证。
+- **可重复验证**：13 项 Node 测试、原生测试、原生冒烟、S1 探针、热重载集成测试和 MCP 协议冒烟都在 `tools/verify.ps1` 中执行。
+
+## 快速开始
+
+要求：Windows 11 x64、支持 D3D12 的显卡、Node.js 22+、PowerShell。首次构建会下载项目内的 LLVM-MinGW 工具链，不修改系统环境。
+
+```powershell
+# 1. 构建原生程序与测试
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1
+
+# 2. 启动交互式样板
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/run.ps1
+
+# 3. 在另一个终端提交一次场景修改，运行中的窗口会自动热重载
+node tools/scene.mjs apply assets/courtyard.scene.json ai/example-transaction.json
+
+# 4. 运行 S1 探针（材质表、场景灯光、DXR 加速结构）
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/probe.ps1
+
+# 5. 完整验证（会启动隐藏窗口做原生冒烟与探针）
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/verify.ps1
+
+# 6. 生成可分发包和 zip
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1
+```
+
+交互按键：`WASD` 移动、`Shift` 跑、`Space` 跳、`E` 交互、右键拖动或方向键转镜头、`F5` 重置玩法、`F6` 暂停、`F8` 重建渲染器、`F9` 开关热重载。
+
+## 场景事务
+
+唯一事务格式：
+
+```json
+{
+  "projectId": "a1e00000-0000-4000-8000-000000000001",
+  "expectedRevision": 0,
+  "commands": [
+    {
+      "op": "set",
+      "entityId": "a1e00000-0000-4000-8000-000000000030",
+      "changes": { "position": [-4, 0.6, 1] }
+    }
+  ]
+}
+```
+
+命令支持 `create`、`set`、`remove`。整批命令先应用到副本，全部验证通过后才提交一次，revision 只增加一次。项目不匹配、旧 revision、未知字段、重复 UUID、非有限数值、批后不满足“恰有一个玩家 + 至少一个地面”都会拒绝。完整字段和范围见 [assets/scene.schema.json](assets/scene.schema.json) 和 [ai/README.md](ai/README.md)。
+
+保存与恢复：
+
+- `.history.json` 保留最多 100 步线性撤销；撤销后 revision 继续增加。
+- `.snapshot.json` 保留上一有效场景；`.pending.json` 记录中断提交。
+- `.lock` 阻止同一文件并行写入；崩溃遗留锁需确认进程停止后手动移除。
+- `node tools/scene.mjs recover <scene>` 完成已提交的中断写入，或恢复最后有效快照。
+
+## AI / MCP 接口
+
+本地 MCP 服务只使用 stdio，不监听网络端口：
+
+```powershell
+node ai/mcp-server.mjs
+```
+
+工具：`scene_validate`、`scene_query`、`scene_preview`、`scene_apply`、`scene_undo`、`scene_build`、`runtime_smoke`、`engine_probe`。
+
+在支持 MCP 的本地客户端中注册（Codex 的配置格式可能随版本变化，以下为常见形式）：
+
+```toml
+[mcp_servers.nativegpu]
+command = "node"
+args = ["ai/mcp-server.mjs"]
+cwd = "C:\\Users\\34119\\Documents\\AI-Native Game Engine"
+```
+
+也可以直接测试协议：
+
+```powershell
+'{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node ai/mcp-server.mjs
+```
+
+路径策略：场景只能位于 `assets/`，构建输出只能位于 `outputs/`，冒烟报告只能位于 `reports/`；拒绝 `..`、根目录外绝对路径和符号链接逃逸。工具不接受任意 shell 文本。
+
+## 目录
+
+```text
+host/             Win32 宿主、场景加载、热重载与冒烟报告
+renderer/         D3D12 渲染器（交换链、描述符、Fence、时间戳）
+engine/native/    固定步长玩法、碰撞、角色姿态
+engine/scene/     场景校验、事务、保存/撤销/恢复、内容寻址构建
+ai/               MCP 工具服务与工具契约说明
+assets/           样板场景与 JSON Schema
+tests/            Node 事务/工具测试与原生测试
+tools/            构建、运行、验证、打包、场景 CLI
+docs/             当前阶段状态与后续边界
+```
+
+## 当前阶段与边界
+
+| 能力 | 状态 | 证据 / 说明 |
+| --- | --- | --- |
+| D3D12 原生基线 | 已完成 | 设备、交换链、深度、纹理、Fence、时间戳、冒烟报告 |
+| 可玩小院样板 | 已完成 | 走跑跳、碰撞、钥匙/门/终点，原生测试覆盖 |
+| 确定性场景事务 | 已完成 | Node 测试覆盖冲突、原子性、撤销、恢复、构建 |
+| 热重载 | 已完成 | `verify.ps1` 集成测试检查 revision 与 `hotReloads` |
+| 材质表与场景灯光 | 已完成 | 3 槽纹理数组、粗糙度/金属度、最多 4 盏点光；探针 `implemented=true` |
+| DXR 加速结构 | 已完成 | 真实 BLAS/TLAS 构建，报告字节数与实例数 |
+| DXR 追踪效果 | 未实现 | 尚无 ray generation / hit shader；`effectImplemented=false` |
+| AI 工具入口 | 已完成 | MCP stdio，8 个工具，协议冒烟测试 |
+| Mesh Shader / Meshlet | 未实现 | 本机查询到 Mesh Shader Tier 10；尚未接入 DXC 与样例 |
+| Bindless 完整堆索引 | 未实现 | 当前是有界材质纹理表，不是 SM 6.6 descriptor heap indexing |
+| Chromium 编辑器与共享纹理 | 未实现 | 文档中的 S2 阶段，当前仍是独立 Win32 宿主 |
+| Blender/资产管线 | 未实现 | 文档中的 S4 阶段 |
+| 模型接入 | 未接模型 | 只提供模型无关的 MCP 工具面；不伪造 AI 能力 |
+
+本机探针证据（AMD Radeon 890M，D3D12）：`raytracingTier=1.1`、`meshShaderTier=10`、`shaderModel=6.8`、`resourceBindingTier=3`；`materialTable.implemented=true`、`sceneLights.implemented=true`、`accelerationStructures.built=true`（BLAS 2492 字节、TLAS 6336 字节、4 个实例）。`implemented.raytracing=false`，因为还没有追踪着色器效果；能力查询和加速结构构建不等于光追效果已完成。
+
+## 测试与报告
+
+```powershell
+npm test                       # Node 测试
+npm run probe                  # S1 探针，写 reports/probe.json
+npm run verify                 # 构建 + Node + 原生 + 冒烟 + 探针 + 热重载 + MCP
+npm run package                # 在 outputs/ 生成目录与 zip
+```
+
+验证报告写入 `reports/verify.json`；原生冒烟报告写入 `reports/verify-native-smoke.json`；S1 探针报告写入 `reports/verify-probe.json`；热重载报告写入 `reports/verify-hot-reload.json`。`reports/`、`build/`、`outputs/` 和工具链目录都被 `.gitignore` 排除。
+
+## 已知限制
+
+- 仅支持 Windows 11 x64、D3D12 和方盒几何；没有骨骼动画、资产导入、音频、脚本系统或网络。
+- 场景工具是受信本地开发工具，不是网络服务或安全沙箱；不要把它暴露到不可信网络。
+- 热重载会重新初始化玩法状态；当前不做运行中状态迁移。
+- 材质表是 3 个固定槽位，不是无上限 Bindless；没有材质资源回收或槽位代际。
+- DXR 只构建了 BLAS/TLAS，没有 ray generation / closest-hit / miss shader，也没有阴影或反射输出。
+- 打包产物没有代码签名、安装器、自动更新和崩溃上传。
+- 下一阶段优先级：用 DXC 编译一个可切换的 DXR 静态阴影 pass，再补 Mesh Shader 样例和完整 Bindless 槽位管理；之后进入 Chromium 共享纹理宿主。
+
+详细状态见 [docs/STATUS.md](docs/STATUS.md)；下一阶段 1–4 的目标、验收标准和启动提示见 [docs/NEXT-PHASE.md](docs/NEXT-PHASE.md)。

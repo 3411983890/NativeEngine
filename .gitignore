@@ -1,0 +1,12 @@
+.tools/
+build/
+dist/
+reports/
+work/
+outputs/
+node_modules/
+*.tmp
+*.bak
+*.history.json
+.env*
+!.env.example

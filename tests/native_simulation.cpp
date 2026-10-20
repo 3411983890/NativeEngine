@@ -1,0 +1,261 @@
+#include "../engine/native/game.hpp"
+#include "../engine/native/math.hpp"
+
+#include <cassert>
+#include <cmath>
+#include <iostream>
+#include <limits>
+
+using engine::Entity;
+using engine::Game;
+using engine::Input;
+using engine::Scene;
+using engine::Vec3;
+
+namespace {
+bool near(float a, float b, float tolerance = 0.002f) {
+    return std::abs(a - b) < tolerance;
+}
+
+Entity object(const char* id, const char* kind, Vec3 position, Vec3 scale,
+              bool collider = false) {
+    Entity result;
+    result.id = id;
+    result.name = id;
+    result.kind = kind;
+    result.position = position;
+    result.scale = scale;
+    result.collider = collider;
+    return result;
+}
+
+Scene courtyard() {
+    Scene scene;
+    scene.entities = {
+        object("player", "player", {0, 0, 5}, {1, 1, 1}),
+        object("ground", "ground", {0, -0.2f, 0}, {20, 0.4f, 20}, true),
+        object("key", "key", {4, 0.8f, 1}, {0.25f, 0.5f, 0.25f}),
+        object("gate", "door", {0, 1.5f, -8}, {2.4f, 3, 0.25f}, true),
+        object("exit", "goal", {0, 0, -9}, {1.5f, 0.1f, 1.5f}),
+        object("left-gate-wall", "wall", {-6, 1.5f, -8}, {9.6f, 3, 0.3f}, true),
+        object("right-gate-wall", "wall", {6, 1.5f, -8}, {9.6f, 3, 0.3f}, true),
+    };
+    return scene;
+}
+
+void advance(Game& game, Input input, int frames, float dt = 1.0f / 60.0f) {
+    for (int i = 0; i < frames; ++i) game.update(input, dt);
+}
+
+void pressE(Game& game) {
+    Input input;
+    input.interact = true;
+    game.update(input, 1.0f / 60.0f);
+    game.update({}, 1.0f / 60.0f);
+}
+
+void testFixedStepAndSpeed() {
+    Game sixty;
+    Game oneTwenty;
+    sixty.initialize(courtyard());
+    oneTwenty.initialize(courtyard());
+    Input forward;
+    forward.forward = 1;
+    advance(sixty, forward, 60);
+    advance(oneTwenty, forward, 120, 1.0f / 120.0f);
+    assert(near(sixty.playerPosition().z, 2.0f));
+    assert(near(sixty.playerPosition().z, oneTwenty.playerPosition().z));
+    Game diagonal;
+    diagonal.initialize(courtyard());
+    forward.right = 1;
+    advance(diagonal, forward, 60);
+    Vec3 position = diagonal.playerPosition();
+    assert(near(std::hypot(position.x, position.z - 5), 3.0f));
+    Game running;
+    running.initialize(courtyard());
+    forward.right = 0;
+    forward.run = true;
+    advance(running, forward, 60);
+    assert(near(running.playerPosition().z, -1.0f));
+}
+
+void testJumpAndInputEdges() {
+    Game game;
+    game.initialize(courtyard());
+    Input heldJump;
+    heldJump.jump = true;
+    game.update(heldJump, 1.0f / 60.0f);
+    assert(!game.grounded());
+    assert(game.playerPosition().y > 0.0f);
+    float peak = game.playerPosition().y;
+    for (int i = 0; i < 120; ++i) {
+        game.update(heldJump, 1.0f / 60.0f);
+        peak = std::max(peak, game.playerPosition().y);
+        assert(game.playerPosition().y >= 0.0f);
+    }
+    assert(peak > 1.15f && peak < 1.30f);
+    assert(game.grounded());
+    assert(near(game.playerPosition().y, 0.0f));
+    game.update({}, 1.0f / 60.0f);
+    // Edge events survive a frame shorter than one physics tick.
+    game.update(heldJump, 0.001f);
+    game.update({}, 1.0f / 60.0f);
+    assert(game.playerPosition().y > 0.0f);
+}
+
+void testSweptCollisionsAndVerticalContacts() {
+    Scene scene = courtyard();
+    scene.walkSpeed = 20;
+    scene.runSpeed = 30;
+    scene.entities.push_back(
+        object("thin-wall", "wall", {0, 1, 4.11f}, {4, 2, 0.01f}, true));
+    Game game;
+    game.initialize(scene);
+    Input forward;
+    forward.forward = 1;
+    forward.run = true;
+    advance(game, forward, 10, 0.1f);
+    assert(near(game.playerPosition().z, 4.415f));
+    // A blocked axis still permits sliding along a wall.
+    forward.right = 1;
+    advance(game, forward, 2, 0.1f);
+    assert(game.playerPosition().x > 1);
+
+    Scene platform;
+    platform.entities = {
+        object("player", "player", {0, 4, 0}, {1, 1, 1}),
+        object("platform", "prop", {0, 0.5f, 0}, {3, 1, 3}, true)
+    };
+    game.initialize(platform);
+    advance(game, {}, 120);
+    assert(game.grounded());
+    assert(near(game.playerPosition().y, 1));
+
+    Scene ceiling;
+    ceiling.entities = {
+        object("player", "player", {0, 0, 0}, {1, 1, 1}),
+        object("ceiling", "prop", {0, 2.3f, 0}, {3, 0.2f, 3}, true)
+    };
+    game.initialize(ceiling);
+    Input jump;
+    jump.jump = true;
+    float maxY = 0;
+    for (int i = 0; i < 120; ++i) {
+        game.update(jump, 1.0f / 120.0f);
+        maxY = std::max(maxY, game.playerPosition().y);
+    }
+    assert(maxY <= 0.4001f);
+    assert(game.grounded());
+}
+
+void testKeyDoorCompletionAndReset() {
+    Scene scene = courtyard();
+    const Vec3 sourceDoor = scene.entities[3].position;
+    Game game;
+    game.initialize(scene);
+    const std::size_t initialPoseCount = game.renderPoses().size();
+    Input forward;
+    forward.forward = 1;
+    forward.run = true;
+    advance(game, forward, 150);
+    assert(game.playerPosition().z > -7.58f);
+    pressE(game);
+    assert(!game.doorOpen());
+    assert(!game.complete());
+    assert(!game.hasKey());
+    game.reset();
+
+    Input right;
+    right.right = 1;
+    advance(game, right, 80); // (4, 0, 5)
+    forward.run = false;
+    advance(game, forward, 80); // (4, 0, 1)
+    pressE(game);
+    assert(game.hasKey());
+    assert(!game.doorOpen());
+    // The scene key disappears and a small carried key appears.
+    assert(game.renderPoses().size() == initialPoseCount);
+    right.right = -1;
+    advance(game, right, 80); // (0, 0, 1)
+    advance(game, forward, 145); // (0, 0, -6.25), interaction range
+    pressE(game);
+    assert(game.doorOpen());
+    advance(game, forward, 55);
+    assert(game.complete());
+    assert(game.playerPosition().z < -8.5f);
+    assert(near(scene.entities[3].position.x, sourceDoor.x));
+    assert(near(scene.entities[3].position.z, sourceDoor.z));
+    game.reset();
+    assert(!game.hasKey() && !game.doorOpen() && !game.complete());
+    assert(near(game.playerPosition().x, 0));
+    assert(near(game.playerPosition().z, 5));
+    assert(game.renderPoses().size() == initialPoseCount);
+}
+
+void testBoundariesAndFrameClamp() {
+    Scene empty;
+    Game game;
+    game.initialize(empty);
+    Input right;
+    right.right = 1;
+    game.update(right, 10.0f);
+    assert(near(game.playerPosition().x, 0.3f));
+    advance(game, right, 500);
+    assert(near(game.playerPosition().x, 9.7f));
+    game.update(right, std::numeric_limits<float>::quiet_NaN());
+    assert(std::isfinite(game.playerPosition().x));
+    game.reset();
+    right = {};
+    right.yawDelta = 3.14159265358979323846f * 0.5f;
+    game.update(right, 0);
+    right = {};
+    right.forward = 1;
+    advance(game, right, 60);
+    assert(near(game.playerPosition().x, 3));
+    assert(near(game.playerPosition().z, 5));
+}
+
+Vec3 transformPoint(const engine::Matrix& matrix, Vec3 point) {
+    const float w = matrix.m[3] * point.x + matrix.m[7] * point.y +
+                    matrix.m[11] * point.z + matrix.m[15];
+    return {(matrix.m[0] * point.x + matrix.m[4] * point.y +
+             matrix.m[8] * point.z + matrix.m[12]) / w,
+            (matrix.m[1] * point.x + matrix.m[5] * point.y +
+             matrix.m[9] * point.z + matrix.m[13]) / w,
+            (matrix.m[2] * point.x + matrix.m[6] * point.y +
+             matrix.m[10] * point.z + matrix.m[14]) / w};
+}
+
+void testMatrices() {
+    const engine::Matrix projection = engine::perspectiveLH(1, 1.5f, 0.1f, 100);
+    assert(near(transformPoint(projection, {0, 0, 0.1f}).z, 0));
+    assert(near(transformPoint(projection, {0, 0, 100}).z, 1));
+    const engine::Matrix view = engine::lookAtLH({0, 2, 5}, {0, 2, 0});
+    const Vec3 eye = transformPoint(view, {0, 2, 5});
+    assert(near(eye.x, 0) && near(eye.y, 0) && near(eye.z, 0));
+    assert(near(transformPoint(view, {0, 2, 0}).z, 5));
+    const engine::Matrix model =
+        engine::compose({2, 3, 4}, {2, 2, 2}, 3.14159265358979323846f * 0.5f);
+    const Vec3 facing = transformPoint(model, {0, 0, -1});
+    assert(near(facing.x, 4) && near(facing.y, 3) && near(facing.z, 4));
+    const engine::Matrix combined = engine::multiply(view, model);
+    const Vec3 direct = transformPoint(combined, {0, 0, -1});
+    const Vec3 sequential = transformPoint(view, facing);
+    assert(near(direct.x, sequential.x));
+    assert(near(direct.y, sequential.y));
+    assert(near(direct.z, sequential.z));
+    const engine::Matrix verticalView = engine::lookAtLH({0, 5, 0}, {0, 0, 0});
+    assert(near(transformPoint(verticalView, {0, 0, 0}).z, 5));
+}
+} // namespace
+
+int main() {
+    testFixedStepAndSpeed();
+    testJumpAndInputEdges();
+    testSweptCollisionsAndVerticalContacts();
+    testKeyDoorCompletionAndReset();
+    testBoundariesAndFrameClamp();
+    testMatrices();
+    std::cout << "Native simulation: fixed-step movement, jumping, swept contacts, "
+                 "key/gate/exit, reset, bounds, and matrices passed.\n";
+}
