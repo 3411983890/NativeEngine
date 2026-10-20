@@ -45,6 +45,7 @@
 | `v0.4.0` `77db7d6` | 工作包 2：DXR 静态阴影（RTPSO/SBT/合成/回退） | `reports/latest/rt-shadows-evidence.json`（23 项） |
 | `v0.6.0` `67a6b33` | 工作包 3+4：G1 可靠性、Mesh Shader、Bindless 槽位 | `reports/latest/g1-reliability.json`（27 项）、`mesh-bindless-evidence.json`（22 项） |
 | `g1` `f34499e` | G1 放行 + Chromium 启动清单 | `reports/g1.json`（6/6 通过）、`docs/CHROMIUM-START.md` |
+| `v0.7.0` `ba44592` | 第一批：E07 确定性、R08 预算管理器、INN-14+N0 离线几何、H07 输出契约 | `reports/0.7.0/ba44592111d9/…`（verify 15/15；determinism 19/19；budget 18/18；offline 6/6） |
 | `8bf0f01` / `16a0c27` | Nanite/Lumen 方案与创新清单取舍（设计文档） | `docs/NANITE-LUMEN-PLAN.md`、`docs/IDEA-TRIAGE.md` |
 
 ---
