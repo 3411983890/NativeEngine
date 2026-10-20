@@ -179,4 +179,4 @@ npm run package                # 在 outputs/ 生成目录与 zip
 - CI 工作流只在本地完整重放过；GitHub 托管 runner 没有 D3D12 GPU，显卡相关步骤在远程会退化为 WARP 并允许失败，不能替代本机显卡证据。
 - 下一阶段优先级：用 DXC 编译一个可切换的 DXR 静态阴影 pass，再补 Mesh Shader 样例和完整 Bindless 槽位管理；之后进入 Chromium 共享纹理宿主。
 
-详细状态见 [docs/STATUS.md](docs/STATUS.md)；下一阶段 1–4 的目标、验收标准和启动提示见 [docs/NEXT-PHASE.md](docs/NEXT-PHASE.md)。
+详细状态见 [docs/STATUS.md](docs/STATUS.md)；逐条任务的完成/未完成台账见 [docs/DEV-TASKS.md](docs/DEV-TASKS.md)；下一阶段 1–4 的目标、验收标准和启动提示见 [docs/NEXT-PHASE.md](docs/NEXT-PHASE.md)。
