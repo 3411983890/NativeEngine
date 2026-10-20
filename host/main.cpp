@@ -4,12 +4,15 @@
 #include <commdlg.h>
 #include <shellapi.h>
 #include "scene_loader.hpp"
+#include "budget.hpp"
 #include "nativegpu_version.h"
 #include "../renderer/d3d12_renderer.h"
 #include "../engine/native/math.hpp"
 #include "../third_party/json.hpp"
 #include <chrono>
 #include <cwchar>
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -75,6 +78,18 @@ struct App {
     std::string screenshotPath,screenshotError;
     SceneStamp sceneStamp;
     std::vector<double> cpuTimes,cpuSubmitTimes,gpuTimes,gpuRtTimes,frameTimes;
+    // Determinism: a run seed, an optional per-frame digest log, and the final digest.
+    std::uint64_t seed=20261020;
+    bool hashEnabled=false;
+    std::string hashLogPath,finalHash;
+    std::ofstream hashLog;
+    unsigned long long hashLines=0;
+    // Frame budget governor. Disabled unless --budget auto is passed.
+    host::BudgetGovernor budget;
+    bool budgetMode=false;
+    double budgetTargetMs=16.6,budgetCpuMs=0.0;
+    unsigned long long budgetVramMb=0;
+    unsigned budgetWindow=120,budgetSustain=30;
     Clock::time_point began=Clock::now(),last=began,lastUi=began,lastWatch=began;
 } app;
 constexpr int ID_PAUSE=101,ID_RESET=102,ID_RELOAD=103,ID_OPEN=104,ID_RESTART=105;
@@ -110,6 +125,17 @@ std::string narrow(const wchar_t* s) {
     return out;
 }
 void setText(HWND h,const std::wstring& text){SetWindowTextW(h,text.c_str());}
+// One digest line per simulated frame. The format is intentionally boring: frame,tick,hash.
+// E08 will add the input columns needed for replay; nothing here reads the log back.
+void writeHashLine(){
+    if(!app.hashEnabled||!app.hashLog.is_open())return;
+    engine::determinism::Hasher hasher;
+    app.game.digest(hasher);
+    app.finalHash=hasher.hex();
+    app.hashLog<<app.frames<<','<<app.game.ticks()<<','<<app.finalHash<<'\n';
+    app.hashLog.flush();
+    ++app.hashLines;
+}
 HWND label(const wchar_t* text,int x,int y,int w,int h,DWORD extra=0) {
     auto control=CreateWindowExW(0,L"STATIC",text,WS_CHILD|WS_VISIBLE|extra,x,y,w,h,app.window,nullptr,nullptr,nullptr);
     SendMessageW(control,WM_SETFONT,reinterpret_cast<WPARAM>(app.font),TRUE);
@@ -323,6 +349,11 @@ double percentile(std::vector<double> x,double p){
     std::sort(x.begin(),x.end());
     return x[static_cast<size_t>(std::ceil((x.size()-1)*p))];
 }
+std::string hex64(unsigned long long value){
+    char buffer[17];
+    std::snprintf(buffer,sizeof(buffer),"%016llx",value);
+    return std::string(buffer);
+}
 void report(bool success){
     try{
         json r={
@@ -372,6 +403,44 @@ void report(bool success){
             {"capabilities",json::parse(app.renderer.capabilitiesJson())},
             {"probes",json::parse(app.renderer.probesJson())}
         };
+        json rngStreams=json::array();
+        for(const auto& stream:engine::determinism::registry().streams()){
+            rngStreams.push_back(json{{"name",stream.name()},{"counter",stream.counter()}});
+        }
+        r["determinism"]={
+            {"seed",app.seed},
+            {"fixedStepHz",120},
+            {"ticks",app.game.ticks()},
+            {"hashLog",app.hashLogPath},
+            {"hashLines",app.hashLines},
+            {"finalHash",app.finalHash},
+            {"rng",{{"streams",rngStreams},
+                    {"fingerprint",hex64(engine::determinism::registry().fingerprint())}}}
+        };
+        json budgetLadder=json::array();
+        for(const auto& step:app.budget.config().steps)budgetLadder.push_back(step);
+        json budgetSteps=json::array();
+        for(const auto& step:app.budget.steps()){
+            budgetSteps.push_back(json{
+                {"name",step.name},{"frame",step.frame},{"reason",step.reason},
+                {"gpuMedianBeforeMs",step.gpuMedianBefore},{"cpuMedianBeforeMs",step.cpuMedianBefore}});
+        }
+        r["budget"]={
+            {"enabled",app.budget.config().enabled},
+            {"status",app.budget.status()},
+            {"level",app.budget.level()},
+            {"targetGpuMs",app.budget.config().targetGpuMs},
+            {"windowFrames",app.budget.config().windowFrames},
+            {"sustainFrames",app.budget.config().sustainFrames},
+            {"samples",app.budget.samples()},
+            {"gpuSamples",app.budget.gpuSamples()},
+            {"overBudgetFrames",app.budget.overBudgetFrames()},
+            {"gpuP95Ms",app.budget.samples()?json(app.budget.gpuP95()):json(nullptr)},
+            {"cpuP95Ms",app.budget.samples()?json(app.budget.cpuP95()):json(nullptr)},
+            {"vramPeakBytes",app.budget.vramPeak()},
+            {"ladder",budgetLadder},
+            {"steps",budgetSteps}
+        };
         if(!app.reportPath.parent_path().empty())std::filesystem::create_directories(app.reportPath.parent_path());
         std::ofstream out(app.reportPath,std::ios::binary);out<<r.dump(2)<<"\n";
     }catch(...){/* Reporting must not hide the original device diagnostic. */}
@@ -401,6 +470,14 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         }
         else if(arg==L"--fault-test"){app.faultTest=true;app.smoke=true;app.faultMaterial=true;}
         else if(arg==L"--no-stress")app.noStress=true;
+        else if(arg==L"--seed"&&i+1<argc)app.seed=_wcstoui64(argv[++i],nullptr,10);
+        else if(arg==L"--hash-log"&&i+1<argc)app.hashLogPath=narrow(argv[++i]);
+        else if(arg==L"--budget"&&i+1<argc)app.budgetMode=(std::wstring(argv[++i])!=L"off");
+        else if(arg==L"--budget-target-ms"&&i+1<argc)app.budgetTargetMs=_wtof(argv[++i]);
+        else if(arg==L"--budget-cpu-ms"&&i+1<argc)app.budgetCpuMs=_wtof(argv[++i]);
+        else if(arg==L"--budget-vram-mb"&&i+1<argc)app.budgetVramMb=_wcstoui64(argv[++i],nullptr,10);
+        else if(arg==L"--budget-window"&&i+1<argc)app.budgetWindow=static_cast<unsigned>(std::max(1,_wtoi(argv[++i])));
+        else if(arg==L"--budget-sustain"&&i+1<argc)app.budgetSustain=static_cast<unsigned>(std::max(1,_wtoi(argv[++i])));
         else if(arg==L"--mesh-shaders"&&i+1<argc){app.meshRequested=(std::wstring(argv[++i])!=L"off");}
         else if(arg==L"--fault-material")app.faultMaterial=true;
         else if(arg==L"--fault-scene"&&i+1<argc)app.faultScenePath=narrow(argv[++i]);
@@ -457,6 +534,24 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         app.reportPath=folder/"reports/native-session.json";
     }
     if(!reloadScene(app.scenePath)){report(false);return 2;}
+    // Determinism: the run seed owns every random stream. Streams are registered up front
+    // so the report proves which consumers exist even before they draw any numbers.
+    engine::determinism::registry().reset(app.seed);
+    engine::determinism::registry().stream("gameplay");
+    engine::determinism::registry().stream("cosmetic");
+    if(!app.hashLogPath.empty()){
+        const std::filesystem::path path(app.hashLogPath);
+        if(path.has_parent_path())std::filesystem::create_directories(path.parent_path());
+        app.hashLog.open(path,std::ios::binary|std::ios::trunc);
+        if(!app.hashLog){
+            app.error="cannot open hash log: "+app.hashLogPath;
+            app.errorCode="NG-E-IO-HASH-LOG";
+            report(false);return 6;
+        }
+        app.hashEnabled=true;
+        app.hashLog<<"# nativegpu-determinism v1 seed="<<app.seed<<" step=1/120\n";
+        app.hashLog.flush();
+    }
     if(app.faultTest){
         // Invalid pipeline: a deliberately broken shader must fail with a stable code.
         std::string code,text;
@@ -516,6 +611,21 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         app.renderer.injectDeviceRemovalAtFrame(static_cast<unsigned>(app.deviceRemovalAtFrame));
     }
     app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
+    // Budget policy is configured after the renderer so the ladder only contains steps
+    // that can actually change quality in this run.
+    if(app.budgetMode){
+        host::BudgetConfig config;
+        config.enabled=true;
+        config.targetGpuMs=app.budgetTargetMs;
+        config.targetCpuSubmitMs=app.budgetCpuMs;
+        config.targetVramBytes=app.budgetVramMb*1024ull*1024ull;
+        config.windowFrames=app.budgetWindow;
+        config.sustainFrames=app.budgetSustain;
+        if(app.rtShadowRequested)config.steps.push_back("rt-shadows-off");
+        if(app.meshRequested)config.steps.push_back("mesh-path-off");
+        if(config.steps.empty())config.enabled=false;
+        app.budget.configure(config);
+    }
     app.ready=true;
     if(!app.smoke){ShowWindow(app.window,show);UpdateWindow(app.window);}
     app.began=app.last=Clock::now();
@@ -543,7 +653,10 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             input.pitchDelta=app.pitchDelta+(down(VK_DOWN)-down(VK_UP))*dt;
         }
         app.yawDelta=0;app.pitchDelta=0;
-        if(!app.paused)app.game.update(input,app.smoke?1.f/60.f:dt);
+        if(!app.paused){
+            app.game.update(input,app.smoke?1.f/60.f:dt);
+            writeHashLine();
+        }
         auto p=app.game.playerPosition();
         const float yaw=app.game.yaw(),pitch=app.game.pitch();
         engine::Vec3 eye={p.x-std::sin(yaw)*7.f*std::cos(pitch),p.y+1.4f+std::sin(pitch)*7.f,p.z+std::cos(yaw)*7.f*std::cos(pitch)};
@@ -627,6 +740,25 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             if(stats.gpuValid)app.gpuTimes.push_back(stats.gpuMs);
             if(stats.gpuRtValid)app.gpuRtTimes.push_back(stats.gpuRtMs);
             app.frameTimes.push_back(dt*1000.);
+        }
+        // Frame budget: a sustained over-target window walks a fixed quality ladder. The
+        // governor only decides when; the host applies the vertex-path toggle here and
+        // records the step so the report can prove what changed and why.
+        if(app.budget.config().enabled){
+            const unsigned long long vram=app.renderer.videoMemoryBytes();
+            const char* step=app.budget.observe(app.frames,stats.gpuMs,stats.gpuValid,
+                                                stats.cpuSubmitMs,vram);
+            if(step&&step[0]){
+                const std::string name(step);
+                if(name=="rt-shadows-off"){
+                    app.renderer.setRtShadows(false);
+                    app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
+                } else if(name=="mesh-path-off"){
+                    app.renderer.setMeshShaders(false);
+                }
+                app.budget.noteApplied(name,app.frames,app.budget.pendingReason());
+                app.liveStatus=L"预算超限降档："+wide(name);
+            }
         }
         // Lifecycle stress: rebuild the renderer every few frames and record the object
         // and video-memory trend after each shutdown.

@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "determinism.hpp"
+
 namespace engine {
 
 struct Vec3 {
@@ -82,6 +84,12 @@ public:
     void reset();
     std::vector<Pose> renderPoses() const;
 
+    // Deterministic digest over every value the simulation reads next tick. Rendering
+    // state, camera smoothing and wall-clock time are deliberately excluded so the
+    // digest cannot change because a frame was drawn differently.
+    void digest(determinism::Hasher& hasher) const;
+    unsigned long long ticks() const { return ticks_; }
+
     Vec3 playerPosition() const { return player_; }
     float yaw() const { return yaw_; }
     float pitch() const { return pitch_; }
@@ -118,6 +126,7 @@ private:
     bool interactPending_ = false;
     float feedbackTime_ = 0.0f;
     std::string feedback_;
+    unsigned long long ticks_ = 0;
 };
 
 } // namespace engine

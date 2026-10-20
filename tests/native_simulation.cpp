@@ -247,6 +247,113 @@ void testMatrices() {
     const engine::Matrix verticalView = engine::lookAtLH({0, 5, 0}, {0, 0, 0});
     assert(near(transformPoint(verticalView, {0, 0, 0}).z, 5));
 }
+
+// ------------------------------------------------------------------ determinism
+
+void testHasherGrid() {
+    using engine::determinism::Hasher;
+    Hasher a, b;
+    for (int index = 0; index < 16; ++index) {
+        a.quantized(0.1f * static_cast<float>(index));
+        b.quantized(0.1f * static_cast<float>(index));
+    }
+    assert(a.value() == b.value());
+    Hasher different;
+    different.quantized(0.1f);
+    assert(different.value() != a.value());
+
+    // Quantization collapses float noise to the same integer, which is what makes the
+    // digest survive a different libm or optimization level.
+    Hasher q1, q2, q3;
+    q1.quantized(1.0f);
+    q2.quantized(1.0f + 0.4e-4f);
+    q3.quantized(1.0f + 3.0e-4f);
+    assert(q1.value() == q2.value());
+    assert(q3.value() != q1.value());
+
+    // Non-finite input hashes to a sentinel instead of a conversion result that differs
+    // between compilers.
+    Hasher nan, inf;
+    nan.quantized(std::numeric_limits<float>::quiet_NaN());
+    inf.quantized(std::numeric_limits<float>::infinity());
+    assert(nan.value() == inf.value());
+    assert(nan.value() != q1.value());
+}
+
+void testStreams() {
+    using namespace engine::determinism;
+    Stream a("gameplay", 42), b("gameplay", 42), c("gameplay", 43);
+    bool reproduced = true, diverged = false;
+    for (int index = 0; index < 256; ++index) {
+        const auto va = a.next(), vb = b.next(), vc = c.next();
+        if (va != vb) reproduced = false;
+        if (va != vc) diverged = true;
+    }
+    assert(reproduced);
+    assert(diverged);
+    assert(a.counter() == 256);
+
+    // Drawing from one stream must never shift another stream's sequence.
+    Registry& registry = engine::determinism::registry();
+    registry.reset(7);
+    Stream& gameplay = registry.stream("gameplay");
+    Stream& cosmetic = registry.stream("cosmetic");
+    const auto cosmeticFirst = cosmetic.next();
+    for (int index = 0; index < 1000; ++index) gameplay.next();
+    const auto cosmeticSecond = cosmetic.next();
+    Stream fresh("cosmetic", deriveSeed(7, "cosmetic"));
+    assert(fresh.next() == cosmeticFirst);
+    assert(fresh.next() == cosmeticSecond);
+
+    // The fingerprint covers the seed and every counter, so a consumed number is visible.
+    const auto before = registry.fingerprint();
+    gameplay.next();
+    assert(registry.fingerprint() != before);
+
+    Stream unit("unit", 1);
+    for (int index = 0; index < 1000; ++index) {
+        const float value = unit.unit();
+        assert(value >= 0.0f && value < 1.0f);
+        assert(unit.range(7) < 7);
+    }
+    assert(unit.range(0) == 0);
+}
+
+void testGameDigest() {
+    Scene scene;
+    scene.entities.push_back(object("ground", "ground", {0, -0.5f, 0}, {20, 1, 20}));
+    scene.entities.push_back(object("player", "player", {0, 0, 5}, {0.8f, 1.8f, 0.5f}));
+    Game first, second;
+    first.initialize(scene);
+    second.initialize(scene);
+    Input walk;
+    walk.forward = 1.0f;
+    walk.right = 0.25f;
+    for (int index = 0; index < 120; ++index) {
+        first.update(walk, 1.0f / 60.0f);
+        second.update(walk, 1.0f / 60.0f);
+    }
+    engine::determinism::Hasher h1, h2;
+    first.digest(h1);
+    second.digest(h2);
+    assert(first.ticks() == second.ticks());
+    assert(first.ticks() > 0);
+    assert(h1.value() == h2.value());
+
+    // A different input sequence must produce a different digest, otherwise the digest
+    // is not actually covering the simulated state.
+    Game idleGame;
+    idleGame.initialize(scene);
+    Input idle;
+    for (int index = 0; index < 120; ++index) idleGame.update(idle, 1.0f / 60.0f);
+    engine::determinism::Hasher h3;
+    idleGame.digest(h3);
+    assert(h3.value() != h1.value());
+
+    // Reset returns the simulation to tick 0 so a replay can start from its own origin.
+    first.reset();
+    assert(first.ticks() == 0);
+}
 } // namespace
 
 int main() {
@@ -256,6 +363,10 @@ int main() {
     testKeyDoorCompletionAndReset();
     testBoundariesAndFrameClamp();
     testMatrices();
+    testHasherGrid();
+    testStreams();
+    testGameDigest();
     std::cout << "Native simulation: fixed-step movement, jumping, swept contacts, "
-                 "key/gate/exit, reset, bounds, and matrices passed.\n";
+                 "key/gate/exit, reset, bounds, matrices, deterministic hashing and "
+                 "RNG streams passed.\n";
 }

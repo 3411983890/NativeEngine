@@ -76,6 +76,9 @@ void Game::reset() {
     interactPending_ = false;
     feedbackTime_ = 0.0f;
     feedback_.clear();
+    // A reset puts the simulation back at tick 0 so a recorded run can be replayed from
+    // its own beginning instead of a global counter.
+    ticks_ = 0;
 }
 
 Vec3 Game::location(const std::string& kind, Vec3 fallback) const {
@@ -117,6 +120,7 @@ void Game::update(Input input, float dt) {
 }
 
 void Game::step(const Input& input, float dt) {
+    ++ticks_;
     feedbackTime_ = std::max(0.0f, feedbackTime_ - dt);
     if (jumpPending_) {
         if (grounded_) {
@@ -370,6 +374,42 @@ std::vector<Pose> Game::renderPoses() const {
         }
     }
     return poses;
+}
+
+void Game::digest(determinism::Hasher& hasher) const {
+    hasher.text("nativgpu.game/1");
+    hasher.u64(ticks_);
+    hasher.quantized(player_.x);
+    hasher.quantized(player_.y);
+    hasher.quantized(player_.z);
+    hasher.quantized(verticalVelocity_);
+    hasher.quantized(yaw_);
+    hasher.quantized(pitch_);
+    hasher.quantized(animationPhase_);
+    hasher.quantized(animationSpeed_);
+    hasher.quantized(feedbackTime_);
+    hasher.u8(static_cast<std::uint8_t>(grounded_ ? 1 : 0));
+    hasher.u8(static_cast<std::uint8_t>(hasKey_ ? 1 : 0));
+    hasher.u8(static_cast<std::uint8_t>(doorOpen_ ? 1 : 0));
+    hasher.u8(static_cast<std::uint8_t>(complete_ ? 1 : 0));
+    hasher.u8(static_cast<std::uint8_t>(jumpPending_ ? 1 : 0));
+    hasher.u8(static_cast<std::uint8_t>(interactPending_ ? 1 : 0));
+    // The rendered pose list is derived from the state above, but hashing it catches a
+    // divergence in the pose construction that the raw fields would miss.
+    const std::vector<Pose> poses = renderPoses();
+    hasher.u32(static_cast<std::uint32_t>(poses.size()));
+    for (const Pose& pose : poses) {
+        hasher.quantized(pose.position.x);
+        hasher.quantized(pose.position.y);
+        hasher.quantized(pose.position.z);
+        hasher.quantized(pose.scale.x);
+        hasher.quantized(pose.scale.y);
+        hasher.quantized(pose.scale.z);
+        hasher.quantized(pose.yaw);
+        hasher.quantized(pose.pitch);
+        hasher.quantized(pose.roll);
+        hasher.u32(pose.texture);
+    }
 }
 
 } // namespace engine

@@ -62,6 +62,19 @@ Invoke-Step 'Native tests' {
     if ($LASTEXITCODE -ne 0) { throw 'native_scene_tests failed.' }
     & '.\build\renderer_math_tests.exe'
     if ($LASTEXITCODE -ne 0) { throw 'renderer_math_tests failed.' }
+    & '.\build\budget_tests.exe'
+    if ($LASTEXITCODE -ne 0) { throw 'budget_tests failed.' }
+}
+
+Invoke-Step 'Offline geometry package' {
+    $selfTest = & $node.Source 'tools\offline\geometry-package.mjs' self-test
+    if ($LASTEXITCODE -ne 0) { throw 'geometry package self-test failed.' }
+    $digest = ($selfTest | Where-Object { $_ -match '^package digest: ([0-9a-f]{64})$' })
+    if (-not $digest) { throw 'geometry package self-test printed no digest.' }
+    & $node.Source 'tools\offline\geometry-package.mjs' build --out 'build\offline' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'geometry package build failed.' }
+    & $node.Source 'tools\offline\geometry-package.mjs' verify --package 'build\offline\geometry.package.json' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'geometry package verify failed.' }
 }
 
 Invoke-Step 'Scene contract validation' {
@@ -138,6 +151,24 @@ Invoke-Step 'G1 reliability suite' {
     if (-not (Test-Path -LiteralPath $evidence)) { throw 'G1 reliability report is missing.' }
     Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'g1-reliability.json') -Force
     Register-Report -Context $context -Path (Join-Path $context.directory 'g1-reliability.json') | Out-Null
+}
+
+Invoke-Step 'Determinism evidence' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'determinism.ps1') -SkipBuild -Frames 240
+    if ($LASTEXITCODE -ne 0) { throw 'Determinism evidence suite failed.' }
+    $evidence = Join-Path 'reports\latest' 'determinism-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'Determinism evidence report is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'determinism-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'determinism-evidence.json') | Out-Null
+}
+
+Invoke-Step 'Frame budget evidence' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'budget.ps1') -SkipBuild -Frames 240
+    if ($LASTEXITCODE -ne 0) { throw 'Frame budget evidence suite failed.' }
+    $evidence = Join-Path 'reports\latest' 'budget-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'Budget evidence report is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'budget-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'budget-evidence.json') | Out-Null
 }
 
 Invoke-Step 'Live scene hot reload' {
