@@ -76,11 +76,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/rt-shadows.ps1
 
 ## 4. 后续工作包
 
-按 [NEXT-PHASE.md](NEXT-PHASE.md) 顺序推进：
+工作包 1–4 已完成、G1 已放行（证据见 `reports/g1.json`）。逐条任务状态、先决条件与并行泳道见 [DEV-TASKS.md](DEV-TASKS.md)。
 
-- 工作包 3：G1 可靠性（设备丢失、资源生命周期 50 次、非法状态与错误输入、PIX/RenderDoc 捕获、性能基线）。
-- 工作包 4：Mesh Shader 样例与 Bindless 槽位管理。
-- 工作包 5：只有 G1 放行后才开始 Chromium S2，且必须先冻结 Chromium commit。
+- **第 1 批（可并行）**：R08 预算管理器 · E07 确定性契约 · INN-14 几何包格式 + N0 离线 cluster DAG · H07 输出契约文档（仅文档）。
+- **第 2 批**：R06 最小 RHI → R07 误差契约 · E08 黑匣子回放 · B7 glTF + L0 SDF 烘焙 + S3E-07 设计期 lint。
+- **第 3 批**：B1 compute 管线 + B3 bindless 堆 → N1 GPU 剔除 / L1 屏幕+SDF 追踪。
+- **S2 Chromium（H01–H06）**：只有用户确认后才开始，且必须先冻结 Chromium commit（见 [CHROMIUM-START.md](CHROMIUM-START.md)）。
 
 ## 5. 维护约束
 
@@ -93,5 +94,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/rt-shadows.ps1
 
 ## 6. 下个对话目标
 
-依次完成工作包 3–4 并通过 G1 放行检查；G1 通过后停止图形扩展，等用户确认再进入第 5 项 Chromium。
+按 [DEV-TASKS.md](DEV-TASKS.md) §15 的分批方案推进第 1 批（R08 / E07 / INN-14+N0 / H07 文档），四条泳道互不抢文件。S2 Chromium 仍等用户确认后再启动。
 
