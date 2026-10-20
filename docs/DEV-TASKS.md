@@ -28,7 +28,7 @@
 | S4 AI/Blender | G4 | 0 | 1 | 7 | ⬜ |
 | S5 闭环整合 | G5 | 0 | 3 | 3 | ⬜ |
 | S6 稳定发布 | G6 | 0 | 3 | 6 | ⬜ |
-| X1–X6 扩展 | — | 3 | 1 | 6 | ⬜ |
+| X1–X6 扩展 | — | 3 | 3 | 6 | ⬜ |
 
 20 条创新点**不再单列**，已全部落成上表中的工作包（R07/R08、E07–E10、S3E-07、H07、A07/A08、Q07–Q09、X1 的 B/N/L 子项），每条的先决条件、优先级与并行泳道见 §12，泳道划分见 §13。
 
@@ -201,6 +201,8 @@
 | INN-14 | 内容寻址几何包格式 | ✅ | — | `tools/offline/geometry-package.mjs` + `docs/GEOMETRY-PACKAGE.md`；确定性重建与篡改检测有测试 |
 | B7 | glTF 2.0 子集加载（离线） | ✅ | — | `tools/offline/gltf.mjs` + 可复现 fixtures + 6 项测试；支持嵌入/sibling buffer、索引三角形、POSITION/NORMAL；拒绝 skin/animation/扩展/稀疏/Draco/.glb 与非单位变换、多场景、实例化 |
 | L0 | SDF 烘焙（远场） | ✅ | — | `tools/offline/sdf-bake.mjs` + 8 项测试 + `docs/SDF-BAKE.md`；32³ 球面中心最大误差 0.0587 体素、盒角三线性 0.4984（插值固有）；**当前场景网格不封闭，符号用最近三角形法向，不是可靠内部场** |
+| B1 | compute 管线与 compute 队列 | 🟡 | — | `renderer/compute_pass.cpp` + `shaders/compute_probe.hlsl`（cs_6_6）；240 帧 240 次派发、240 次跨队列等待；报告 `probes.compute`；`tools/compute.ps1` 15 项。**结果尚未进入合成画面（B1b）**，无队列并行量化证据 |
+| B3 | bindless 堆真实现（SM 6.6） | 🟡 | — | `ResourceDescriptorHeap` 索引 32–35 与描述符表采样**逐位一致**（4/4，maxDelta 0）；缺 `CBV_SRV_UAV_HEAP_DIRECTLY_INDEXED` 时 PSO 报 E_INVALIDARG 已记录。**材质主路径仍在 8 槽有界表**，迁移需先用 DXC 编译光栅着色器（B3b） |
 
 ## 10. 常驻工程任务（每周/每版本）
 

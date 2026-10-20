@@ -76,11 +76,19 @@ enum FrameDescriptorSlot : unsigned {
     FdsBaseColor = 3,
     FdsKeyLight = 4,
     FdsShadowMaskSrv = 5,
+    FdsComputeResult = 6,
     FdsCount = 8
 };
 
 constexpr unsigned DescriptorSlotCount =
     FrameDescriptorBase + FrameCount * FrameDescriptorStride;
+
+// Four SRVs live above the frame blocks so the compute probe can prove that
+// ResourceDescriptorHeap resolves indices a bounded 8-slot table could never address.
+constexpr unsigned VerificationSrvBase = DescriptorSlotCount;
+constexpr unsigned VerificationSrvCount = 4;
+constexpr unsigned ComputeResultUavSlot = VerificationSrvBase + VerificationSrvCount;
+constexpr unsigned DescriptorHeapSlots = ComputeResultUavSlot + 1;
 
 // RTV heap: one swap chain target per frame, then three offscreen targets per frame
 // (base colour, key light, composite).
@@ -299,6 +307,37 @@ struct Renderer::Impl {
     std::string meshError;
     detail::MaterialTable materials;
 
+    // --- compute queue and probe (B1 / B3) ---
+    // A dedicated compute queue proves the renderer can own more than one queue, and the
+    // probe dispatch verifies SM 6.6 heap indexing against the descriptor-table path.
+    ID3D12CommandQueue* computeQueue = nullptr;
+    ID3D12CommandAllocator* computeAllocator = nullptr;
+    ID3D12GraphicsCommandList* computeCommands = nullptr;
+    ID3D12Fence* computeFence = nullptr;
+    UINT64 computeFenceValue = 0;
+    ID3D12RootSignature* computeRootSignature = nullptr;
+    ID3D12PipelineState* computePipeline = nullptr;
+    ID3D12Resource* computeConstants = nullptr;
+    float* computeConstantsMapped = nullptr;
+    ID3D12Resource* computeResult = nullptr;
+    ID3D12Resource* computeReadback = nullptr;
+    bool computeRequested = false;
+    bool computePipelineReady = false;
+    bool computeCorrupt = false;
+    bool computeQueueCreated = false;
+    unsigned computeDispatchedFrames = 0;
+    unsigned computeCrossQueueWaits = 0;
+    bool computeProbeRan = false;
+    bool computeHeapVerified = false;
+    unsigned computeHeapPairsMatched = 0;
+    unsigned computeHeapBaseIndex = 0;
+    unsigned computeMaxIndexTested = 0;
+    float computeHeapMaxDelta = 0.0f;
+    float computeLightScaleGpu = 0.0f;
+    float computeLightScaleCpu = 0.0f;
+    std::vector<LightDesc> computeLastLights;
+    std::string computeError;
+
     // --- reliability diagnostics ---
     // Stable error codes (NG-E-*) plus bounded text so a failure is never silent and
     // never floods a report. Entries are capped; the counter is exact.
@@ -373,6 +412,11 @@ struct Renderer::Impl {
     bool selfTestInvalidPipeline(std::string& code, std::string& text);
     bool buildMeshPipeline(std::string& error);
     void releaseMeshPipeline();
+    bool createComputePipeline(std::string& error);
+    void releaseComputePipeline();
+    bool dispatchComputeProbe(const std::vector<LightDesc>& lights, std::string& error);
+    bool readbackComputeProbe(std::string& error);
+    std::string computeProbesFragment() const;
     bool createMeshletData(std::string& error);
     bool renderMeshPath(ID3D12GraphicsCommandList4* list, const std::vector<DrawItem>& items,
                         const Mat4& viewProjection, const float eye[3]);

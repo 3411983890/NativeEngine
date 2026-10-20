@@ -47,6 +47,8 @@ public:
     virtual void setMeshShaders(bool enabled) = 0;
     virtual bool meshShadersEnabled() const = 0;
     virtual void setCompositeDebugView(unsigned view) = 0;
+    // Compute probe toggle (B1/B3). Backends without compute ignore it.
+    virtual void setCompute(bool enabled, bool corrupt) = 0;
 
     virtual bool requestScreenshot(const std::string& path, std::string& error) = 0;
     virtual bool captureScreenshot(const std::string& path, std::string& error) = 0;

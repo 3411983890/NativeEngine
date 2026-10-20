@@ -84,6 +84,12 @@ public:
     bool requestScreenshot(const std::string& path, std::string& error);
     bool captureScreenshot(const std::string& path, std::string& error);
 
+    // Compute probe (B1/B3): a dedicated compute queue plus an SM 6.6 heap-indexing check
+    // against the descriptor-table path. Optional; reports through probes.compute.
+    void setComputeEnabled(bool enabled);
+    void setComputeCorrupt(bool corrupt);
+    bool computeProbeVerified() const;
+
     // Reliability surface used by the G1 evidence suite.
     void injectDeviceRemovalAtFrame(unsigned frame);
     unsigned injectedRemovalFrame() const;

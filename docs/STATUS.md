@@ -1,6 +1,6 @@
 # 项目状态与移交说明
 
-- 版本：0.8.0（第二批：RHI 边界、误差契约、回放/黑匣子、glTF、SDF 烘焙、设计期 lint）
+- 版本：0.9.0（第三批：compute 队列与 SM 6.6 堆索引探针）
 - 日期：2026-10-20
 - 当前形态：Windows 11 x64 + D3D12 独立原生宿主（光栅 + DXR 静态阴影）+ Node.js 确定性场景事务层 + 本地 MCP 工具服务 + 可重放 CI
 - 不包含：Chromium 接入、SM 6.6 直接堆索引、放大剔除、资产导入、骨骼动画、模型调用、运行时 Nanite/Lumen
@@ -15,6 +15,13 @@
 | H07 输出契约 | `docs/OUTPUT-CONTRACT.md` | 逐条对照真实渲染器符号，未实现项全部按"S2 要求"标注 |
 
 详见 `docs/DETERMINISM.md`、`docs/BUDGET.md`、`docs/GEOMETRY-PACKAGE.md`、`docs/OUTPUT-CONTRACT.md`。
+
+## 1e. 第三批（0.9.0）
+
+| 工作包 | 产物 | 证据 |
+| --- | --- | --- |
+| B1 compute 队列 | `renderer/compute_pass.cpp`、`shaders/compute_probe.hlsl`（cs_6_6） | `tools/compute.ps1` 15/15；240 帧 240 次派发、240 次跨队列等待；结果未进画面 |
+| B3 SM 6.6 堆索引 | `ResourceDescriptorHeap[32..35]` vs 描述符表 | 4/4 采样逐位相同（maxDelta 0）；材质主路径仍是有界表 |
 
 ## 1d. 第二批并行工作包（0.8.0）
 

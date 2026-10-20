@@ -107,6 +107,7 @@ struct App {
     double blackboxDtMs=0.0,blackboxStallMs=25.0;
     // Frame budget governor. Disabled unless --budget auto is passed.
     host::BudgetGovernor budget;
+    bool computeRequested=false,computeCorrupt=false;
     bool budgetMode=false;
     double budgetTargetMs=16.6,budgetCpuMs=0.0;
     unsigned long long budgetVramMb=0;
@@ -304,6 +305,7 @@ bool restartRenderer(){
     app.rhi->setRtShadows(app.rtShadowRequested);
     app.rhi->setCompositeDebugView(app.debugView);
     app.rhi->setMeshShaders(app.meshRequested);
+    app.rhi->setCompute(app.computeRequested,app.computeCorrupt);
     // Injection must happen after initialize(), which rebuilds the renderer state. It is
     // armed exactly once so the recovery run is a clean renderer.
     if(app.deviceRemovalMode&&app.deviceRemovalAtFrame>0&&!app.deviceRemovalDetected){
@@ -602,6 +604,11 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             app.smoke=true;
         }
         else if(arg==L"--replay-strict")app.replayStrict=true;
+        else if(arg==L"--compute"&&i+1<argc){
+            const std::wstring mode=argv[++i];
+            app.computeRequested=(mode!=L"off");
+            app.computeCorrupt=(mode==L"corrupt");
+        }
         else if(arg==L"--stall-frame"&&i+1<argc)app.stallFrame=static_cast<unsigned>(std::max(0,_wtoi(argv[++i])));
         else if(arg==L"--stall-ms"&&i+1<argc)app.stallMs=static_cast<unsigned>(std::max(1,_wtoi(argv[++i])));
         else if(arg==L"--blackbox-stall-ms"&&i+1<argc)app.blackboxStallMs=_wtof(argv[++i]);
@@ -758,6 +765,7 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
     app.rhi->setRtShadows(app.rtShadowRequested);
     app.rhi->setCompositeDebugView(app.debugView);
     app.rhi->setMeshShaders(app.meshRequested);
+    app.rhi->setCompute(app.computeRequested,app.computeCorrupt);
     // Injection must happen after initialize(), which rebuilds the renderer state. It is
     // armed exactly once so the recovery run is a clean renderer.
     if(app.deviceRemovalMode&&app.deviceRemovalAtFrame>0&&!app.deviceRemovalDetected){

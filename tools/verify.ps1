@@ -201,6 +201,15 @@ Invoke-Step 'Image error contracts' {
     Register-Report -Context $context -Path (Join-Path $context.directory 'error-contract-evidence.json') | Out-Null
 }
 
+Invoke-Step 'Compute queue and heap indexing' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'compute.ps1') -SkipBuild -Frames 240
+    if ($LASTEXITCODE -ne 0) { throw 'Compute evidence suite failed.' }
+    $evidence = Join-Path 'reports\latest' 'compute-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'Compute evidence report is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'compute-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'compute-evidence.json') | Out-Null
+}
+
 Invoke-Step 'Live scene hot reload' {
     $directory = Join-Path $env:TEMP ('nativegpu-verify-' + [guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $directory | Out-Null

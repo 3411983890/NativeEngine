@@ -62,6 +62,10 @@ public:
     void setMeshShaders(bool enabled) override { renderer_.setMeshShaders(enabled); }
     bool meshShadersEnabled() const override { return renderer_.meshShadersEnabled(); }
     void setCompositeDebugView(unsigned view) override { renderer_.setCompositeDebugView(view); }
+    void setCompute(bool enabled, bool corrupt) override {
+        renderer_.setComputeEnabled(enabled);
+        renderer_.setComputeCorrupt(corrupt);
+    }
 
     bool requestScreenshot(const std::string& path, std::string& error) override {
         return renderer_.requestScreenshot(path, error);

@@ -66,6 +66,7 @@ public:
     void setMeshShaders(bool enabled) override { mesh_ = enabled; }
     bool meshShadersEnabled() const override { return mesh_; }
     void setCompositeDebugView(unsigned view) override { view_ = view; }
+    void setCompute(bool enabled, bool corrupt) override { compute_ = enabled; computeCorrupt_ = corrupt; }
     bool requestScreenshot(const std::string&, std::string&) override { return true; }
     bool captureScreenshot(const std::string&, std::string&) override { return true; }
     nativegpu::FrameStats stats() const override {
@@ -88,6 +89,8 @@ private:
     bool mesh_ = false;
     unsigned view_ = 0;
     unsigned width_ = 0, height_ = 0;
+    bool compute_ = false;
+    bool computeCorrupt_ = false;
     unsigned frames_ = 0;
     unsigned initializeCalls_ = 0;
 };

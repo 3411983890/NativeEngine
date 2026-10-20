@@ -1,6 +1,6 @@
 {
   "$schema": "./manifest.schema.json",
-  "version": 4,
+  "version": 5,
   "comment": "Authoritative shader build list. Every blob is compiled by the pinned DXC from tools/bootstrap-dxc.ps1 and embedded into the native binary. Raster and composite shaders are compiled with D3DCompile (SM 5.1) from embedded source so the base renderer never depends on DXC.",
   "blobs": [
     {
@@ -34,6 +34,14 @@
       "entry": "PSMain",
       "defines": ["PASS_PIXEL"],
       "description": "Mesh shader sample pixel shader (same lighting as the raster path)"
+    },
+    {
+      "symbol": "kComputeProbe",
+      "source": "shaders/compute_probe.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSMain",
+      "defines": [],
+      "description": "Compute probe: lighting reduction plus SM 6.6 heap-vs-table descriptor verification"
     }
   ]
 }

@@ -151,6 +151,8 @@ docs/             当前阶段状态、工具链冻结表与 CI/证据说明
 | 图像误差契约（0.8.0） | 已完成 | 5 条契约 + `tools/error-contract.ps1`，阈值来自实测，见 [docs/ERROR-CONTRACTS.md](docs/ERROR-CONTRACTS.md) |
 | glTF 子集 + SDF 烘焙（0.8.0） | 部分完成 | 离线加载/烘焙可用；无非单位变换、无 GPU 追踪，见 [docs/GEOMETRY-PACKAGE.md](docs/GEOMETRY-PACKAGE.md)、[docs/SDF-BAKE.md](docs/SDF-BAKE.md) |
 | 设计期 lint（0.8.0） | 已完成 | 12 条规则 + 可达性 BFS，`npm run scene -- lint`，见 [docs/SCENE-LINT.md](docs/SCENE-LINT.md) |
+| compute 队列（0.9.0） | 部分完成 | 独立 COMPUTE 队列 + 跨队列 fence + 回读校验；结果尚未进入画面，见 [docs/COMPUTE.md](docs/COMPUTE.md) |
+| SM 6.6 堆索引（0.9.0） | 部分完成 | `ResourceDescriptorHeap[32..35]` 与描述符表逐位一致；材质主路径迁移待 DXC 光栅变体 |
 | Chromium 编辑器与共享纹理 | 未实现 | 文档中的 S2 阶段，当前仍是独立 Win32 宿主 |
 | Blender/资产管线 | 未实现 | 文档中的 S4 阶段 |
 | 模型接入 | 未接模型 | 只提供模型无关的 MCP 工具面；不伪造 AI 能力 |

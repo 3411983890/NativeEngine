@@ -440,6 +440,20 @@ bool Renderer::Impl::createDescriptorViews(std::string& error) {
         device->CreateShaderResourceView(shadowMask[index].resource, &maskSrv,
                                         cpuDescriptor(base + detail::FdsShadowMaskSrv));
     }
+    // Verification SRVs live above the frame blocks so the compute probe can sample heap
+    // indices that the bounded 8-slot material table could never address.
+    for (unsigned index = 0; index < detail::VerificationSrvCount; ++index) {
+        D3D12_SHADER_RESOURCE_VIEW_DESC view{};
+        view.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        view.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        view.Texture2D.MipLevels = 1;
+        const bool colorSource = index < 3;
+        view.Format = colorSource ? detail::SceneColorFormat : detail::ShadowMaskFormat;
+        ID3D12Resource* source = colorSource ? sceneBaseColor[index].resource
+                                            : shadowMask[0].resource;
+        device->CreateShaderResourceView(source, &view,
+                                        cpuDescriptor(detail::VerificationSrvBase + index));
+    }
     return true;
 }
 
@@ -1271,7 +1285,7 @@ bool Renderer::initialize(HWND window, unsigned width, unsigned height, std::str
         return false;
     }
     state.track(state.dsvHeap);
-    heapDescription.NumDescriptors = detail::DescriptorSlotCount;
+    heapDescription.NumDescriptors = detail::DescriptorHeapSlots;
     heapDescription.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     heapDescription.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     if (!checked(state.device->CreateDescriptorHeap(&heapDescription, IID_PPV_ARGS(&state.srvHeap)),
@@ -1346,6 +1360,13 @@ bool Renderer::initialize(HWND window, unsigned width, unsigned height, std::str
         state.meshError = meshBuildError.empty() ? "mesh pipeline creation failed"
                                                  : meshBuildError;
     }
+    // Compute queue and probe: optional. Failure keeps the renderer usable and is reported
+    // through probes.compute.error instead of failing initialization.
+    std::string computeBuildError;
+    if (!state.createComputePipeline(computeBuildError)) {
+        state.computeError = computeBuildError.empty() ? "compute pipeline creation failed"
+                                                       : computeBuildError;
+    }
     state.initialized = true;
     return true;
 }
@@ -1409,6 +1430,16 @@ bool Renderer::render(const Mat4& viewProjection, const float cameraPosition[3],
     bool tlasReady = false;
     if (state.rtRequested && state.rtPipelineCreated && state.rtSbtCreated) {
         tlasReady = state.updateTopLevelAccelerationStructure(list4, items, index);
+    }
+
+    // Compute probe (B1/B3): dispatched on the compute queue before this frame's list is
+    // submitted; the graphics queue waits on the compute fence. The one-shot readback runs
+    // after a fixed number of dispatches so the pipeline has actually been exercised.
+    if (state.computeRequested && state.computePipelineReady) {
+        if (!state.dispatchComputeProbe(lights, error)) return false;
+        if (!state.computeProbeRan && state.computeDispatchedFrames >= 30) {
+            if (!state.readbackComputeProbe(error)) return false;
+        }
     }
 
     // 2. Frame-wide transitions.
@@ -1798,7 +1829,7 @@ std::string Renderer::probesJson() const {
         << ",\"slots\":" << state.materialSlots
         << ",\"mode\":\"bounded-texture-array\""
         << ",\"notes\":\"Bounded material table; not SM6.6 descriptor heap indexing\"},"
-        << "\"sceneLights\":{\"implemented\":true,\"maxLights\":4},"
+        << "\"sceneLights\":{\"implemented\":true,\"maxLights\":4}," << state.computeProbesFragment()
         << "\"renderTargets\":{\"mode\":\"offscreen-mrt-plus-composite\",\"frames\":"
         << detail::FrameCount
         << ",\"formats\":{\"baseColor\":\"R16G16B16A16_FLOAT\",\"keyLight\":\"R16G16B16A16_FLOAT\""
@@ -2007,6 +2038,7 @@ void Renderer::shutdown() {
     state.waitIdle(ignored);
     state.releaseRaytracingPipeline();
     state.releaseMeshPipeline();
+    state.releaseComputePipeline();
 
     state.destroy(state.captureReadback);
     state.destroy(state.commands6);
