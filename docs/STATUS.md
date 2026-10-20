@@ -1,9 +1,9 @@
 # 项目状态与移交说明
 
-- 版本：0.4.0（工作包 2/4：DXR 静态阴影）
+- 版本：0.6.0（工作包 3–4：G1 可靠性、Mesh Shader、Bindless 槽位）
 - 日期：2026-10-20
 - 当前形态：Windows 11 x64 + D3D12 独立原生宿主（光栅 + DXR 静态阴影）+ Node.js 确定性场景事务层 + 本地 MCP 工具服务 + 可重放 CI
-- 不包含：Chromium 接入、Mesh Shader 效果、完整 Bindless、设备丢失/生命周期压力、资产导入、骨骼动画、模型调用
+- 不包含：Chromium 接入、SM 6.6 直接堆索引、放大剔除、资产导入、骨骼动画、模型调用
 
 ## 1. 本次推进内容（工作包 2：DXR 静态阴影）
 
@@ -31,6 +31,19 @@
 本机数字（AMD Radeon 890M，1280x720，33 实例）：开启阴影 GPU P95 0.717 ms，关闭 0.467 ms
 （+0.250 ms）；DispatchRays 窗口 0.105 ms；可见性贴图 5,529,600 字节；3.30% 像素因阴影改变。
 CPU P95 约 17.2 ms，含 `Present(1,0)` 垂直同步等待，不代表 CPU 成本。
+
+## 1b. 工作包 3–4（0.5.0 / 0.6.0）
+
+- **G1 可靠性**：注入式设备丢失（检测→停止→重建→继续，`NG-E-DEVICE-REMOVED`）、渲染器生命周期 50 次
+  （对象计数归零、显存不增长、无锁/临时文件残留）、稳定错误码（`NG-E-PIPE-COMPILE`、`NG-E-MAT-STALE/MISSING`、
+  `NG-E-IO-SCENE`、`NG-E-RT-*`、`NG-E-MESH-*` 等）、损坏包拒绝（`BUILD_CONFLICT`）、DXC 负路径、
+  捕获工具探测（本机无 PIX/RenderDoc，见 docs/CAPTURE.md）、固定机位性能基线（docs/PERF-BASELINE.md）。
+- **Mesh Shader**：AS+MS+PS 三阶段，stream PSO，6 面 meshlet，`F11`/`--mesh-shaders` 切换，顶点路径回退；
+  GPU P95 0.388ms（mesh）vs 0.466ms（顶点）。放大剔除因 payload 一致性要求暂时禁用并如实报告。
+- **Bindless 槽位**：8 槽有界表、代际、缺材质默认槽（品红棋盘）、复用与释放、越界/过期诊断，
+  SM 6.6 直接堆索引评估为「支持但未实现」，报告 `bounded-table`。
+- **证据套件**：`tools/rt-shadows.ps1`（23 项）、`tools/mesh-bindless.ps1`（22 项）、
+  `tools/g1-reliability.ps1`（27 项）、`tools/g1.ps1`（G1 放行闸门）。
 
 ## 2. 阶段关口
 

@@ -1,6 +1,6 @@
 # NativeGPU / AI 原生游戏引擎
 
-版本 **0.4.0**。一个可运行、可验证的 Windows D3D12 原生游戏样板，以及供编辑器和 AI Agent 共用的确定性场景事务层。当前重点不是宣称“已经完成 AI 引擎”，而是把一条真实闭环做通：
+版本 **0.6.0**。一个可运行、可验证的 Windows D3D12 原生游戏样板，以及供编辑器和 AI Agent 共用的确定性场景事务层。当前重点不是宣称“已经完成 AI 引擎”，而是把一条真实闭环做通：
 
 > 读取场景 → 预览事务 → 原子提交 → 运行中的原生编辑器热重载 → 原生冒烟测试 → 返回可审计报告
 
@@ -47,7 +47,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/ci.ps1 -Clean
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1
 ```
 
-交互按键：`WASD` 移动、`Shift` 跑、`Space` 跳、`E` 交互、右键拖动或方向键转镜头、`F5` 重置玩法、`F6` 暂停、`F8` 重建渲染器、`F9` 开关热重载、`F10` 开关 DXR 阴影。
+交互按键：`WASD` 移动、`Shift` 跑、`Space` 跳、`E` 交互、右键拖动或方向键转镜头、`F5` 重置玩法、`F6` 暂停、`F8` 重建渲染器、`F9` 开关热重载、`F10` 开关 DXR 阴影、`F11` 切换 Mesh Shader 路径。
 
 ## 场景事务
 
@@ -140,8 +140,8 @@ docs/             当前阶段状态、工具链冻结表与 CI/证据说明
 | DXR 静态阴影 | 已完成（0.4.0） | DXC `lib_6_5` + RTPSO + SBT + 可见性贴图；`F10` 切换，关闭走纯光栅回退；23 项证据检查 |
 | AI 工具入口 | 已完成 | MCP stdio，8 个工具，协议冒烟测试 |
 | 版本冻结与 CI（0.3.1） | 已完成 | Git tag `v0.3.0`、固定 DXC 1.9.2609、`tools/ci.ps1` 可本机重放、版本化证据目录 |
-| Mesh Shader / Meshlet | 未实现 | 本机查询到 Mesh Shader Tier 10；尚未接入 DXC 与样例 |
-| Bindless 完整堆索引 | 未实现 | 当前是有界材质纹理表，不是 SM 6.6 descriptor heap indexing |
+| Mesh Shader / Meshlet | 已完成（0.6.0） | AS+MS+PS（stream PSO）、6 个面 meshlet、顶点路径回退、`F11` 切换；放大剔除当前禁用，见 docs/MESH-BINDLESS.md |
+| Bindless 槽位管理 | 部分完成（0.6.0） | 8 槽有界表 + 代际 + 默认槽 + 复用 + 诊断；SM 6.6 直接堆索引评估为未实现 |
 | Chromium 编辑器与共享纹理 | 未实现 | 文档中的 S2 阶段，当前仍是独立 Win32 宿主 |
 | Blender/资产管线 | 未实现 | 文档中的 S4 阶段 |
 | 模型接入 | 未接模型 | 只提供模型无关的 MCP 工具面；不伪造 AI 能力 |
@@ -173,7 +173,7 @@ npm run package                # 在 outputs/ 生成目录与 zip
 - 仅支持 Windows 11 x64、D3D12 和方盒几何；没有骨骼动画、资产导入、音频、脚本系统或网络。
 - 场景工具是受信本地开发工具，不是网络服务或安全沙箱；不要把它暴露到不可信网络。
 - 热重载会重新初始化玩法状态；当前不做运行中状态迁移。
-- 材质表是 3 个固定槽位，不是无上限 Bindless；没有材质资源回收或槽位代际。
+- 材质表是 8 槽有界表（0 = 缺材质默认槽，1–3 常驻，4–7 可分配），带代际与复用；仍不是 SM 6.6 descriptor heap 直接索引。
 - DXR 阴影是静态硬阴影：一条光线/像素、可见性 0/1，没有软阴影、降噪、透明投影或点光源投影；TLAS 每帧按刚体变换重建，不含蒙皮。
 - 打包产物没有代码签名、安装器、自动更新和崩溃上传。
 - CI 工作流只在本地完整重放过；GitHub 托管 runner 没有 D3D12 GPU，显卡相关步骤在远程会退化为 WARP 并允许失败，不能替代本机显卡证据。

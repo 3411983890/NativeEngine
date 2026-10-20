@@ -81,6 +81,23 @@ Mat4 multiplyMatrix(const Mat4& a, const Mat4& b) {
     return result;
 }
 
+Mat4 normalMatrix(const Mat4& model) {
+    const float a = model.m[0], b = model.m[4], c = model.m[8];
+    const float d = model.m[1], e = model.m[5], f = model.m[9];
+    const float g = model.m[2], h = model.m[6], i = model.m[10];
+    const float determinant = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+    Mat4 result = identityMatrix();
+    if (!std::isfinite(determinant) || std::abs(determinant) < 1.0e-12f) return result;
+    const float inv = 1.0f / determinant;
+    result.m[0] = (e * i - f * h) * inv; result.m[4] = (f * g - d * i) * inv;
+    result.m[8] = (d * h - e * g) * inv;
+    result.m[1] = (c * h - b * i) * inv; result.m[5] = (a * i - c * g) * inv;
+    result.m[9] = (b * g - a * h) * inv;
+    result.m[2] = (b * f - c * e) * inv; result.m[6] = (c * d - a * f) * inv;
+    result.m[10] = (a * e - b * d) * inv;
+    return result;
+}
+
 void transformPoint(const Mat4& matrix, const float in[3], float out[3]) {
     const float x = in[0], y = in[1], z = in[2];
     const float w = matrix.m[3]*x + matrix.m[7]*y + matrix.m[11]*z + matrix.m[15];

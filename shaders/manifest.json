@@ -1,6 +1,6 @@
-﻿{
+{
   "$schema": "./manifest.schema.json",
-  "version": 3,
+  "version": 4,
   "comment": "Authoritative shader build list. Every blob is compiled by the pinned DXC from tools/bootstrap-dxc.ps1 and embedded into the native binary. Raster and composite shaders are compiled with D3DCompile (SM 5.1) from embedded source so the base renderer never depends on DXC.",
   "blobs": [
     {
@@ -10,6 +10,30 @@
       "entry": "",
       "defines": [],
       "description": "DXR static shadow library: ray generation, miss and closest hit"
+    },
+    {
+      "symbol": "kMeshAmplification",
+      "source": "shaders/mesh_shaders.hlsl",
+      "target": "as_6_5",
+      "entry": "ASMain",
+      "defines": ["PASS_AMPLIFICATION"],
+      "description": "Mesh shader sample: per-instance meshlet culling"
+    },
+    {
+      "symbol": "kMeshShader",
+      "source": "shaders/mesh_shaders.hlsl",
+      "target": "ms_6_5",
+      "entry": "MSMain",
+      "defines": ["PASS_MESH"],
+      "description": "Mesh shader sample: emit meshlet vertices and triangles"
+    },
+    {
+      "symbol": "kMeshPixel",
+      "source": "shaders/mesh_shaders.hlsl",
+      "target": "ps_6_5",
+      "entry": "PSMain",
+      "defines": ["PASS_PIXEL"],
+      "description": "Mesh shader sample pixel shader (same lighting as the raster path)"
     }
   ]
 }

@@ -1,4 +1,4 @@
-﻿// DXR static shadow pass: state object, shader binding table and per-frame dispatch.
+// DXR static shadow pass: state object, shader binding table and per-frame dispatch.
 //
 // Design notes:
 //  * One ray per screen pixel, traced from the depth-reconstructed surface toward the
@@ -64,6 +64,7 @@ bool Renderer::Impl::buildRaytracingPipeline(std::string& error) {
     if (rtPipelineCreated) return true;
     if (raytracingTier < 10) {
         error = "DXR tier is unsupported on this adapter";
+        addDiagnostic("NG-E-RT-UNSUPPORTED", error);
         return false;
     }
     if (!device5) {
@@ -175,6 +176,7 @@ bool Renderer::Impl::buildRaytracingPipeline(std::string& error) {
                                             IID_PPV_ARGS(&rtStateObject));
     if (FAILED(hr)) {
         error = "CreateStateObject (raytracing pipeline) failed (" + detail::hresultText(hr) + ")";
+        addDiagnostic("NG-E-RT-PSO", error);
         detail::release(rtStateObject);
         return false;
     }
@@ -193,6 +195,7 @@ bool Renderer::Impl::buildRaytracingPipeline(std::string& error) {
     const void* hitGroupIdentifier = rtProperties->GetShaderIdentifier(L"ShadowHitGroup");
     if (!rayGenIdentifier || !missIdentifier || !hitGroupIdentifier) {
         error = "GetShaderIdentifier failed for the shadow shader exports";
+        addDiagnostic("NG-E-RT-SBT", error);
         releaseRaytracingPipeline();
         return false;
     }
@@ -228,6 +231,7 @@ bool Renderer::Impl::dispatchShadowRays(ID3D12GraphicsCommandList4* list, unsign
     error.clear();
     if (!rtPipelineCreated || !rtSbtCreated || !rtShaderBindingTable || !rtStateObject) {
         error = "DXR shadow pipeline is not ready";
+        addDiagnostic("NG-E-RT-DISPATCH", error);
         return false;
     }
     if (!list) {

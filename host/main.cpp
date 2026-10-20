@@ -61,11 +61,20 @@ struct App {
     unsigned width=960,height=720,targetFrames=360,frames=0,restarts=0,resizes=0,hotReloads=0;
     unsigned forcedWidth=0,forcedHeight=0,screenshotFrame=150,debugView=0;
     bool validationRequested=false;
+    // G1 reliability modes.
+    bool deviceRemovalMode=false,deviceRemovalDetected=false,deviceRemovalRecovered=false;
+    double deviceRemovalAtFrame=0.0;
+    unsigned deviceRemovalFrame=0,deviceRemovalRecoveries=0,deviceRemovalFrameAfterRecovery=0;
+    std::string deviceRemovalError;
+    unsigned lifecycleCycles=0,lifecycleDone=0;
+    bool faultTest=false,faultMaterial=false,noStress=false,meshRequested=true;
+    std::string faultScenePath,errorCode;
+    std::vector<nlohmann::json> faultTestCases,lifecycleEntries;
     bool hasCameraOverride=false;
     float cameraEye[3]={0,0,0},cameraTarget[3]={0,0,0};
     std::string screenshotPath,screenshotError;
     SceneStamp sceneStamp;
-    std::vector<double> cpuTimes,gpuTimes,frameTimes;
+    std::vector<double> cpuTimes,cpuSubmitTimes,gpuTimes,gpuRtTimes,frameTimes;
     Clock::time_point began=Clock::now(),last=began,lastUi=began,lastWatch=began;
 } app;
 constexpr int ID_PAUSE=101,ID_RESET=102,ID_RELOAD=103,ID_OPEN=104,ID_RESTART=105;
@@ -122,7 +131,7 @@ void refreshList() {
 void adoptScene(host::SceneDocument next,const std::filesystem::path& path) {
     app.document=std::move(next);app.scenePath=path;
     app.game.initialize(app.document.scene);
-    app.error.clear();app.sceneError.clear();app.sceneStamp=stampOf(path);
+    app.error.clear();app.sceneError.clear();app.errorCode.clear();app.sceneStamp=stampOf(path);
     if(app.list)refreshList();
 }
 void diagnostic(const std::string& error) {
@@ -132,7 +141,7 @@ void diagnostic(const std::string& error) {
 bool reloadScene(const std::filesystem::path& path) {
     host::SceneDocument next;
     std::string error;
-    if(!host::loadScene(path,next,error)){diagnostic(error);return false;}
+    if(!host::loadScene(path,next,error)){app.errorCode="NG-E-IO-SCENE";diagnostic(error);return false;}
     adoptScene(std::move(next),path);
     app.liveStatus=L"已重载 revision "+std::to_wstring(app.document.revision);
     return true;
@@ -150,7 +159,7 @@ void pollScene(){
     std::string error;
     if(!host::loadScene(app.scenePath,next,error)){
         app.sceneStamp=stamp;
-        app.sceneError=error;
+        app.sceneError="NG-E-IO-HOTRELOAD: "+error;
         app.liveStatus=L"热重载失败，保留上一有效场景";
         return;
     }
@@ -169,12 +178,18 @@ bool restartRenderer(){
     app.renderer.shutdown();
     app.renderer.setValidationEnabled(app.validationRequested);
     if(!app.renderer.initialize(app.viewport,app.width,app.height,app.error)){
-        diagnostic(app.error);app.running=false;return false;
+        app.errorCode="NG-E-RENDERER-INIT";diagnostic(app.error);app.running=false;return false;
     }
     // The DXR state object is rebuilt from scratch, so the requested toggle has to be
     // re-applied and re-read for the report.
     app.renderer.setRtShadows(app.rtShadowRequested);
     app.renderer.setCompositeDebugView(app.debugView);
+    app.renderer.setMeshShaders(app.meshRequested);
+    // Injection must happen after initialize(), which rebuilds the renderer state. It is
+    // armed exactly once so the recovery run is a clean renderer.
+    if(app.deviceRemovalMode&&app.deviceRemovalAtFrame>0&&!app.deviceRemovalDetected){
+        app.renderer.injectDeviceRemovalAtFrame(static_cast<unsigned>(app.deviceRemovalAtFrame));
+    }
     app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
     app.ready=true;++app.restarts;return true;
 }
@@ -256,6 +271,11 @@ LRESULT CALLBACK windowProc(HWND h,UINT msg,WPARAM w,LPARAM l){
             app.watch=!app.watch;app.lastWatch=Clock::now();
             app.liveStatus=app.watch?L"热重载已开启":L"热重载已关闭";
         }
+        if(w==VK_F11){
+            app.meshRequested=!app.meshRequested;
+            app.renderer.setMeshShaders(app.meshRequested);
+            app.liveStatus=app.renderer.meshShadersEnabled()?L"Mesh Shader 路径已开启":L"Mesh Shader 已关闭（顶点路径）";
+        }
         if(w==VK_F10){
             app.rtShadowRequested=!app.rtShadowRequested;
             app.renderer.setRtShadows(app.rtShadowRequested);
@@ -313,8 +333,29 @@ void report(bool success){
             {"scene",app.scenePath.u8string()},{"revision",app.document.revision},
             {"resolution",{app.width,app.height}},{"rendererReinitializations",app.restarts},
             {"resizeEvents",app.resizes},{"watchEnabled",app.watch},{"hotReloads",app.hotReloads},
-            {"lastSceneError",app.sceneError},{"deviceRemovalTested",false},
-            {"cpuSubmitP95Ms",percentile(app.cpuTimes,.95)},
+            {"lastSceneError",app.sceneError},{"deviceRemovalTested",app.deviceRemovalMode},
+            {"errorCode",app.errorCode},
+            {"deviceRemoval",{
+                {"tested",app.deviceRemovalMode},
+                {"mode",app.deviceRemovalMode?"injected-fault":"none"},
+                {"requestedFrame",app.deviceRemovalAtFrame},
+                {"detected",app.deviceRemovalDetected},
+                {"detectedAtFrame",app.deviceRemovalFrame},
+                {"recovered",app.deviceRemovalRecovered},
+                {"recoveries",app.deviceRemovalRecoveries},
+                {"frameAfterRecovery",app.deviceRemovalFrameAfterRecovery},
+                {"error",app.deviceRemovalError}}},
+            {"lifecycle",{
+                {"requested",app.lifecycleCycles},
+                {"completed",app.lifecycleDone},
+                {"entries",app.lifecycleEntries}}},
+            {"faultTests",app.faultTestCases},
+            {"cpuP50Ms",percentile(app.cpuTimes,.5)},
+            {"cpuSubmitP50Ms",app.cpuSubmitTimes.empty()?json(nullptr):json(percentile(app.cpuSubmitTimes,.5))},
+            {"cpuSubmitP95Ms",app.cpuSubmitTimes.empty()?json(nullptr):json(percentile(app.cpuSubmitTimes,.95))},
+            {"gpuP50Ms",app.gpuTimes.empty()?json(nullptr):json(percentile(app.gpuTimes,.5))},
+            {"gpuRtP50Ms",app.gpuRtTimes.empty()?json(nullptr):json(percentile(app.gpuRtTimes,.5))},
+            {"gpuRtP95Ms",app.gpuRtTimes.empty()?json(nullptr):json(percentile(app.gpuRtTimes,.95))},
             {"gpuP95Ms",app.gpuTimes.empty()?json(nullptr):json(percentile(app.gpuTimes,.95))},
             {"frameIntervalP95Ms",percentile(app.frameTimes,.95)},
             {"gpuSamples",app.gpuTimes.size()},
@@ -351,6 +392,18 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         else if(arg==L"--watch"){app.watch=true;watchExplicit=true;}
         else if(arg==L"--no-watch"){app.watch=false;watchExplicit=true;}
         else if(arg==L"--validation")app.validationRequested=true;
+        else if(arg==L"--device-removal-after"&&i+1<argc){
+            app.deviceRemovalMode=true;app.smoke=true;
+            app.deviceRemovalAtFrame=static_cast<double>(_wtoi(argv[++i]));
+        }
+        else if(arg==L"--lifecycle"&&i+1<argc){
+            app.lifecycleCycles=static_cast<unsigned>(std::max(1,_wtoi(argv[++i])));app.smoke=true;
+        }
+        else if(arg==L"--fault-test"){app.faultTest=true;app.smoke=true;app.faultMaterial=true;}
+        else if(arg==L"--no-stress")app.noStress=true;
+        else if(arg==L"--mesh-shaders"&&i+1<argc){app.meshRequested=(std::wstring(argv[++i])!=L"off");}
+        else if(arg==L"--fault-material")app.faultMaterial=true;
+        else if(arg==L"--fault-scene"&&i+1<argc)app.faultScenePath=narrow(argv[++i]);
         else if(arg==L"--rt-shadows"&&i+1<argc){
             const std::wstring mode=argv[++i];
             if(mode==L"off")app.rtShadowRequested=false;
@@ -383,6 +436,10 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             }
         }
     }
+    // Eight frames per lifecycle cycle: the frame budget must not end the run first.
+    if(app.lifecycleCycles>0){
+        app.targetFrames=std::max(app.targetFrames,app.lifecycleCycles*8+8);
+    }
     if(app.probe){
         app.smoke=true;
         if(!watchExplicit)app.watch=false;
@@ -400,6 +457,21 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         app.reportPath=folder/"reports/native-session.json";
     }
     if(!reloadScene(app.scenePath)){report(false);return 2;}
+    if(app.faultTest){
+        // Invalid pipeline: a deliberately broken shader must fail with a stable code.
+        std::string code,text;
+        const bool shaderRejected=app.renderer.selfTestInvalidPipeline(code,text);
+        app.faultTestCases.push_back(json{
+            {"case","invalid-pipeline"},{"expectedCode","NG-E-PIPE-COMPILE"},
+            {"actualCode",code},{"ok",shaderRejected},{"detail",text}});
+        if(!app.faultScenePath.empty()){
+            host::SceneDocument document;std::string error;
+            const bool loaded=host::loadScene(app.faultScenePath,document,error);
+            app.faultTestCases.push_back(json{
+                {"case","invalid-scene"},{"expectedCode","NG-E-IO-SCENE"},
+                {"actualCode",loaded?"loaded":"NG-E-IO-SCENE"},{"ok",!loaded},{"detail",error}});
+        }
+    }
     app.background=CreateSolidBrush(RGB(24,31,43));
     app.font=CreateFontW(-16,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,CLEARTYPE_QUALITY,DEFAULT_PITCH,L"Microsoft YaHei UI");
     app.titleFont=CreateFontW(-21,0,0,0,FW_SEMIBOLD,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,CLEARTYPE_QUALITY,DEFAULT_PITCH,L"Microsoft YaHei UI");
@@ -437,6 +509,12 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
     }
     app.renderer.setRtShadows(app.rtShadowRequested);
     app.renderer.setCompositeDebugView(app.debugView);
+    app.renderer.setMeshShaders(app.meshRequested);
+    // Injection must happen after initialize(), which rebuilds the renderer state. It is
+    // armed exactly once so the recovery run is a clean renderer.
+    if(app.deviceRemovalMode&&app.deviceRemovalAtFrame>0&&!app.deviceRemovalDetected){
+        app.renderer.injectDeviceRemovalAtFrame(static_cast<unsigned>(app.deviceRemovalAtFrame));
+    }
     app.rtShadowEnabled=app.renderer.rtShadowsEnabled();
     app.ready=true;
     if(!app.smoke){ShowWindow(app.window,show);UpdateWindow(app.window);}
@@ -485,8 +563,17 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             auto m=engine::compose(pose.position,pose.scale,pose.yaw,pose.pitch,pose.roll);
             std::copy(m.m,m.m+16,d.model.m);
             for(int i=0;i<3;++i)d.color[i]=pose.color[i];d.color[3]=1;
-            d.roughness=pose.roughness;d.metalness=pose.metalness;d.texture=pose.texture;
+            d.roughness=pose.roughness;d.metalness=pose.metalness;
+            // Material table slots 1..3 are the resident checker/brick/metal textures;
+            // slot 0 is the missing-material default.
+            d.texture=pose.texture+1;d.textureGeneration=0;
             draws.push_back(d);
+        }
+        // --fault-material feeds an out-of-range slot and the missing-texture sentinel
+        // through the real draw path so the diagnostics are produced by production code.
+        if(app.faultMaterial&&draws.size()>=2){
+            draws[0].texture=99;
+            draws[1].texture=0xFFFFFFFFu;
         }
         std::vector<nativegpu::LightDesc> lights;
         for(const auto& source:app.document.scene.lights){
@@ -503,7 +590,24 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
             if(app.smoke)break;
         }
         const float eyePosition[3]={eye.x,eye.y,eye.z};
-        if(!app.renderer.render(viewProjection,eyePosition,draws,lights,app.error)){diagnostic(app.error);success=false;break;}
+        if(!app.renderer.render(viewProjection,eyePosition,draws,lights,app.error)){
+            // Device-removal path: stop rendering, record the failure, rebuild the renderer
+            // once and keep going if recovery works. The scene file is never touched.
+            if(app.deviceRemovalMode&&app.error.find("DEVICE_REMOVED")!=std::string::npos){
+                app.deviceRemovalDetected=true;
+                app.deviceRemovalFrame=app.frames;
+                app.deviceRemovalError=app.error;
+                app.liveStatus=L"设备丢失，尝试重建渲染器";
+                if(!restartRenderer()){app.deviceRemovalRecovered=false;success=false;break;}
+                app.deviceRemovalRecovered=true;
+                ++app.deviceRemovalRecoveries;
+                app.deviceRemovalFrameAfterRecovery=app.frames;
+                app.liveStatus=L"渲染器已重建，继续运行";
+                continue;
+            }
+            app.errorCode="NG-E-RENDER-FRAME";
+            diagnostic(app.error);success=false;break;
+        }
         ++app.frames;
         if(shotFrame){
             app.screenshotAttempted=true;
@@ -519,18 +623,42 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         auto stats=app.renderer.stats();
         if(app.frames>30){
             app.cpuTimes.push_back(stats.cpuMs);
+            app.cpuSubmitTimes.push_back(stats.cpuSubmitMs);
             if(stats.gpuValid)app.gpuTimes.push_back(stats.gpuMs);
+            if(stats.gpuRtValid)app.gpuRtTimes.push_back(stats.gpuRtMs);
             app.frameTimes.push_back(dt*1000.);
+        }
+        // Lifecycle stress: rebuild the renderer every few frames and record the object
+        // and video-memory trend after each shutdown.
+        if(app.lifecycleCycles>0&&app.frames>0&&app.frames%8==0&&app.lifecycleDone<app.lifecycleCycles){
+            // Video memory must be sampled while the device is still alive.
+            const unsigned long long vram=app.renderer.videoMemoryBytes();
+            app.renderer.shutdown();
+            app.ready=false;
+            const long liveAfterShutdown=nativegpu::Renderer::liveObjectCount();
+            const unsigned long long created=nativegpu::Renderer::objectsCreatedCount();
+            if(!restartRenderer()){success=false;break;}
+            json entry={
+                {"cycle",app.lifecycleDone+1},
+                {"framesRendered",app.frames},
+                {"liveObjectsAfterShutdown",liveAfterShutdown},
+                {"objectsCreated",created},
+                {"videoMemoryBytes",vram},
+                {"resolution",{app.width,app.height}}
+            };
+            app.lifecycleEntries.push_back(entry);
+            ++app.lifecycleDone;
+            if(app.lifecycleDone>=app.lifecycleCycles)break;
         }
         if(std::chrono::duration<double>(now-app.lastUi).count()>.2){
             updateUi();app.lastUi=now;
         }
         if(app.smoke){
-            if(app.frames==80){
+            if(!app.noStress&&app.frames==80){
                 SetWindowPos(app.window,nullptr,0,0,1100,760,SWP_NOMOVE|SWP_NOZORDER);
                 app.resizeTest=true;
             }
-            if(app.frames==160){
+            if(!app.noStress&&app.frames==160&&app.lifecycleCycles==0){
                 if(!restartRenderer()){success=false;break;}
                 app.restartTest=true;
             }
@@ -539,7 +667,16 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show){
         // Bound long interactive sessions without unbounded diagnostics allocation.
         if(app.cpuTimes.size()>60000){app.cpuTimes.erase(app.cpuTimes.begin(),app.cpuTimes.begin()+30000);app.gpuTimes.clear();app.frameTimes.clear();}
     }
-    if(app.smoke)success=success&&app.resizeTest&&app.restartTest&&app.frames>=app.targetFrames;
+    if(app.smoke){
+        if(app.lifecycleCycles>0){
+            // The lifecycle run ends when the requested cycles are complete.
+            success=success&&app.lifecycleDone>=app.lifecycleCycles;
+        } else if(app.deviceRemovalMode){
+            success=success&&app.deviceRemovalDetected&&app.deviceRemovalRecovered;
+        } else {
+            success=success&&app.frames>=app.targetFrames&&(app.noStress||(app.resizeTest&&app.restartTest));
+        }
+    }
     report(success);
     app.renderer.shutdown();app.ready=false;
     DestroyWindow(app.window);DeleteObject(app.font);DeleteObject(app.titleFont);DeleteObject(app.background);

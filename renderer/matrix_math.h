@@ -16,6 +16,8 @@ Mat4 identityMatrix();
 bool invertMatrix(const Mat4& in, Mat4& out);
 
 Mat4 multiplyMatrix(const Mat4& a, const Mat4& b);
+// Inverse-transpose of the upper-left 3x3, stored column-major, for transforming normals.
+Mat4 normalMatrix(const Mat4& model);
 
 // Column-major transform of a point (w = 1) without perspective divide.
 void transformPoint(const Mat4& matrix, const float in[3], float out[3]);

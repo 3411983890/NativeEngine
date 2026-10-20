@@ -21,9 +21,10 @@ struct DrawItem {
     float color[4];
     // Bounded material texture table index. 0 checker, 1 brick, 2 metal.
     unsigned texture = 0;
+    // Bounded material table generation. 0 skips the generation check (compatibility).
+    unsigned textureGeneration = 0;
     float roughness = 0.72f;
     float metalness = 0.0f;
-    unsigned padding = 0;
 };
 struct LightDesc {
     float position[3];
@@ -32,7 +33,10 @@ struct LightDesc {
     float range = 10.0f;
 };
 struct FrameStats {
+    // cpuMs is measured around the whole submit including Present; cpuSubmitMs stops
+    // before Present so it is not dominated by the vsync wait.
     double cpuMs = 0.0;
+    double cpuSubmitMs = 0.0;
     double gpuMs = 0.0;
     bool gpuValid = false;
     // Time spent inside the DXR shadow dispatch for the most recent completed frame.
@@ -66,6 +70,12 @@ public:
     bool rtShadowsEnabled() const;
     bool rtShadowsImplemented() const;
 
+    // Mesh shader sample path. Falls back to the vertex path when unavailable/disabled.
+    void setMeshShaders(bool enabled);
+    bool meshShadersEnabled() const;
+    bool meshShadersImplemented() const;
+    bool meshPathActive() const;
+
     // 0 final, 1 shadow mask, 2 key light, 3 ambient surface. Diagnostic evidence only.
     void setCompositeDebugView(unsigned view);
 
@@ -73,6 +83,16 @@ public:
     // submission: request before render(), capture after render().
     bool requestScreenshot(const std::string& path, std::string& error);
     bool captureScreenshot(const std::string& path, std::string& error);
+
+    // Reliability surface used by the G1 evidence suite.
+    void injectDeviceRemovalAtFrame(unsigned frame);
+    unsigned injectedRemovalFrame() const;
+    static long liveObjectCount();
+    static unsigned long long objectsCreatedCount();
+    unsigned long long videoMemoryBytes();
+    // Compiles a deliberately broken shader to prove the invalid-pipeline diagnostic and
+    // that the failure is reported instead of crashing.
+    bool selfTestInvalidPipeline(std::string& code, std::string& text);
 
     std::string capabilitiesJson() const;
     std::string probesJson() const;

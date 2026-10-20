@@ -122,6 +122,24 @@ Invoke-Step 'DXR shadow evidence' {
 }
 
 $hotReloadReport = Join-Path $context.directory 'verify-hot-reload.json'
+Invoke-Step 'Mesh shader and bindless evidence' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'mesh-bindless.ps1') -SkipBuild
+    if ($LASTEXITCODE -ne 0) { throw 'Mesh shader and bindless evidence checks failed.' }
+    $evidence = Join-Path 'reports\latest' 'mesh-bindless-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'Mesh/bindless evidence report is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'mesh-bindless-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'mesh-bindless-evidence.json') | Out-Null
+}
+
+Invoke-Step 'G1 reliability suite' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'g1-reliability.ps1') -SkipBuild -LifecycleCycles 50
+    if ($LASTEXITCODE -ne 0) { throw 'G1 reliability suite failed.' }
+    $evidence = Join-Path 'reports\latest' 'g1-reliability.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'G1 reliability report is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'g1-reliability.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'g1-reliability.json') | Out-Null
+}
+
 Invoke-Step 'Live scene hot reload' {
     $directory = Join-Path $env:TEMP ('nativegpu-verify-' + [guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $directory | Out-Null

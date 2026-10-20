@@ -27,8 +27,32 @@ constexpr DXGI_FORMAT DepthResourceFormat = DXGI_FORMAT_R32_TYPELESS;
 constexpr DXGI_FORMAT DepthDsvFormat = DXGI_FORMAT_D32_FLOAT;
 constexpr DXGI_FORMAT DepthSrvFormat = DXGI_FORMAT_R32_FLOAT;
 
-// Material table size for the bounded path (extended by the bindless slot manager).
-constexpr unsigned MaterialSlotCount = 3;
+// Bounded, generation-checked material table. Slot 0 is the default "missing texture"
+// slot and is never released; the rest can be acquired, released and reused.
+constexpr unsigned MaterialSlotCount = 8;
+constexpr unsigned MaterialDefaultSlot = 0;
+
+struct MaterialSlot {
+    unsigned generation = 1;
+    bool inUse = false;
+    unsigned textureId = 0;
+};
+
+struct MaterialTable {
+    MaterialSlot slots[MaterialSlotCount];
+    unsigned acquired = 0;
+    unsigned released = 0;
+    unsigned reused = 0;
+    unsigned missingFallbacks = 0;
+    unsigned staleRejections = 0;
+    unsigned generationHighWater = 1;
+
+    MaterialTable();
+    unsigned acquire(unsigned textureId, unsigned& outGeneration);
+    bool release(unsigned slot);
+    bool resolve(unsigned slot, unsigned generation, unsigned& outTexture,
+                 unsigned& outGeneration);
+};
 
 // Maximum rigid instances in a top-level acceleration structure. Clamped and reported
 // instead of silently truncating.
@@ -38,6 +62,9 @@ constexpr unsigned MaxInstances = 256;
 // index owns a contiguous block of eight descriptors so a pass can bind one table.
 enum DescriptorSlot : unsigned {
     SlotMaterialTable = 0,
+    SlotMeshVertices = 1,
+    SlotMeshTriangles = 2,
+    SlotMeshlets = 3,
     FrameDescriptorBase = 8,
     FrameDescriptorStride = 8
 };
@@ -160,8 +187,8 @@ struct Renderer::Impl {
     ID3D12GraphicsCommandList4* commands4 = nullptr;
     // Dedicated pair for out-of-band readbacks so screenshots never disturb frame
     // recording state.
-    ID3D12CommandAllocator* captureAllocator = nullptr;
-    ID3D12GraphicsCommandList* captureCommands = nullptr;
+    ID3D12Device2* device2 = nullptr;
+    ID3D12GraphicsCommandList6* commands6 = nullptr;
 
     // --- pipeline objects ---
     ID3D12RootSignature* rasterRootSignature = nullptr;
@@ -253,6 +280,41 @@ struct Renderer::Impl {
     unsigned char lastScreenshotMax = 0;
     unsigned lastFrameIndex = 0;
 
+    // --- mesh shader path ---
+    ID3D12RootSignature* meshRootSignature = nullptr;
+    ID3D12PipelineState* meshPipeline = nullptr;
+    ID3D12Resource* meshletVertices = nullptr;
+    ID3D12Resource* meshletTriangles = nullptr;
+    ID3D12Resource* meshletDescs = nullptr;
+    ID3D12Resource* meshCameraBuffer = nullptr;
+    float* meshCameraMapped = nullptr;
+    bool meshRequested = true;
+    bool meshPipelineCreated = false;
+    bool meshPathUsedLastFrame = false;
+    unsigned meshFrames = 0;
+    unsigned meshFallbackFrames = 0;
+    unsigned meshletCount = 0;
+    unsigned meshletCulledLastFrame = 0;
+    unsigned meshletDrawnLastFrame = 0;
+    std::string meshError;
+    detail::MaterialTable materials;
+
+    // --- reliability diagnostics ---
+    // Stable error codes (NG-E-*) plus bounded text so a failure is never silent and
+    // never floods a report. Entries are capped; the counter is exact.
+    struct Diagnostic {
+        std::string code;
+        std::string text;
+        unsigned occurrences = 0;
+    };
+    std::vector<Diagnostic> diagnostics;
+    unsigned diagnosticEvents = 0;
+    bool deviceRemovalInjected = false;
+    unsigned faultInjectionFrame = 0;
+    unsigned long long videoMemoryBytes = 0;
+    unsigned long long videoMemoryBudgetBytes = 0;
+    bool videoMemoryQuerySupported = false;
+
     // --- state ---
     unsigned width = 0;
     unsigned height = 0;
@@ -306,6 +368,17 @@ struct Renderer::Impl {
     bool uploadScene(std::string& error);
     void queryCapabilities();
     void collectValidationMessages(const char* stage);
+    void addDiagnostic(const char* code, const std::string& text);
+    void queryVideoMemory();
+    bool selfTestInvalidPipeline(std::string& code, std::string& text);
+    bool buildMeshPipeline(std::string& error);
+    void releaseMeshPipeline();
+    bool createMeshletData(std::string& error);
+    bool renderMeshPath(ID3D12GraphicsCommandList4* list, const std::vector<DrawItem>& items,
+                        const Mat4& viewProjection, const float eye[3]);
+    std::string meshShaderJson() const;
+    std::string bindlessJson() const;
+    bool selfTestMaterialTable(std::string& error);
     void clearValidationMessages();
     bool createDescriptorViews(std::string& error);
     bool recordCaptureCopy(ID3D12GraphicsCommandList* list, unsigned frameIndex,

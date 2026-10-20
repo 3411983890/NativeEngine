@@ -580,7 +580,9 @@ bool Renderer::Impl::createRasterRootSignature(std::string& error) {
     description.NumStaticSamplers = 1;
     description.pStaticSamplers = &sampler;
     description.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-    return serializeRootSignature(description, device, &rasterRootSignature, error);
+    if (!serializeRootSignature(description, device, &rasterRootSignature, error)) return false;
+    track(rasterRootSignature);
+    return true;
 }
 
 bool Renderer::Impl::createCompositeRootSignature(std::string& error) {
@@ -604,7 +606,9 @@ bool Renderer::Impl::createCompositeRootSignature(std::string& error) {
     description.NumParameters = 2;
     description.pParameters = parameters;
     description.Flags = D3D12_ROOT_SIGNATURE_FLAG_NONE;
-    return serializeRootSignature(description, device, &compositeRootSignature, error);
+    if (!serializeRootSignature(description, device, &compositeRootSignature, error)) return false;
+    track(compositeRootSignature);
+    return true;
 }
 
 bool Renderer::Impl::createRasterPipeline(std::string& error) {
@@ -724,9 +728,9 @@ bool Renderer::Impl::uploadScene(std::string& error) {
     ID3D12Resource* indexUpload = nullptr;
     ID3D12Resource* textureUpload = nullptr;
     auto cleanup = [&] {
-        detail::release(vertexUpload);
-        detail::release(indexUpload);
-        detail::release(textureUpload);
+        destroy(vertexUpload);
+        destroy(indexUpload);
+        destroy(textureUpload);
     };
     if (!createBuffer(sizeof(CubeVertices), D3D12_HEAP_TYPE_DEFAULT,
                       D3D12_RESOURCE_STATE_COPY_DEST, &vertexBuffer, error) ||
@@ -809,6 +813,16 @@ bool Renderer::Impl::uploadScene(std::string& error) {
                         green = static_cast<unsigned char>(62 + variation / 2);
                         blue = static_cast<unsigned char>(48 + variation / 3);
                     }
+                } else if (slice == 3) {
+                    // Dedicated missing-material pattern: magenta checker.
+                    const bool light = ((x / 8 + y / 8) & 1) != 0;
+                    red = light ? 255 : 40; green = light ? 40 : 0; blue = light ? 220 : 60;
+                } else if (slice == 4) {
+                    red = 90; green = 170; blue = 210; // extra blue-grey variant
+                } else if (slice == 5) {
+                    red = 200; green = 190; blue = 120; // extra sand variant
+                } else if (slice == 6) {
+                    red = 120; green = 200; blue = 140; // extra green variant
                 } else {
                     const unsigned char stripe = ((x / 4) & 1) ? 188 : 132;
                     red = static_cast<unsigned char>(stripe - 12);
@@ -969,7 +983,7 @@ bool Renderer::Impl::buildAccelerationStructures() {
 
     ID3D12Resource* blasScratch = nullptr;
     auto cleanup = [&] {
-        detail::release(blasScratch);
+        destroy(blasScratch);
     };
     if (!createBuffer(blasInfo.ResultDataMaxSizeInBytes, D3D12_HEAP_TYPE_DEFAULT,
                       D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE,
@@ -1286,6 +1300,10 @@ bool Renderer::initialize(HWND window, unsigned width, unsigned height, std::str
     state.track(state.commands);
     state.commands->QueryInterface(IID_PPV_ARGS(&state.commands4));
     state.track(state.commands4);
+    state.commands->QueryInterface(IID_PPV_ARGS(&state.commands6));
+    state.track(state.commands6);
+    state.device->QueryInterface(IID_PPV_ARGS(&state.device2));
+    state.track(state.device2);
 
     if (!state.createRasterRootSignature(error) ||
         !state.createCompositeRootSignature(error) ||
@@ -1307,6 +1325,13 @@ bool Renderer::initialize(HWND window, unsigned width, unsigned height, std::str
     std::memset(state.sceneConstantMapped, 0, 256);
 
     state.queryCapabilities();
+    state.queryVideoMemory();
+    {
+        std::string materialError;
+        if (!state.selfTestMaterialTable(materialError)) {
+            state.addDiagnostic("NG-E-MAT-TABLE", materialError);
+        }
+    }
     state.buildAccelerationStructures();
     state.createTimestamps();
     // A failure to build the DXR state object is not fatal: the raster path keeps
@@ -1314,6 +1339,12 @@ bool Renderer::initialize(HWND window, unsigned width, unsigned height, std::str
     std::string rtError;
     if (!state.buildRaytracingPipeline(rtError)) {
         state.rtError = rtError.empty() ? "DXRT state object creation failed" : rtError;
+    }
+    // Mesh shader pipeline: a failure keeps the vertex path and is reported.
+    std::string meshBuildError;
+    if (!state.buildMeshPipeline(meshBuildError)) {
+        state.meshError = meshBuildError.empty() ? "mesh pipeline creation failed"
+                                                 : meshBuildError;
     }
     state.initialized = true;
     return true;
@@ -1352,6 +1383,15 @@ bool Renderer::render(const Mat4& viewProjection, const float cameraPosition[3],
     if (!state.initialized) { error = "Renderer is not initialized"; return false; }
     const UINT index = state.swapChain->GetCurrentBackBufferIndex();
     state.lastFrameIndex = index;
+    // Fault injection for the device-removal test. This is an injected fault, not a real
+    // hardware reset, and every report says so.
+    if (state.faultInjectionFrame != 0 && state.framesRendered + 1 == state.faultInjectionFrame) {
+        state.deviceRemovalInjected = true;
+        error = "DXGI_ERROR_DEVICE_REMOVED (injected fault at frame " +
+                std::to_string(state.framesRendered + 1) + ")";
+        state.addDiagnostic("NG-E-DEVICE-REMOVED", error);
+        return false;
+    }
     if (!state.waitFor(state.frameFences[index], error)) return false;
     state.readTimestamp(index);
     if (!checked(state.allocators[index]->Reset(), "Reset frame allocator", error) ||
@@ -1403,11 +1443,8 @@ bool Renderer::render(const Mat4& viewProjection, const float cameraPosition[3],
     D3D12_RECT scissor{0, 0, static_cast<LONG>(state.width), static_cast<LONG>(state.height)};
     list->RSSetViewports(1, &viewport);
     list->RSSetScissorRects(1, &scissor);
-    list->SetPipelineState(state.rasterPipeline);
-    list->SetGraphicsRootSignature(state.rasterRootSignature);
     ID3D12DescriptorHeap* heaps[] = {state.srvHeap};
     list->SetDescriptorHeaps(1, heaps);
-    list->SetGraphicsRootDescriptorTable(2, state.gpuDescriptor(detail::SlotMaterialTable));
 
     detail::SceneConstants sceneConstants{};
     sceneConstants.ambient[0] = 0.34f;
@@ -1426,6 +1463,22 @@ bool Renderer::render(const Mat4& viewProjection, const float cameraPosition[3],
         sceneConstants.lightColorIntensity[light][3] = std::max(lights[light].intensity, 0.0f);
     }
     std::memcpy(state.sceneConstantMapped, &sceneConstants, sizeof(sceneConstants));
+
+    // Mesh shader path or the traditional vertex path for this frame.
+    bool usedMeshPath = false;
+    if (state.meshRequested && state.meshPipelineCreated) {
+        usedMeshPath = state.renderMeshPath(state.commands4, items, viewProjection, cameraPosition);
+    }
+    state.meshPathUsedLastFrame = usedMeshPath;
+    if (usedMeshPath) {
+        ++state.meshFrames;
+        state.drawCallsLastFrame = static_cast<unsigned>(items.size());
+        state.trianglesLastFrame = static_cast<unsigned long long>(state.meshletDrawnLastFrame) * 2ull;
+    } else {
+    if (state.meshRequested) ++state.meshFallbackFrames;
+    list->SetPipelineState(state.rasterPipeline);
+    list->SetGraphicsRootSignature(state.rasterRootSignature);
+    list->SetGraphicsRootDescriptorTable(2, state.gpuDescriptor(detail::SlotMaterialTable));
     list->SetGraphicsRootConstantBufferView(1, state.sceneConstantBuffer->GetGPUVirtualAddress());
     list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     list->IASetVertexBuffers(0, 1, &state.vertexView);
@@ -1439,13 +1492,28 @@ bool Renderer::render(const Mat4& viewProjection, const float cameraPosition[3],
         std::memcpy(constants.color, item.color, sizeof(constants.color));
         constants.roughness = std::clamp(item.roughness, 0.0f, 1.0f);
         constants.metalness = std::clamp(item.metalness, 0.0f, 1.0f);
-        constants.textureIndex = std::min(item.texture, state.materialSlots - 1);
+        // Material slot policy: resolve through the generation-checked table. A missing
+        // sentinel or a stale generation falls back to the default slot with a stable code.
+        unsigned textureIndex = detail::MaterialDefaultSlot;
+        unsigned generation = 0;
+        if (item.texture == 0xFFFFFFFFu) {
+            state.materials.missingFallbacks++;
+            state.addDiagnostic("NG-E-MAT-MISSING",
+                                "missing material texture resolved to the default slot");
+        } else if (!state.materials.resolve(item.texture, item.textureGeneration, textureIndex,
+                                            generation)) {
+            state.addDiagnostic("NG-E-MAT-STALE",
+                                "material slot " + std::to_string(item.texture) +
+                                    " rejected: released, out of range or stale generation");
+        }
+        constants.textureIndex = textureIndex;
         list->SetGraphicsRoot32BitConstants(0, 56, &constants, 0);
         list->DrawIndexedInstanced(36, 1, 0, 0, 0);
         ++draws;
     }
     state.drawCallsLastFrame = draws;
     state.trianglesLastFrame = static_cast<unsigned long long>(draws) * 12ull;
+    }
 
     // 4. DXR static shadow pass, or the raster fallback with a full visibility mask.
     state.transitionTo(state.depth[index], D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, list);
@@ -1525,6 +1593,8 @@ bool Renderer::render(const Mat4& viewProjection, const float cameraPosition[3],
                                index * detail::TimestampsPerFrame * sizeof(UINT64));
     }
     if (!checked(list->Close(), "Close frame commands", error)) return false;
+    state.frameStats.cpuSubmitMs =
+        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
     ID3D12CommandList* lists[] = {list};
     state.queue->ExecuteCommandLists(1, lists);
     const HRESULT presentResult = state.swapChain->Present(1, 0);
@@ -1653,6 +1723,46 @@ bool Renderer::captureScreenshot(const std::string& path, std::string& error) {
     }
     return ok;
 }
+void Renderer::setMeshShaders(bool enabled) {
+    auto& state = *impl_;
+    state.meshRequested = enabled;
+    if (enabled && !state.meshPipelineCreated && state.initialized && state.device2) {
+        std::string error;
+        if (!state.buildMeshPipeline(error)) {
+            state.meshError = error.empty() ? "mesh pipeline creation failed" : error;
+        }
+    }
+}
+
+bool Renderer::meshShadersEnabled() const {
+    const auto& state = *impl_;
+    return state.meshRequested && state.meshPipelineCreated;
+}
+
+bool Renderer::meshShadersImplemented() const {
+    const auto& state = *impl_;
+    return state.meshPipelineCreated && state.meshFrames > 0;
+}
+
+bool Renderer::meshPathActive() const { return impl_->meshPathUsedLastFrame; }
+
+void Renderer::injectDeviceRemovalAtFrame(unsigned frame) { impl_->faultInjectionFrame = frame; }
+
+unsigned Renderer::injectedRemovalFrame() const { return impl_->faultInjectionFrame; }
+
+long Renderer::liveObjectCount() { return detail::g_liveObjects; }
+
+unsigned long long Renderer::objectsCreatedCount() { return detail::g_objectsCreated; }
+
+unsigned long long Renderer::videoMemoryBytes() {
+    impl_->queryVideoMemory();
+    return impl_->videoMemoryBytes;
+}
+
+bool Renderer::selfTestInvalidPipeline(std::string& code, std::string& text) {
+    return impl_->selfTestInvalidPipeline(code, text);
+}
+
 void Renderer::setRtShadows(bool enabled) {
     auto& state = *impl_;
     state.rtRequested = enabled;
@@ -1727,6 +1837,26 @@ std::string Renderer::probesJson() const {
         << ",\"error\":" << jsonString(state.accelerationStructureError)
         << ",\"notes\":\"One unit-cube BLAS; TLAS rebuilt per frame from rigid instance transforms; no skinning\"},"
         << "\"raytracingShadows\":" << state.rtShadowsJson()
+        << ",\"meshShader\":" << state.meshShaderJson()
+        << ",\"bindless\":" << state.bindlessJson()
+        << ",\"diagnostics\":{\"events\":" << state.diagnosticEvents << ",\"items\":[";
+    for (size_t index = 0; index < state.diagnostics.size(); ++index) {
+        if (index) out << ',';
+        out << "{\"code\":" << jsonString(state.diagnostics[index].code)
+            << ",\"occurrences\":" << state.diagnostics[index].occurrences
+            << ",\"text\":" << jsonString(state.diagnostics[index].text) << "}";
+    }
+    out << "]}"
+        << ",\"reliability\":{\"liveObjects\":" << detail::g_liveObjects
+        << ",\"objectsCreated\":" << detail::g_objectsCreated
+        << ",\"videoMemoryBytes\":" << state.videoMemoryBytes
+        << ",\"videoMemoryBudgetBytes\":" << state.videoMemoryBudgetBytes
+        << ",\"videoMemoryQuerySupported\":" << (state.videoMemoryQuerySupported ? "true" : "false")
+        << ",\"injectedDeviceRemoval\":" << (state.deviceRemovalInjected ? "true" : "false")
+        << ",\"faultInjectionFrame\":" << state.faultInjectionFrame
+        << ",\"framesRendered\":" << state.framesRendered
+        << ",\"drawCalls\":" << state.drawCallsLastFrame
+        << ",\"triangles\":" << state.trianglesLastFrame << "}"
         << "}";
     return out.str();
 }
@@ -1808,14 +1938,79 @@ void Renderer::setValidationEnabled(bool enabled) {
     impl_->validationRequested = enabled;
 }
 
+void Renderer::Impl::addDiagnostic(const char* code, const std::string& text) {
+    ++diagnosticEvents;
+    for (auto& entry : diagnostics) {
+        if (entry.code == code) {
+            ++entry.occurrences;
+            return;
+        }
+    }
+    if (diagnostics.size() >= 32) return;
+    Diagnostic entry;
+    entry.code = code;
+    entry.text = text;
+    entry.occurrences = 1;
+    diagnostics.push_back(entry);
+}
+
+void Renderer::Impl::queryVideoMemory() {
+    videoMemoryBytes = 0;
+    videoMemoryBudgetBytes = 0;
+    videoMemoryQuerySupported = false;
+    if (!adapter) return;
+    IDXGIAdapter3* adapter3 = nullptr;
+    if (SUCCEEDED(adapter->QueryInterface(IID_PPV_ARGS(&adapter3))) && adapter3) {
+        DXGI_QUERY_VIDEO_MEMORY_INFO local{};
+        DXGI_QUERY_VIDEO_MEMORY_INFO nonLocal{};
+        const HRESULT localResult =
+            adapter3->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &local);
+        const HRESULT nonLocalResult =
+            adapter3->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, &nonLocal);
+        if (SUCCEEDED(localResult)) {
+            videoMemoryBytes += local.CurrentUsage;
+            videoMemoryBudgetBytes += local.Budget;
+            videoMemoryQuerySupported = true;
+        }
+        if (SUCCEEDED(nonLocalResult)) {
+            videoMemoryBytes += nonLocal.CurrentUsage;
+            videoMemoryBudgetBytes += nonLocal.Budget;
+            videoMemoryQuerySupported = true;
+        }
+        adapter3->Release();
+    }
+}
+
+bool Renderer::Impl::selfTestInvalidPipeline(std::string& code, std::string& text) {
+    // A missing symbol is guaranteed to fail compilation. The point is that the failure is
+    // captured as a stable diagnostic and the renderer keeps running.
+    const char* broken = "float4 BrokenPS() : SV_Target { return missing_symbol; }";
+    ID3DBlob* blob = nullptr;
+    std::string compileError;
+    const bool compiled = compileEmbedded(broken, "BrokenPS", "ps_5_1", &blob, compileError);
+    detail::release(blob);
+    code = "NG-E-PIPE-COMPILE";
+    if (compiled) {
+        text = "broken shader compiled unexpectedly";
+        addDiagnostic("NG-E-PIPE-COMPILE", text);
+        return false;
+    }
+    text = compileError;
+    addDiagnostic("NG-E-PIPE-COMPILE", text);
+    return true;
+}
+
 void Renderer::shutdown() {
     if (!impl_) return;
     auto& state = *impl_;
     std::string ignored;
     state.waitIdle(ignored);
     state.releaseRaytracingPipeline();
+    state.releaseMeshPipeline();
 
     state.destroy(state.captureReadback);
+    state.destroy(state.commands6);
+    state.destroy(state.device2);
     state.destroy(state.commands4);
     state.destroy(state.commands);
     for (auto& allocator : state.allocators) state.destroy(allocator);
