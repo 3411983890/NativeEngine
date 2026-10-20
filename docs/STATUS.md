@@ -1,6 +1,6 @@
 # 项目状态与移交说明
 
-- 版本：0.7.0（第一批：确定性契约、帧预算管理器、离线几何包、Chromium 输出契约）
+- 版本：0.8.0（第二批：RHI 边界、误差契约、回放/黑匣子、glTF、SDF 烘焙、设计期 lint）
 - 日期：2026-10-20
 - 当前形态：Windows 11 x64 + D3D12 独立原生宿主（光栅 + DXR 静态阴影）+ Node.js 确定性场景事务层 + 本地 MCP 工具服务 + 可重放 CI
 - 不包含：Chromium 接入、SM 6.6 直接堆索引、放大剔除、资产导入、骨骼动画、模型调用、运行时 Nanite/Lumen
@@ -15,6 +15,17 @@
 | H07 输出契约 | `docs/OUTPUT-CONTRACT.md` | 逐条对照真实渲染器符号，未实现项全部按"S2 要求"标注 |
 
 详见 `docs/DETERMINISM.md`、`docs/BUDGET.md`、`docs/GEOMETRY-PACKAGE.md`、`docs/OUTPUT-CONTRACT.md`。
+
+## 1d. 第二批并行工作包（0.8.0）
+
+| 工作包 | 产物 | 证据 |
+| --- | --- | --- |
+| R06 RHI 边界 | `renderer/rhi.{hpp,cpp}`、`rhi_d3d12.cpp`；帧路径经接口，报告 `rhi` 段 | `tests/rhi_conformance.cpp` 13/13；smoke 摘要与迁移前逐位一致；`docs/RHI.md` |
+| R07 误差契约 | `tests/image-contracts.json`（5 条）、`tools/error-contract.ps1` | 5/5 通过；阴影开关 11.73% 变化、回退逐像素相同；`docs/ERROR-CONTRACTS.md` |
+| E08 回放与黑匣子 | `--record` / `--replay` / `--replay-strict` / `--stall-*`、anomaly sidecar | `tools/replay.ps1` 25/25；240 帧 0 不符；篡改定位到帧；`docs/REPLAY.md` |
+| B7 glTF 子集 | `tools/offline/gltf.mjs` + 可复现 fixtures | 6/6 测试；quad 4 顶点 2 三角形；包摘要 `9e9a242a…` |
+| L0 SDF 烘焙 | `tools/offline/sdf-bake.mjs` | 8/8 测试；球面中心最大误差 0.0587 体素；`docs/SDF-BAKE.md` |
+| S3E-07 设计期 lint | `engine/scene/lint.mjs`（12 规则）、`tools/scene.mjs lint` | 11/11 测试；小院 0 findings；`docs/SCENE-LINT.md` |
 
 ## 1. 本次推进内容（工作包 2：DXR 静态阴影）
 

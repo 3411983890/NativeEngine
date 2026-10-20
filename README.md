@@ -146,6 +146,11 @@ docs/             当前阶段状态、工具链冻结表与 CI/证据说明
 | 帧预算管理器（0.7.0） | 部分完成 | 中位数决策 + 两档阶梯（阴影/网格路径）+ 报告 `budget` 段；18 项证据 + 28 项单元测试；无渲染缩放档，见 [docs/BUDGET.md](docs/BUDGET.md) |
 | 离线几何包（0.7.0） | 部分完成 | 内容寻址包 + cluster DAG：37 cluster / 6 LOD / 确定性重建 / 篡改检测；无运行时 LOD 选择器，见 [docs/GEOMETRY-PACKAGE.md](docs/GEOMETRY-PACKAGE.md) |
 | Chromium 输出契约（0.7.0） | 已完成（文档） | [docs/OUTPUT-CONTRACT.md](docs/OUTPUT-CONTRACT.md)：格式/同步/resize/验收清单，未实现项逐条标注 |
+| RHI 边界（0.8.0） | 部分完成 | `nativegpu::rhi::Device` + d3d12 适配器 + 契约检查 13 项；只有一个后端，见 [docs/RHI.md](docs/RHI.md) |
+| 回放与黑匣子（0.8.0） | 已完成 | `--record`/`--replay --replay-strict`/`--stall-*`；240 帧 0 不符；anomaly sidecar 可回放，见 [docs/REPLAY.md](docs/REPLAY.md) |
+| 图像误差契约（0.8.0） | 已完成 | 5 条契约 + `tools/error-contract.ps1`，阈值来自实测，见 [docs/ERROR-CONTRACTS.md](docs/ERROR-CONTRACTS.md) |
+| glTF 子集 + SDF 烘焙（0.8.0） | 部分完成 | 离线加载/烘焙可用；无非单位变换、无 GPU 追踪，见 [docs/GEOMETRY-PACKAGE.md](docs/GEOMETRY-PACKAGE.md)、[docs/SDF-BAKE.md](docs/SDF-BAKE.md) |
+| 设计期 lint（0.8.0） | 已完成 | 12 条规则 + 可达性 BFS，`npm run scene -- lint`，见 [docs/SCENE-LINT.md](docs/SCENE-LINT.md) |
 | Chromium 编辑器与共享纹理 | 未实现 | 文档中的 S2 阶段，当前仍是独立 Win32 宿主 |
 | Blender/资产管线 | 未实现 | 文档中的 S4 阶段 |
 | 模型接入 | 未接模型 | 只提供模型无关的 MCP 工具面；不伪造 AI 能力 |

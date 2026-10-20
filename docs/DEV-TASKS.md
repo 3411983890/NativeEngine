@@ -21,20 +21,20 @@
 | 阶段 | 关口 | 已完成 | 部分完成 | 未开始/阻塞 | 关口状态 |
 | --- | --- | --- | --- | --- | --- |
 | S0 准备 | G0 | 2 | 5 | 2 | 🟡 |
-| S1 原生图形 | G1 | 4 | 7 | 3 | ✅ 已放行 |
+| S1 原生图形 | G1 | 14 | 7 | 1 | ✅ 已放行 |
 | S1+ 工程能力（docx 未列） | — | 8 | 0 | 0 | ✅ |
 | S2 Chromium | G2 | 1 | 0 | 6 | ⏸ 未开始 |
-| S3 游戏核心 | G3 | 6 | 5 | 6 | 🟡 |
+| S3 游戏核心 | G3 | 8 | 5 | 4 | 🟡 |
 | S4 AI/Blender | G4 | 0 | 1 | 7 | ⬜ |
 | S5 闭环整合 | G5 | 0 | 3 | 3 | ⬜ |
 | S6 稳定发布 | G6 | 0 | 3 | 6 | ⬜ |
-| X1–X6 扩展 | — | 1 | 1 | 6 | ⬜ |
+| X1–X6 扩展 | — | 3 | 1 | 6 | ⬜ |
 
 20 条创新点**不再单列**，已全部落成上表中的工作包（R07/R08、E07–E10、S3E-07、H07、A07/A08、Q07–Q09、X1 的 B/N/L 子项），每条的先决条件、优先级与并行泳道见 §12，泳道划分见 §13。
 
 计数口径：只数工作包行，关口（G0–G6）单列在"关口状态"列。
 
-一句话现状：**第一批（R08 / E07 / INN-14+N0 / H07）已完成并各有可重放证据；S1 放行状态不变；S2 仍未开始且按约定等待你确认；S3 只完成"方盒样板 + 场景事务"这一层；S4–S6 未开始。下一批是 R06 → R07、E08、B7+L0+S3E-07。**
+一句话现状：**第一、二批共十项工作包已完成（E07/R08/H07/INN-14+N0；R06/R07/E08/B7/L0/S3E-07），全部带可重放证据；S2 仍未开始且按约定等待你确认；S3 只完成"方盒样板 + 场景事务 + lint"；S4–S6 未开始。下一批是 B1+B3（compute 与 bindless 堆），它们同时是 N1/L1 与 INN-15–19 的硬门。**
 
 ## 1. 里程碑与提交对照
 
@@ -46,6 +46,7 @@
 | `v0.6.0` `67a6b33` | 工作包 3+4：G1 可靠性、Mesh Shader、Bindless 槽位 | `reports/latest/g1-reliability.json`（27 项）、`mesh-bindless-evidence.json`（22 项） |
 | `g1` `f34499e` | G1 放行 + Chromium 启动清单 | `reports/g1.json`（6/6 通过）、`docs/CHROMIUM-START.md` |
 | `v0.7.0` `ba44592` | 第一批：E07 确定性、R08 预算管理器、INN-14+N0 离线几何、H07 输出契约 | `reports/0.7.0/ba44592111d9/…`（verify 15/15；determinism 19/19；budget 18/18；offline 6/6） |
+| `v0.8.0` | 第二批：R06 RHI 边界、R07 误差契约、E08 回放与黑匣子、B7 glTF、L0 SDF、S3E-07 设计期 lint | `reports/0.8.0/…`（verify 全绿；rhi 13/13；replay 25/25；error-contract 5/5；gltf 6/6；sdf 8/8；lint 11/11） |
 | `8bf0f01` / `16a0c27` | Nanite/Lumen 方案与创新清单取舍（设计文档） | `docs/NANITE-LUMEN-PLAN.md`、`docs/IDEA-TRIAGE.md` |
 
 ---
@@ -76,8 +77,8 @@
 | R03 | 命令列表、队列、Fence、状态转换 | ✅ | 3 帧在途、tracked resource state、fence 超时诊断 | 只有一条 DIRECT 队列；无 compute 队列 |
 | R04 | 相机、PBR 网格、深度、基础光照 | ✅ | 固定机位截图、`gpuP95Ms`/`cpuSubmitP50Ms`、PNG 截图 | 光照是 Lambert+Blinn 近似，不是完整 PBR（无 IBL/能量守恒） |
 | R05 | 高级探针：Bindless / DXR / Mesh Shader | 🟡 | DXR 阴影 ✅（RTPSO+SBT+回退）；Mesh ✅（AS+MS+PS+回退）；Bindless 有界表 8 槽 ✅ | SM 6.6 直接堆索引**未实现**（评估为支持）；放大剔除禁用；Mesh 路径亮度与顶点路径不一致 |
-| R06 | 最小 RHI 与后端扩展点 | ⬜ | — | 先决：无；泳道 A；P1。渲染器单文件直连 D3D12，Vulkan 因此卡住（docx 允许延后） |
-| R07 | 渲染误差契约 + 引擎内 path-traced 参考（创新 INN-03） | ⬜ | 现有逐像素对比工具可复用（`rt-shadows.ps1`） | 先决：无（契约框架）；PT 参考需 B1；泳道 A；P1/P2。验收：3 个契约各有阈值与失败日志 |
+| R06 | 最小 RHI 与后端扩展点 | ✅ | `renderer/rhi.{hpp,cpp}`、`rhi_d3d12.cpp`、`tests/rhi_conformance.cpp`（13 项）、报告 `rhi` 段；smoke 经接口跑 240 帧、摘要与迁移前逐位一致 | 只有 d3d12 一个后端；接口只覆盖帧路径与生命周期，不是完整 RHI。见 `docs/RHI.md` |
+| R07 | 渲染误差契约（创新 INN-03；PT 参考部分仍待 B1） | ✅ | `tests/image-contracts.json`（5 条契约）、`tools/error-contract.ps1`（5/5 通过）、`docs/ERROR-CONTRACTS.md` | 阈值全部实测：阴影开关 changedPercent 11.73、网格回退 59.25、阴影/网格回退逐像素相同（meanAbsError=0）；**引擎内 path-traced 参考未做，需 compute 管线 B1** |
 | R08 | 统一预算管理器 + 每插件性能契约（创新 INN-04） | 🟡 | `tools/budget.ps1`（18 项）、`tests/budget_tests.cpp`（28 项）、`reports/latest/budget-evidence.json` | 中位数决策 + 两档阶梯（阴影/网格路径）已落地；**无渲染缩放档、不可回退、每插件契约未接**。见 `docs/BUDGET.md` |
 | S1-01 | 资源记录类型/尺寸/用途/状态/最后 Fence + 延迟回收 + GPU 调试工具与命名 | 🟡 | 状态跟踪、错误码、`NG-E-*` 诊断 | 无 `SetName` 命名、无 PIX/RenderDoc、无延迟回收 |
 | S1-02 | Bindless 限定为材质纹理表（上限/默认槽/代际/缺失/复用/在途更新） | 🟡 | 8 槽、代际、默认槽（品红棋盘）、复用与失效诊断 | "在途帧更新"未做真实并发测试（只有同步自检） |
@@ -128,7 +129,7 @@
 | E05 | 脚本：受限 TS/WASM、编译与错误定位 | ⬜ | — | 无脚本 VM；MCP 是外部 Node 工具，不是运行时脚本 |
 | E06 | 运行包：资产依赖闭包、默认配置、离线启动 | ✅ | `tools/package.ps1`：zip + manifest（每文件 SHA-256）+ 内容寻址场景包 | 无安装器/签名 |
 | E07 | 确定性契约：tick 哈希 + RNG 流注册表（创新 INN-01） | ✅ | `tools/determinism.ps1`（19 项）、`tests/native_simulation.cpp` 新增 3 组检查、`reports/latest/determinism-evidence.json` | 两次运行逐字节相同、分辨率/调试视图无关、静态门禁通过；**输入日志留给 E08**。见 `docs/DETERMINISM.md` |
-| E08 | 常开黑匣子 + replay-as-evidence（创新 INN-02） | ⬜ | — | 先决：E07；泳道 B；P1。验收：注入卡顿自动落 replay + 计数器，可重放 diff=0 |
+| E08 | 常开黑匣子 + replay-as-evidence（创新 INN-02） | ✅ | `tools/replay.ps1`（25 项）、`docs/REPLAY.md`、报告 `replay`/`blackbox` 段 | 240 帧回放 0 不符；篡改第 100 帧摘要 → 严格回放 `NG-E-REPLAY-MISMATCH` 且精确定位该帧；注入 60 ms 停顿 → anomaly sidecar 可回放。**非环形缓冲**，长会话线性增长 |
 | E09 | 世界分叉 CI：`--fork N` 并行确定性实例（创新 INN-06） | ⬜ | 内容寻址场景包已有（E06） | 先决：E07；泳道 B；P2 |
 | E10 | 场抽象单消费者：导航/可达性（创新 INN-10） | ⬜ | — | 先决：S3E-07 + A07；泳道 B；P2 |
 
@@ -142,7 +143,7 @@
 | S3E-04 | 编辑态与运行态分离 | 🟡 | F5 重置、热重载重新初始化玩法 | 运行中修改不回写项目；热重载会重置玩法状态 |
 | S3E-05 | 确定性资产构建（内容哈希缓存键、manifest、依赖、清缓存重建） | ✅ | `scene build` 内容寻址 + `BUILD_CONFLICT` 篡改检测 + 打包 manifest | 只覆盖场景 JSON，未覆盖纹理/动画资产 |
 | S3E-06 | 给 AI 留可调用入口（输入 schema/输出/超时/错误码/副作用） | 🟡 | MCP stdio 8 个工具、结构化错误、路径策略 | **无超时、无取消、无费用记录、无副作用说明字段** |
-| S3E-07 | 设计期 lint + 可达性证明（创新 INN-07） | ⬜ | 场景 schema 8 种实体已稳定 | 先决：无（schema 已有）；泳道 C；P1。验收：改一个实体能自动报出引用/可达性/预算违规 |
+| S3E-07 | 设计期 lint + 可达性证明（创新 INN-07） | ✅ | `engine/scene/lint.mjs`（12 条规则）、`tests/lint.test.mjs`（11 项）、`tools/scene.mjs lint`、`docs/SCENE-LINT.md` | 小院 0 findings；可达性用 40×40 网格 BFS；**无 3D/跳跃/高度推理**，门按可通行处理 |
 | **G3** | 关口 | 🟡 | 走跑跳+碰撞+交互 ✅、离线运行包 ✅、场景诊断 ✅ | 手工导入角色与 5 件道具 ❌；15 分钟连续游玩未做正式验收；缺脚本/动画错误诊断 |
 
 ## 6. S4 AI 编排与 Blender 管线（docx §10–§11，G4）
@@ -198,6 +199,8 @@
 | X6 | 发布平台（Linux/受限网页预览） | ⬜ | 现有平台维护量可承受 | 依赖 S2 |
 | N0 | 离线 cluster DAG 构建（Nanite 第 0 步） | 🟡 | 需 glTF 输入 + 几何包格式 | 骨架完成：37 cluster / 6 LOD / 覆盖率与 DAG 结构 6 项测试通过；**无运行时 LOD 选择器** |
 | INN-14 | 内容寻址几何包格式 | ✅ | — | `tools/offline/geometry-package.mjs` + `docs/GEOMETRY-PACKAGE.md`；确定性重建与篡改检测有测试 |
+| B7 | glTF 2.0 子集加载（离线） | ✅ | — | `tools/offline/gltf.mjs` + 可复现 fixtures + 6 项测试；支持嵌入/sibling buffer、索引三角形、POSITION/NORMAL；拒绝 skin/animation/扩展/稀疏/Draco/.glb 与非单位变换、多场景、实例化 |
+| L0 | SDF 烘焙（远场） | ✅ | — | `tools/offline/sdf-bake.mjs` + 8 项测试 + `docs/SDF-BAKE.md`；32³ 球面中心最大误差 0.0587 体素、盒角三线性 0.4984（插值固有）；**当前场景网格不封闭，符号用最近三角形法向，不是可靠内部场** |
 
 ## 10. 常驻工程任务（每周/每版本）
 

@@ -64,17 +64,29 @@ Invoke-Step 'Native tests' {
     if ($LASTEXITCODE -ne 0) { throw 'renderer_math_tests failed.' }
     & '.\build\budget_tests.exe'
     if ($LASTEXITCODE -ne 0) { throw 'budget_tests failed.' }
+    & '.\build\rhi_conformance_tests.exe'
+    if ($LASTEXITCODE -ne 0) { throw 'rhi_conformance_tests failed.' }
 }
 
-Invoke-Step 'Offline geometry package' {
-    $selfTest = & $node.Source 'tools\offline\geometry-package.mjs' self-test
-    if ($LASTEXITCODE -ne 0) { throw 'geometry package self-test failed.' }
-    $digest = ($selfTest | Where-Object { $_ -match '^package digest: ([0-9a-f]{64})$' })
-    if (-not $digest) { throw 'geometry package self-test printed no digest.' }
-    & $node.Source 'tools\offline\geometry-package.mjs' build --out 'build\offline' | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw 'geometry package build failed.' }
-    & $node.Source 'tools\offline\geometry-package.mjs' verify --package 'build\offline\geometry.package.json' | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw 'geometry package verify failed.' }
+Invoke-Step 'Offline asset tools' {
+    & $node.Source 'tools\offline\make-fixtures.mjs' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'glTF fixtures failed to generate.' }
+    & $node.Source 'tools\offline\gltf.mjs' export --in 'tools\offline\fixtures\quad.gltf' --out 'build\offline\gltf.mesh.json' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'glTF export failed.' }
+    $sdf = & $node.Source 'tools\offline\sdf-bake.mjs' self-test
+    if ($LASTEXITCODE -ne 0) { throw 'SDF self-test failed.' }
+    if (-not ($sdf | Where-Object { $_ -match '^self-test: PASS' })) { throw 'SDF self-test did not report PASS.' }
+    & $node.Source 'tools\offline\sdf-bake.mjs' bake --out 'build\offline\sdf' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'SDF bake failed.' }
+    & $node.Source 'tools\offline\sdf-bake.mjs' verify --volume 'build\offline\sdf\sdf.volume.json' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'SDF volume verification failed.' }
+}
+
+Invoke-Step 'Scene design lint' {
+    $lint = & $node.Source 'tools\scene.mjs' lint 'assets\courtyard.scene.json' --json
+    if ($LASTEXITCODE -ne 0) { throw 'Courtyard scene has lint errors.' }
+    $parsed = $lint | ConvertFrom-Json
+    if (-not $parsed.ok -or -not $parsed.result.ok) { throw 'Courtyard lint returned ok=false.' }
 }
 
 Invoke-Step 'Scene contract validation' {
@@ -169,6 +181,24 @@ Invoke-Step 'Frame budget evidence' {
     if (-not (Test-Path -LiteralPath $evidence)) { throw 'Budget evidence report is missing.' }
     Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'budget-evidence.json') -Force
     Register-Report -Context $context -Path (Join-Path $context.directory 'budget-evidence.json') | Out-Null
+}
+
+Invoke-Step 'Replay and black box' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'replay.ps1') -SkipBuild -Frames 240
+    if ($LASTEXITCODE -ne 0) { throw 'Replay evidence suite failed.' }
+    $evidence = Join-Path 'reports\latest' 'replay-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'Replay evidence report is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'replay-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'replay-evidence.json') | Out-Null
+}
+
+Invoke-Step 'Image error contracts' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'error-contract.ps1') -SkipBuild
+    if ($LASTEXITCODE -ne 0) { throw 'Image error contracts failed.' }
+    $evidence = Join-Path 'reports\latest' 'error-contract-evidence.json'
+    if (-not (Test-Path -LiteralPath $evidence)) { throw 'Error contract evidence is missing.' }
+    Copy-Item -LiteralPath $evidence -Destination (Join-Path $context.directory 'error-contract-evidence.json') -Force
+    Register-Report -Context $context -Path (Join-Path $context.directory 'error-contract-evidence.json') | Out-Null
 }
 
 Invoke-Step 'Live scene hot reload' {

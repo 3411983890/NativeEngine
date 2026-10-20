@@ -1,6 +1,6 @@
 {
   "name": "nativegpu-engine",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "description": "Windows D3D12 native engine, deterministic scene tools and MCP editing surface",
@@ -20,6 +20,10 @@
     "determinism": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/determinism.ps1",
     "budget": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/budget.ps1",
     "offline": "node tools/offline/geometry-package.mjs",
+    "replay": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/replay.ps1",
+    "contract": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/error-contract.ps1",
+    "sdf": "node tools/offline/sdf-bake.mjs",
+    "gltf": "node tools/offline/gltf.mjs",
     "start": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/run.ps1",
     "package": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1"
   }
