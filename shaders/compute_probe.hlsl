@@ -5,17 +5,14 @@
 //
 // The heap indices used here live above the bounded 8-slot material table on purpose: a
 // bounded table cannot address them, so a match proves real heap indexing.
-struct LightInput {
-    float4 colorIntensity;
-    float4 positionRange;
-};
-
 cbuffer ProbeConstants : register(b0) {
     uint heapBaseIndex;
     uint lightCount;
     uint corruptMode;
     uint padding;
-    LightInput lights[4];
+    // Struct-of-arrays on purpose: this is the exact byte layout of the C++ ComputeConstants.
+    float4 lightColorIntensity[4];
+    float4 lightPositionRange[4];
 };
 
 Texture2D<float4> table0 : register(t0);
@@ -29,7 +26,7 @@ static const int2 kProbePixel = int2(4, 4);
 float3 reduceLights() {
     float3 sum = float3(0.0, 0.0, 0.0);
     for (uint index = 0; index < lightCount; ++index) {
-        sum += lights[index].colorIntensity.rgb * lights[index].colorIntensity.w;
+        sum += lightColorIntensity[index].rgb * lightColorIntensity[index].w;
     }
     return sum;
 }
@@ -43,6 +40,7 @@ void CSMain(uint3 dispatchId : SV_DispatchThreadID) {
         scale = 0.5;
     }
     outResult[0] = float4(scale, lightSum);
+    outResult[15] = float4(lightCount, heapBaseIndex, corruptMode, 0.0);
 
     // Rows 1..8: table samples and heap samples of the same four textures.
     float4 tableSamples[4] = {

@@ -266,9 +266,23 @@ bool Renderer::Impl::readbackComputeProbe(std::string& error) {
     if (!computePipelineReady || computeProbeRan) return true;
     computeProbeRan = true;
 
-    if (!detail::checked(computeQueue->Wait(computeFence, computeFenceValue), "Wait for compute",
-                 error)) {
-        return false;
+    // A queue-side Wait() only orders GPU work; it does not block the CPU. The allocator
+    // and command list below are reused, so the CPU must observe the fence completion
+    // first. Without this the copy can run while the dispatch is still executing and read
+    // the previous contents (observed as a zero light scale in the full verify run).
+    if (computeFence->GetCompletedValue() < computeFenceValue) {
+        HANDLE completion = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+        if (!completion) {
+            error = "NG-E-COMPUTE-SYNC: cannot create completion event";
+            return false;
+        }
+        computeFence->SetEventOnCompletion(computeFenceValue, completion);
+        const DWORD wait = WaitForSingleObject(completion, 5000);
+        CloseHandle(completion);
+        if (wait != WAIT_OBJECT_0) {
+            error = "NG-E-COMPUTE-SYNC: compute fence did not complete";
+            return false;
+        }
     }
     if (!detail::checked(computeAllocator->Reset(), "Reset compute allocator", error)) return false;
     if (!detail::checked(computeCommands->Reset(computeAllocator, nullptr), "Reset compute list", error)) {
@@ -281,6 +295,12 @@ bool Renderer::Impl::readbackComputeProbe(std::string& error) {
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
     barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
     computeCommands->ResourceBarrier(1, &barrier);
+    // A transition alone does not guarantee that the UAV writes from the dispatch are
+    // visible to the copy; a UAV barrier is required for that ordering.
+    D3D12_RESOURCE_BARRIER uavBarrier{};
+    uavBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+    uavBarrier.UAV.pResource = computeResult;
+    computeCommands->ResourceBarrier(1, &uavBarrier);
     computeCommands->CopyResource(computeReadback, computeResult);
     if (!detail::checked(computeCommands->Close(), "Close readback list", error)) return false;
     computeQueue->ExecuteCommandLists(1,
@@ -300,6 +320,7 @@ bool Renderer::Impl::readbackComputeProbe(std::string& error) {
     }
     const float* values = static_cast<const float*>(mapped);
     computeLightScaleGpu = values[0];
+    computeLightCountGpu = static_cast<unsigned>(values[15 * 4]);
     // Table samples start at float4 index 1, heap samples at 5.
     float maxDelta = 0.0f;
     unsigned matched = 0;
@@ -353,6 +374,7 @@ std::string Renderer::Impl::computeProbesFragment() const {
         << ",\"lightScale\":{\"gpu\":" << computeLightScaleGpu
         << ",\"cpu\":" << computeLightScaleCpu
         << ",\"delta\":" << std::fabs(computeLightScaleGpu - computeLightScaleCpu) << "}"
+        << ",\"lightCountGpu\":" << computeLightCountGpu
         << ",\"corrupt\":" << (computeCorrupt ? "true" : "false")
         << ",\"error\":" << detail::jsonString(computeError) << "},";
     return out.str();

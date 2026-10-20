@@ -335,6 +335,7 @@ struct Renderer::Impl {
     float computeHeapMaxDelta = 0.0f;
     float computeLightScaleGpu = 0.0f;
     float computeLightScaleCpu = 0.0f;
+    unsigned computeLightCountGpu = 0;
     std::vector<LightDesc> computeLastLights;
     std::string computeError;
 
