@@ -1,0 +1,66 @@
+name: windows
+
+# The authoritative CI entry point is tools/ci.ps1. This workflow only provisions the
+# runner and uploads the evidence; all build/test/verify logic stays in the repository
+# so a developer can replay the exact same run locally.
+on:
+  push:
+    branches: [main]
+    tags: ['v*', 'g1']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      allowUnsupportedGpu:
+        description: Treat missing GPU features as allowed failures (software adapter)
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      NATIVEGPU_CI: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Report runner capabilities
+        shell: pwsh
+        run: |
+          Write-Host "OS: $((Get-CimInstance Win32_OperatingSystem).Caption)"
+          Write-Host "Node: $(node --version)"
+          Get-CimInstance Win32_VideoController | Select-Object Name, DriverVersion | Format-Table -AutoSize
+
+      # Hosted runners have no D3D12 GPU. The renderer falls back to WARP, which may
+      # legitimately report DXR or mesh-shader capabilities as unsupported; those steps
+      # are allowed to fail and must still record `unsupported` instead of `implemented`.
+      - name: CI
+        shell: pwsh
+        run: |
+          $arguments = @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools/ci.ps1','-Clean')
+          if ('${{ inputs.allowUnsupportedGpu }}' -eq 'true' -or '${{ github.event_name }}' -ne 'workflow_dispatch') {
+            $arguments += '-AllowUnsupportedGpu'
+          }
+          & powershell @arguments
+          exit $LASTEXITCODE
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nativegpu-evidence-${{ github.run_id }}
+          path: |
+            reports/
+          if-no-files-found: warn
+          retention-days: 30

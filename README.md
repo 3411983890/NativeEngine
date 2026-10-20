@@ -1,6 +1,6 @@
 # NativeGPU / AI 原生游戏引擎
 
-版本 **0.3.0**。一个可运行、可验证的 Windows D3D12 原生游戏样板，以及供编辑器和 AI Agent 共用的确定性场景事务层。当前重点不是宣称“已经完成 AI 引擎”，而是把一条真实闭环做通：
+版本 **0.3.1**。一个可运行、可验证的 Windows D3D12 原生游戏样板，以及供编辑器和 AI Agent 共用的确定性场景事务层。当前重点不是宣称“已经完成 AI 引擎”，而是把一条真实闭环做通：
 
 > 读取场景 → 预览事务 → 原子提交 → 运行中的原生编辑器热重载 → 原生冒烟测试 → 返回可审计报告
 
@@ -13,13 +13,18 @@
 - **运行中热重载**：`scene apply` 写入成功后，原生编辑器自动加载新 revision；无效写入会保留上一有效场景并报告错误，不弹模态框阻塞运行。
 - **AI 工具入口**：本地 MCP stdio 服务暴露 8 个工具，Agent 可独立调用，不需要聊天壳或模型凭证。
 - **可重复验证**：13 项 Node 测试、原生测试、原生冒烟、S1 探针、热重载集成测试和 MCP 协议冒烟都在 `tools/verify.ps1` 中执行。
+- **可重放工程基线（0.3.1 新增）**：Git 版本冻结、固定 DXC 1.9.2609 与哈希、`tools/ci.ps1` 一条命令从干净状态重放全部检查、证据按 `<version>/<commit>/<timestamp>` 归档且不覆盖历史。
 
 ## 快速开始
 
-要求：Windows 11 x64、支持 D3D12 的显卡、Node.js 22+、PowerShell。首次构建会下载项目内的 LLVM-MinGW 工具链，不修改系统环境。
+要求：Windows 11 x64、支持 D3D12 的显卡、Node.js 22+、PowerShell。首次构建会下载项目内的 LLVM-MinGW 工具链与固定版本 DXC，不修改系统环境。
 
 ```powershell
-# 1. 构建原生程序与测试
+# 0. 工具链 bootstrap（首次；也可让 build.ps1 自动触发）
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/bootstrap.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/bootstrap-dxc.ps1
+
+# 1. 构建原生程序与测试（会先用 DXC 编译并内嵌着色器）
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1
 
 # 2. 启动交互式样板
@@ -34,7 +39,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/probe.ps1
 # 5. 完整验证（会启动隐藏窗口做原生冒烟与探针）
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/verify.ps1
 
-# 6. 生成可分发包和 zip
+# 6. 从干净状态重放 CI（构建、测试、探针、热重载、MCP、打包）
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/ci.ps1 -Clean
+
+# 7. 生成可分发包和 zip
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1
 ```
 
@@ -98,15 +106,25 @@ cwd = "C:\\Users\\34119\\Documents\\AI-Native Game Engine"
 
 ```text
 host/             Win32 宿主、场景加载、热重载与冒烟报告
-renderer/         D3D12 渲染器（交换链、描述符、Fence、时间戳）
+renderer/         D3D12 渲染器（交换链、描述符、Fence、时间戳、DXR 加速结构）
+shaders/          HLSL 源码与 shaders/manifest.json（DXC 编译清单）
 engine/native/    固定步长玩法、碰撞、角色姿态
 engine/scene/     场景校验、事务、保存/撤销/恢复、内容寻址构建
 ai/               MCP 工具服务与工具契约说明
 assets/           样板场景与 JSON Schema
 tests/            Node 事务/工具测试与原生测试
-tools/            构建、运行、验证、打包、场景 CLI
-docs/             当前阶段状态与后续边界
+tools/            构建、bootstrap、CI、运行、验证、打包、场景 CLI
+docs/             当前阶段状态、工具链冻结表与 CI/证据说明
+.github/          windows-latest CI 工作流（只调用 tools/ci.ps1）
 ```
+
+## 工程基线（0.3.1）
+
+- **Git**：`main` 分支，基线 tag `v0.3.0`，之后每个工作包一个提交并打 tag；`build/`、`reports/`、`outputs/`、`work/`、`.tools/` 都在 `.gitignore` 中，不进仓库。
+- **CI**：`tools/ci.ps1` 是唯一入口，本地与 `.github/workflows/windows.yml` 调用同一脚本；失败保留 `logs/` 与 `ci-failure-<commit>-*.log`。
+- **DXC 冻结**：`tools/bootstrap-dxc.ps1` 固定 DXC 1.9.2609 与 SHA-256，编译产物内嵌进可执行文件；缺失时报告 `dxcUnavailable`，不会静默假装实现。
+- **版本化报告**：`reports/<version>/<commit>/<timestamp>/` + `reports/latest/` 别名，`run.json` 记录 commit、脏树状态、Node、适配器、DXC、场景哈希与每个产物的 SHA-256。
+- 详细版本表见 [docs/TOOLCHAIN.md](docs/TOOLCHAIN.md)，证据布局与重放命令见 [docs/CI.md](docs/CI.md)。
 
 ## 当前阶段与边界
 
@@ -120,6 +138,7 @@ docs/             当前阶段状态与后续边界
 | DXR 加速结构 | 已完成 | 真实 BLAS/TLAS 构建，报告字节数与实例数 |
 | DXR 追踪效果 | 未实现 | 尚无 ray generation / hit shader；`effectImplemented=false` |
 | AI 工具入口 | 已完成 | MCP stdio，8 个工具，协议冒烟测试 |
+| 版本冻结与 CI（0.3.1） | 已完成 | Git tag `v0.3.0`、固定 DXC 1.9.2609、`tools/ci.ps1` 可本机重放、版本化证据目录 |
 | Mesh Shader / Meshlet | 未实现 | 本机查询到 Mesh Shader Tier 10；尚未接入 DXC 与样例 |
 | Bindless 完整堆索引 | 未实现 | 当前是有界材质纹理表，不是 SM 6.6 descriptor heap indexing |
 | Chromium 编辑器与共享纹理 | 未实现 | 文档中的 S2 阶段，当前仍是独立 Win32 宿主 |
@@ -134,10 +153,14 @@ docs/             当前阶段状态与后续边界
 npm test                       # Node 测试
 npm run probe                  # S1 探针，写 reports/probe.json
 npm run verify                 # 构建 + Node + 原生 + 冒烟 + 探针 + 热重载 + MCP
+npm run ci                     # 干净状态完整 CI（verify + 打包 + CI 报告）
 npm run package                # 在 outputs/ 生成目录与 zip
 ```
 
-验证报告写入 `reports/verify.json`；原生冒烟报告写入 `reports/verify-native-smoke.json`；S1 探针报告写入 `reports/verify-probe.json`；热重载报告写入 `reports/verify-hot-reload.json`。`reports/`、`build/`、`outputs/` 和工具链目录都被 `.gitignore` 排除。
+每次 `verify.ps1` / `ci.ps1` 都在 `reports/<version>/<commit12>/<UTC时间戳>/` 新建一份证据目录，
+并刷新 `reports/latest/` 与 `reports/verify*.json` 等别名；同一次输入重跑不会覆盖历史证据。
+`run.json` 记录 commit、`worktreeDirty`、`staleBuild`、Node、适配器、DXC、场景哈希与产物 SHA-256。
+`reports/`、`build/`、`outputs/` 和工具链目录都被 `.gitignore` 排除。
 
 ## 已知限制
 
@@ -147,6 +170,7 @@ npm run package                # 在 outputs/ 生成目录与 zip
 - 材质表是 3 个固定槽位，不是无上限 Bindless；没有材质资源回收或槽位代际。
 - DXR 只构建了 BLAS/TLAS，没有 ray generation / closest-hit / miss shader，也没有阴影或反射输出。
 - 打包产物没有代码签名、安装器、自动更新和崩溃上传。
+- CI 工作流只在本地完整重放过；GitHub 托管 runner 没有 D3D12 GPU，显卡相关步骤在远程会退化为 WARP 并允许失败，不能替代本机显卡证据。
 - 下一阶段优先级：用 DXC 编译一个可切换的 DXR 静态阴影 pass，再补 Mesh Shader 样例和完整 Bindless 槽位管理；之后进入 Chromium 共享纹理宿主。
 
 详细状态见 [docs/STATUS.md](docs/STATUS.md)；下一阶段 1–4 的目标、验收标准和启动提示见 [docs/NEXT-PHASE.md](docs/NEXT-PHASE.md)。

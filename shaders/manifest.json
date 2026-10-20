@@ -1,0 +1,6 @@
+{
+  "$schema": "./manifest.schema.json",
+  "version": 1,
+  "comment": "Authoritative shader build list. Every blob is compiled by the pinned DXC from tools/bootstrap-dxc.ps1 and embedded into the native binary.",
+  "blobs": []
+}

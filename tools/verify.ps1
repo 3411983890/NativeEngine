@@ -1,6 +1,9 @@
+param([switch]$SkipBuild)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 Push-Location $root
+. (Join-Path $PSScriptRoot 'report-lib.ps1')
+$context = New-ReportContext -Mode 'verify'
 $steps = [System.Collections.Generic.List[object]]::new()
 $overall = $true
 
@@ -38,9 +41,18 @@ Invoke-Step 'JavaScript tests' {
     if ($LASTEXITCODE -ne 0) { throw 'JavaScript tests failed.' }
 }
 
-Invoke-Step 'Native build' {
-    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'build.ps1')
-    if ($LASTEXITCODE -ne 0) { throw 'Native build failed.' }
+if (-not $SkipBuild) {
+    Invoke-Step 'Native build' {
+        & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'build.ps1')
+        if ($LASTEXITCODE -ne 0) { throw 'Native build failed.' }
+    }
+}
+
+Invoke-Step 'Shader compile self-test' {
+    $output = & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'compile-shaders.ps1') -SelfTest -Quiet
+    if ($LASTEXITCODE -ne 0) { throw 'DXC negative-path self-test failed.' }
+    $parsed = $output | ConvertFrom-Json
+    if (-not $parsed.failedAsExpected) { throw 'DXC accepted a broken shader.' }
 }
 
 Invoke-Step 'Native tests' {
@@ -56,24 +68,27 @@ Invoke-Step 'Scene contract validation' {
     if (-not $parsed.ok -or -not $parsed.result.valid) { throw 'Scene validation returned an error.' }
 }
 
+$smokeReport = Join-Path $context.directory 'verify-native-smoke.json'
 Invoke-Step 'Native smoke' {
-    $report = 'reports/verify-native-smoke.json'
+    $relative = Get-RelativePath $smokeReport
     $process = Start-Process -FilePath '.\build\NativeGPU.exe' `
-        -ArgumentList @('--smoke','--frames','240','--report',$report) `
+        -ArgumentList @('--smoke','--frames','240','--report',$relative) `
         -WorkingDirectory $root -WindowStyle Hidden -Wait -PassThru
     if ($process.ExitCode -ne 0) { throw "Native smoke exited $($process.ExitCode)." }
-    $data = Get-Content -LiteralPath (Join-Path $root $report) -Raw | ConvertFrom-Json
+    $data = Get-Content -LiteralPath $smokeReport -Raw | ConvertFrom-Json
     if (-not $data.success) { throw 'Native smoke report success=false.' }
     if (-not $data.capabilities.initialized) { throw 'Renderer did not initialize.' }
+    if ($data.version -ne $context.version) { throw "Smoke report version $($data.version) does not match project version $($context.version)." }
 }
 
+$probeReport = Join-Path $context.directory 'verify-probe.json'
 Invoke-Step 'Native S1 probe' {
-    $report = 'reports/verify-probe.json'
+    $relative = Get-RelativePath $probeReport
     $process = Start-Process -FilePath '.\build\NativeGPU.exe' `
-        -ArgumentList @('--probe','--frames','240','--report',$report) `
+        -ArgumentList @('--probe','--frames','240','--report',$relative) `
         -WorkingDirectory $root -WindowStyle Hidden -Wait -PassThru
     if ($process.ExitCode -ne 0) { throw "Native probe exited $($process.ExitCode)." }
-    $data = Get-Content -LiteralPath (Join-Path $root $report) -Raw | ConvertFrom-Json
+    $data = Get-Content -LiteralPath $probeReport -Raw | ConvertFrom-Json
     if (-not $data.success) { throw 'Native probe report success=false.' }
     if (-not $data.probes.materialTable.implemented) { throw 'Material table probe did not report implemented=true.' }
     if (-not $data.probes.sceneLights.implemented) { throw 'Scene lights probe did not report implemented=true.' }
@@ -83,6 +98,7 @@ Invoke-Step 'Native S1 probe' {
     }
 }
 
+$hotReloadReport = Join-Path $context.directory 'verify-hot-reload.json'
 Invoke-Step 'Live scene hot reload' {
     $directory = Join-Path $env:TEMP ('nativegpu-verify-' + [guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $directory | Out-Null
@@ -102,7 +118,7 @@ Invoke-Step 'Live scene hot reload' {
         if (-not $data.success) { throw 'Hot reload smoke report success=false.' }
         if ($data.hotReloads -lt 1) { throw 'The native host did not report a hot reload.' }
         if ($data.revision -lt 1) { throw 'The running host did not adopt the new revision.' }
-        Copy-Item -LiteralPath $report -Destination (Join-Path $root 'reports\verify-hot-reload.json') -Force
+        Copy-Item -LiteralPath $report -Destination $hotReloadReport -Force
     } finally {
         Remove-Item -LiteralPath $directory -Recurse -Force -ErrorAction SilentlyContinue
     }
@@ -128,18 +144,49 @@ Invoke-Step 'MCP protocol smoke' {
     if (-not $validated.valid) { throw 'MCP scene validation failed.' }
 }
 
+foreach ($pair in @(
+    @{ path = $smokeReport; aliases = @('verify-native-smoke.json') },
+    @{ path = $probeReport; aliases = @('verify-probe.json') },
+    @{ path = $hotReloadReport; aliases = @('verify-hot-reload.json') }
+)) {
+    if (Test-Path -LiteralPath $pair.path) {
+        Register-Report -Context $context -Path $pair.path -LegacyAliases $pair.aliases | Out-Null
+    }
+}
+
+$adapterFromProbe = $null
+if (Test-Path -LiteralPath $probeReport) {
+    try {
+        $probeData = Get-Content -LiteralPath $probeReport -Raw | ConvertFrom-Json
+        $adapterFromProbe = $probeData.capabilities.adapter
+    } catch { }
+}
+
 $summary = [pscustomobject]@{
-    version = '0.3.0'
+    schema = 'nativegpu.verify/2'
+    version = $context.version
+    commit = $context.commit
+    worktreeDirty = $context.dirty
+    build = $context.build
     node = $nodeVersion
+    adapter = if ($adapterFromProbe) { $adapterFromProbe } else { $context.adapter.name }
+    dxc = $context.dxc.version
+    dxcAvailable = $context.dxc.available
+    sceneSha256 = $context.sceneHash
     timestamp = (Get-Date).ToUniversalTime().ToString('o')
     success = $overall
     steps = $steps
 }
-New-Item -ItemType Directory -Force -Path 'reports' | Out-Null
-$summary | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath 'reports/verify.json' -Encoding utf8
+$summaryPath = Join-Path $context.directory 'verify.json'
+$summary | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $summaryPath -Encoding utf8
+Register-Report -Context $context -Path $summaryPath -LegacyAliases @('verify.json') | Out-Null
+$runPath = Complete-Run -Context $context -Success $overall
+
 Write-Host ""
 Write-Host "Verification summary" -ForegroundColor Cyan
 $steps | Format-Table name, ok, durationMs, error -AutoSize | Out-String | Write-Host
-Write-Host "Report: reports/verify.json"
+Write-Host "Evidence:  $(Get-RelativePath $context.directory)"
+Write-Host "Manifest:  $(Get-RelativePath $runPath)"
+Write-Host "Alias:     reports/verify.json"
 Pop-Location
 if (-not $overall) { exit 1 }

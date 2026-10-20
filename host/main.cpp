@@ -4,6 +4,7 @@
 #include <commdlg.h>
 #include <shellapi.h>
 #include "scene_loader.hpp"
+#include "nativegpu_version.h"
 #include "../renderer/d3d12_renderer.h"
 #include "../engine/native/math.hpp"
 #include "../third_party/json.hpp"
@@ -256,7 +257,8 @@ double percentile(std::vector<double> x,double p){
 void report(bool success){
     try{
         json r={
-            {"version","0.3.0"},{"success",success},{"error",app.error},
+            {"version",NATIVEGPU_VERSION},{"success",success},{"error",app.error},
+            {"build",{{"commit",NATIVEGPU_BUILD_COMMIT},{"dirty",NATIVEGPU_BUILD_DIRTY!=0}}},
             {"mode",app.probe?"probe":(app.smoke?"automated-smoke":"interactive")},
             {"frames",app.frames},{"elapsedSeconds",std::chrono::duration<double>(Clock::now()-app.began).count()},
             {"scene",app.scenePath.u8string()},{"revision",app.document.revision},

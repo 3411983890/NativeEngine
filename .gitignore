@@ -10,3 +10,7 @@ node_modules/
 *.history.json
 .env*
 !.env.example
+
+*.log
+Thumbs.db
+

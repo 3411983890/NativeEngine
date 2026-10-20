@@ -6,7 +6,10 @@ try {
     $node = Get-Command node -ErrorAction SilentlyContinue
     if (-not $node) { throw 'Node.js 22 or newer is required on PATH.' }
     $packageJson = Get-Content -LiteralPath 'package.json' -Raw | ConvertFrom-Json
-    $version = $packageJson.version
+    $version = (Get-Content -LiteralPath 'VERSION' -Raw).Trim()
+    if ($packageJson.version -ne $version) {
+        throw "package.json version ($($packageJson.version)) does not match VERSION ($version). Update both together."
+    }
     $outputsRoot = [IO.Path]::GetFullPath((Join-Path $root 'outputs'))
     $destination = [IO.Path]::GetFullPath((Join-Path $outputsRoot "NativeGPU-$version-win64"))
     $zip = [IO.Path]::GetFullPath((Join-Path $outputsRoot "NativeGPU-$version-win64.zip"))
