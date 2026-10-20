@@ -142,15 +142,20 @@ docs/             当前阶段状态、工具链冻结表与 CI/证据说明
 | 版本冻结与 CI（0.3.1） | 已完成 | Git tag `v0.3.0`、固定 DXC 1.9.2609、`tools/ci.ps1` 可本机重放、版本化证据目录 |
 | Mesh Shader / Meshlet | 已完成（0.6.0） | AS+MS+PS（stream PSO）、6 个面 meshlet、顶点路径回退、`F11` 切换；放大剔除当前禁用，见 docs/MESH-BINDLESS.md |
 | Bindless 槽位管理 | 部分完成（0.6.0） | 8 槽有界表 + 代际 + 默认槽 + 复用 + 诊断；SM 6.6 直接堆索引评估为未实现 |
+| 确定性契约（0.7.0） | 已完成 | `--seed` / `--hash-log`、命名 RNG 流、FNV-1a 量化摘要；两次运行逐字节相同，19 项证据检查，见 [docs/DETERMINISM.md](docs/DETERMINISM.md) |
+| 帧预算管理器（0.7.0） | 部分完成 | 中位数决策 + 两档阶梯（阴影/网格路径）+ 报告 `budget` 段；18 项证据 + 28 项单元测试；无渲染缩放档，见 [docs/BUDGET.md](docs/BUDGET.md) |
+| 离线几何包（0.7.0） | 部分完成 | 内容寻址包 + cluster DAG：37 cluster / 6 LOD / 确定性重建 / 篡改检测；无运行时 LOD 选择器，见 [docs/GEOMETRY-PACKAGE.md](docs/GEOMETRY-PACKAGE.md) |
+| Chromium 输出契约（0.7.0） | 已完成（文档） | [docs/OUTPUT-CONTRACT.md](docs/OUTPUT-CONTRACT.md)：格式/同步/resize/验收清单，未实现项逐条标注 |
 | Chromium 编辑器与共享纹理 | 未实现 | 文档中的 S2 阶段，当前仍是独立 Win32 宿主 |
 | Blender/资产管线 | 未实现 | 文档中的 S4 阶段 |
 | 模型接入 | 未接模型 | 只提供模型无关的 MCP 工具面；不伪造 AI 能力 |
 
-本机探针证据（AMD Radeon 890M，D3D12）：`raytracingTier=1.1`、`meshShaderTier=10`、`shaderModel=6.8`、`resourceBindingTier=3`；
+本机探针证据（当前主适配器 RTX 5060 Laptop GPU，D3D12）：`raytracingTier=1.2`、`meshShaderTier=10`、`shaderModel=6.8`、`resourceBindingTier=3`；
 `materialTable.implemented=true`、`sceneLights.implemented=true`、`accelerationStructures.built=true`；
 开启阴影时 `probes.raytracingShadows.effectImplemented=true`、`rtpsoCreated=true`、`sbtCreated=true`、
-`fallbackUsed=false`、`gpuRtMs≈0.10 ms`、1280×720 下 GPU P95 比关闭时多 0.25 ms；关闭阴影时
-`effectImplemented=false`、`fallbackUsed=true`，`capabilities.implemented.raytracing=false`。
+`fallbackUsed=false`、`gpuRtMs≈0.10 ms`；关闭阴影时 `effectImplemented=false`、`fallbackUsed=true`。
+下列时序数字来自**上一轮核显（890M）**的证据运行，独显复测见 `reports/latest/`：1280×720 下 GPU P95 开启 0.490 ms、关闭 0.387 ms、33 个 TLAS 实例；
+本轮独显新证据：预算运行 GPU P95 0.117 ms（120 帧窗口）、CPU submit P95 1.58 ms。
 能力查询与加速结构构建不等于效果完成，字段刻意分开。
 
 ## 测试与报告

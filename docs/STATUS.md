@@ -1,9 +1,20 @@
 # 项目状态与移交说明
 
-- 版本：0.6.0（工作包 3–4：G1 可靠性、Mesh Shader、Bindless 槽位）
+- 版本：0.7.0（第一批：确定性契约、帧预算管理器、离线几何包、Chromium 输出契约）
 - 日期：2026-10-20
 - 当前形态：Windows 11 x64 + D3D12 独立原生宿主（光栅 + DXR 静态阴影）+ Node.js 确定性场景事务层 + 本地 MCP 工具服务 + 可重放 CI
-- 不包含：Chromium 接入、SM 6.6 直接堆索引、放大剔除、资产导入、骨骼动画、模型调用
+- 不包含：Chromium 接入、SM 6.6 直接堆索引、放大剔除、资产导入、骨骼动画、模型调用、运行时 Nanite/Lumen
+
+## 1c. 第一批并行工作包（0.7.0）
+
+| 工作包 | 产物 | 证据 |
+| --- | --- | --- |
+| E07 确定性契约 | `engine/native/determinism.*`、`Game::digest`、`--hash-log`/`--seed` | `tools/determinism.ps1` 19 项；两次运行逐字节相同；分辨率/调试视图无关；静态门禁 |
+| R08 帧预算管理器 | `host/budget.*`、`--budget*`、报告 `budget` 段 | `tools/budget.ps1` 18 项；`tests/budget_tests.cpp` 28 项；强制超预算走到阶梯末端 |
+| INN-14 几何包 + N0 骨架 | `tools/offline/geometry-package.mjs`、`cluster-dag.mjs` | 确定性重建、37 cluster / 6 LOD、覆盖与篡改检测；`tests/offline.test.mjs` 6 项 |
+| H07 输出契约 | `docs/OUTPUT-CONTRACT.md` | 逐条对照真实渲染器符号，未实现项全部按"S2 要求"标注 |
+
+详见 `docs/DETERMINISM.md`、`docs/BUDGET.md`、`docs/GEOMETRY-PACKAGE.md`、`docs/OUTPUT-CONTRACT.md`。
 
 ## 1. 本次推进内容（工作包 2：DXR 静态阴影）
 
