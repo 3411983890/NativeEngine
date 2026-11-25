@@ -1,0 +1,95 @@
+<p class="lede">路线图在这里不是愿望清单，而是"哪些前置还没补"的清单。标为设计稿的条目，代码一行都没有；标为暂缓的条目，是明确决定现在不做。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">S0 完成</span>
+  <span class="badge badge--partial">S1–S3 部分</span>
+  <span class="badge badge--no">S4/S6 未开始</span>
+  <span class="meta">.developmentAgent/core/STATUS.md · .developmentAgent/core/NEXT-PHASE.md · .developmentAgent/core/DEV-TASKS.md</span>
+</div>
+
+<h2 id="stages">阶段关口</h2>
+
+<table>
+<thead><tr><th>阶段</th><th>状态</th><th>已有</th><th>主要缺口</th></tr></thead>
+<tbody>
+<tr><td>S0 准备</td><td><span class="badge badge--done">完成</span></td><td>Git + tag、可重放 CI、固定工具链、版本化证据</td><td>远程仓库尚未建立；CI 仅本地完整重放</td></tr>
+<tr><td>S1 原生图形</td><td><span class="badge badge--partial">部分</span></td><td>双目标光栅、可采样深度、材质表、场景灯光、DXR 静态阴影、DXC 管线</td><td>GPU 剔除、可见性缓冲、PIX/RenderDoc 捕获</td></tr>
+<tr><td>S2 编辑器宿主</td><td><span class="badge badge--partial">部分</span></td><td>本机场景服务、独立原生窗口、按需快照</td><td>内嵌共享纹理、合成、GPU 会话恢复</td></tr>
+<tr><td>S3 游戏核心</td><td><span class="badge badge--partial">部分</span></td><td>走跑跳、扫掠碰撞、交互、事务、构建包、场景编辑 UI、动画、Lua 玩法</td><td>运行时资产导入、音频、网络、三维操纵柄</td></tr>
+<tr><td>S4 AI / Blender</td><td><span class="badge badge--no">未开始</span></td><td>MCP 工具面可被 Agent 调用</td><td>Blender Worker、资产规范、质量门禁、模型适配器</td></tr>
+<tr><td>S5 闭环整合</td><td><span class="badge badge--partial">部分</span></td><td>预览 → 提交 → 热重载 → 冒烟 → 报告的本地闭环</td><td>自然语言任务编排、代码补丁、候选预览 UI</td></tr>
+<tr><td>S6 稳定发布</td><td><span class="badge badge--no">未开始</span></td><td>可生成 zip 包</td><td>签名、安装器、自动更新、长时稳定性与安全评审</td></tr>
+</tbody>
+</table>
+
+<h2 id="shipped">已交付</h2>
+
+<table>
+<thead><tr><th>版本</th><th>主题</th><th>关键产物</th></tr></thead>
+<tbody>
+<tr><td>0.3.1</td><td>工程基线</td><td>Git tag、固定 DXC、<code>ci.ps1</code> 可重放、版本化证据目录</td></tr>
+<tr><td>0.4.0</td><td>DXR 静态阴影</td><td>RTPSO + SBT + 可见性贴图 + 回退，23 项证据</td></tr>
+<tr><td>0.5–0.6</td><td>可靠性与 Mesh Shader</td><td>设备丢失恢复、50 次生命周期、meshlet 路径、bindless 槽位</td></tr>
+<tr><td>0.7.0</td><td>确定性与预算</td><td>命名随机流、FNV-1a 摘要、帧预算阶梯、几何包 + cluster DAG</td></tr>
+<tr><td>0.8.0</td><td>边界与回放</td><td>RHI 接口、误差契约、黑匣子回放、glTF 子集、SDF 烘焙、设计期 lint</td></tr>
+<tr><td>0.9.0</td><td>Compute</td><td>独立 compute 队列 + 跨队列 fence；SM 6.6 堆索引一致性验证</td></tr>
+<tr><td>0.10.0</td><td>架构冻结</td><td>48 B cluster 记录、几何包 v2、材质句柄、查询 DSL、编辑器初版</td></tr>
+<tr><td>0.11.0</td><td>物理与破坏</td><td>盒体刚体、冲量伤害、预碎裂、支撑图坍塌、物理证据门禁</td></tr>
+</tbody>
+</table>
+
+<h2 id="next">下一步</h2>
+
+<h3 id="next-editor">编辑器：先验证，再决定</h3>
+
+<p>内嵌实时视口的前置不是"写一个合成器"，而是先单独验证成熟容器的共享纹理导入能力：复制次数、同步等待、输入延迟、缩放与最小化、设备丢失恢复。<strong>没有这组测量，不做内嵌视口。</strong>定制 Chromium 路线已暂缓，不再作为前置。</p>
+
+<h3 id="next-vegetation">植被：三个硬前置</h3>
+
+<p>10k 木本 + 50k 草的目标写在 <code>.developmentAgent/vegetation/VEGETATION-PLAN.md</code>，但它现在还不能开工，因为缺三样：</p>
+
+<ol>
+<li><strong>任意网格绘制路径</strong>——现在只有单位立方体顶点/索引缓冲</li>
+<li><strong>GPU 驱动的实例化 + 间接绘制</strong>——现在每个 item 一次 <code>DrawIndexedInstanced(..., 1, ...)</code></li>
+<li><strong>alpha-test / 双面 / 顶点 UV 的植被材质</strong>——现在用世界空间平面投影 UV</li>
+</ol>
+
+<p>另外阴影需要分块代理，不能让 10k 棵树逐棵进 TLAS（上限 1024）。</p>
+
+<h3 id="next-landscape">地形：P0 可以马上做</h3>
+
+<p>见<a href="landscape.html">地形系统</a>。结论是视距 120 m 下不需要 LOD，一块 128 m 瓦片就够。P0（高度图格式 + CPU 采样）没有前置依赖，是当前性价比最高的一块。</p>
+
+<h2 id="design">设计稿（代码为零）</h2>
+
+<table>
+<thead><tr><th>方案</th><th>内容</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>植被系统</td><td>10k 木本 + 50k 草、GPU 剔除、impostor、分块 shadow proxy</td><td>设计稿 v0.1</td></tr>
+<tr><td>地形系统</td><td>高度场、分块、AI 生成管线</td><td>设计稿（本站新增）</td></tr>
+<tr><td>Nanite / Lumen</td><td>虚拟几何与 GI 的完整路线</td><td>方案文档，仅冻结了数据结构</td></tr>
+<tr><td>光照 10k 灯</td><td>cluster 分箱、light tree、ReSTIR DI</td><td>研究文档</td></tr>
+<tr><td>体积雾 / 体积光</td><td>froxel 底座 + 高度雾 + 光轴 + 局部灯注入</td><td>部分已实现（见<a href="lighting.html">光照</a>）</td></tr>
+<tr><td>场与粒子 F4+</td><td>稀疏砖块、LEF→WF 提升/降级</td><td>未实现</td></tr>
+</tbody>
+</table>
+
+<h2 id="not">明确不做 / 暂缓</h2>
+
+<table>
+<thead><tr><th>项</th><th>决定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td>定制 Chromium</td><td>暂缓</td><td>成本远超收益；先用成熟容器 + 独立原生窗口</td></tr>
+<tr><td>模型接入</td><td>不做</td><td>只提供模型无关的工具面，不伪造 AI 能力</td></tr>
+<tr><td>网络同步</td><td>不做</td><td>当前确定性只覆盖单机单进程</td></tr>
+<tr><td>音频</td><td>不做</td><td>不在当前闭环内</td></tr>
+<tr><td>Vulkan / Metal 后端</td><td>不做</td><td>RHI 边界已留好，但没有第二个后端的工作计划</td></tr>
+<tr><td>凸 Voronoi 碎片</td><td>暂缓</td><td>盒式碎裂已能满足"可破坏"的验证目标</td></tr>
+<tr><td>高度场刚体</td><td>不做</td><td>与现有盒体 SAT + AABB 角色控制器语义冲突</td></tr>
+</tbody>
+</table>
+
+<div class="callout callout--note">
+<span class="callout-title">怎么读这张路线图</span>
+<p>不要问"什么时候做完"，要问"下一步的前置是什么"。这个项目的节奏是<strong>补前置</strong>，不是堆功能——植被卡在任意网格路径，地形不卡，所以地形先做。</p>
+</div>

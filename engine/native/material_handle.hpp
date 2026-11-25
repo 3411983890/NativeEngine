@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-// 32-bit material handle (docs/GEOMETRY-LAYOUT.md §7):
+// 32-bit material handle (.developmentAgent/rendering/GEOMETRY-LAYOUT.md §7):
 //   handle = (generation << 16) | (sliceIndex & 0xFFFF)
 //
 // The GPU side only decodes the slice index and samples ResourceDescriptorHeap; generation

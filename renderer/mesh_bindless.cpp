@@ -16,6 +16,8 @@
 
 #include <cstring>
 #include <sstream>
+#include <algorithm>
+#include <cmath>
 
 namespace nativegpu {
 namespace {
@@ -74,7 +76,9 @@ D3D12_BLEND_DESC opaqueBlend() {
 D3D12_RASTERIZER_DESC solidRaster() {
     D3D12_RASTERIZER_DESC raster{};
     raster.FillMode = D3D12_FILL_MODE_SOLID;
-    raster.CullMode = D3D12_CULL_MODE_BACK;
+    // Cube meshlet faces do not all share the raster cube winding; two-sided rendering is
+    // the safe default until the generated meshlet indices are fixed.
+    raster.CullMode = D3D12_CULL_MODE_NONE;
     raster.FrontCounterClockwise = FALSE;
     raster.DepthClipEnable = TRUE;
     raster.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
@@ -256,63 +260,46 @@ bool Renderer::Impl::createMeshletData(std::string& error) {
     if (meshletVertices) return true;
     constexpr unsigned vertexCount = FaceCount * FaceMeshletVertexCount;
     constexpr unsigned triangleIndexCount = FaceCount * FaceMeshletTriangleCount * 3;
-    // Generate the unit cube face by face. Six faces x 4 corners = 24 vertices, and each
-    // face is its own meshlet with two triangles. This mirrors the raster unit cube.
+    // Use exactly the raster cube vertices/indices, split into six face meshlets. The
+    // earlier procedural basis-vector generation produced inconsistent winding for the
+    // top/bottom faces, so the mesh path silently lost the ground and every roof.
+    const Vertex cubeVertices[vertexCount] = {
+        {-0.5f,-0.5f,-0.5f, 0,0,-1, 0,1}, {-0.5f, 0.5f,-0.5f, 0,0,-1, 0,0},
+        { 0.5f, 0.5f,-0.5f, 0,0,-1, 1,0}, { 0.5f,-0.5f,-0.5f, 0,0,-1, 1,1},
+        { 0.5f,-0.5f, 0.5f, 0,0, 1, 0,1}, { 0.5f, 0.5f, 0.5f, 0,0, 1, 0,0},
+        {-0.5f, 0.5f, 0.5f, 0,0, 1, 1,0}, {-0.5f,-0.5f, 0.5f, 0,0, 1, 1,1},
+        {-0.5f,-0.5f, 0.5f,-1,0, 0, 0,1}, {-0.5f, 0.5f, 0.5f,-1,0, 0, 0,0},
+        {-0.5f, 0.5f,-0.5f,-1,0, 0, 1,0}, {-0.5f,-0.5f,-0.5f,-1,0, 0, 1,1},
+        { 0.5f,-0.5f,-0.5f, 1,0, 0, 0,1}, { 0.5f, 0.5f,-0.5f, 1,0, 0, 0,0},
+        { 0.5f, 0.5f, 0.5f, 1,0, 0, 1,0}, { 0.5f,-0.5f, 0.5f, 1,0, 0, 1,1},
+        {-0.5f, 0.5f,-0.5f, 0,1, 0, 0,1}, {-0.5f, 0.5f, 0.5f, 0,1, 0, 0,0},
+        { 0.5f, 0.5f, 0.5f, 0,1, 0, 1,0}, { 0.5f, 0.5f,-0.5f, 0,1, 0, 1,1},
+        {-0.5f,-0.5f, 0.5f, 0,-1,0, 0,1}, {-0.5f,-0.5f,-0.5f, 0,-1,0, 0,0},
+        { 0.5f,-0.5f,-0.5f, 0,-1,0, 1,0}, { 0.5f,-0.5f, 0.5f, 0,-1,0, 1,1}
+    };
+    const unsigned cubeIndices[triangleIndexCount] = {
+         0, 1, 2, 0, 2, 3,  4, 5, 6, 4, 6, 7,  8, 9,10, 8,10,11,
+        12,13,14,12,14,15, 16,17,18,16,18,19, 20,21,22,20,22,23
+    };
     Vertex vertices[vertexCount] = {};
     unsigned indices[triangleIndexCount] = {};
     GpuMeshlet meshlets[FaceCount] = {};
-    const float axes[6][3] = {{0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}, {0, 1, 0}, {0, -1, 0}};
+    std::memcpy(vertices, cubeVertices, sizeof(vertices));
+    std::memcpy(indices, cubeIndices, sizeof(indices));
     for (unsigned face = 0; face < FaceCount; ++face) {
-        const float* normal = axes[face];
-        // Basis vectors for the face plane.
-        float right[3];
-        float up[3];
-        if (normal[0] != 0.0f) {
-            right[0] = 0.0f; right[1] = 0.0f; right[2] = -normal[0];
-            up[0] = 0.0f; up[1] = 1.0f; up[2] = 0.0f;
-        } else if (normal[1] != 0.0f) {
-            right[0] = 1.0f; right[1] = 0.0f; right[2] = 0.0f;
-            up[0] = 0.0f; up[1] = 0.0f; up[2] = -normal[1];
-        } else {
-            right[0] = 1.0f; right[1] = 0.0f; right[2] = 0.0f;
-            up[0] = 0.0f; up[1] = 1.0f; up[2] = 0.0f;
-        }
-        const float cornerUv[4][2] = {{0, 1}, {1, 1}, {1, 0}, {0, 0}};
-        for (unsigned corner = 0; corner < 4; ++corner) {
-            const float signU = (corner == 0 || corner == 3) ? -1.0f : 1.0f;
-            const float signV = (corner < 2) ? -1.0f : 1.0f;
-            Vertex& vertex = vertices[face * 4 + corner];
-            vertex.x = normal[0] * 0.5f + right[0] * signU * 0.5f + up[0] * signV * 0.5f;
-            vertex.y = normal[1] * 0.5f + right[1] * signU * 0.5f + up[1] * signV * 0.5f;
-            vertex.z = normal[2] * 0.5f + right[2] * signU * 0.5f + up[2] * signV * 0.5f;
-            vertex.nx = normal[0];
-            vertex.ny = normal[1];
-            vertex.nz = normal[2];
-            vertex.u = cornerUv[corner][0];
-            vertex.v = cornerUv[corner][1];
-        }
-        // Two triangles, clockwise when seen from outside (matching the raster cube).
-        const unsigned base = face * 4;
-        // Clockwise when seen from outside, matching the raster cube winding
-        // (FrontCounterClockwise = FALSE, so clockwise triangles are front facing).
-        indices[face * 6 + 0] = base + 0;
-        indices[face * 6 + 1] = base + 1;
-        indices[face * 6 + 2] = base + 2;
-        indices[face * 6 + 3] = base + 0;
-        indices[face * 6 + 4] = base + 2;
-        indices[face * 6 + 5] = base + 3;
+        const unsigned base = face * FaceMeshletVertexCount;
         GpuMeshlet& meshlet = meshlets[face];
         meshlet.vertexOffset = base;
         meshlet.vertexCount = FaceMeshletVertexCount;
         meshlet.triangleOffset = face * FaceMeshletTriangleCount;
         meshlet.triangleCount = FaceMeshletTriangleCount;
-        meshlet.center[0] = normal[0] * 0.5f;
-        meshlet.center[1] = normal[1] * 0.5f;
-        meshlet.center[2] = normal[2] * 0.5f;
-        meshlet.center[3] = 0.7071f; // bounding radius of a unit face
-        meshlet.normal[0] = normal[0];
-        meshlet.normal[1] = normal[1];
-        meshlet.normal[2] = normal[2];
+        meshlet.center[0] = cubeVertices[base].nx * 0.5f;
+        meshlet.center[1] = cubeVertices[base].ny * 0.5f;
+        meshlet.center[2] = cubeVertices[base].nz * 0.5f;
+        meshlet.center[3] = 0.7071f;
+        meshlet.normal[0] = cubeVertices[base].nx;
+        meshlet.normal[1] = cubeVertices[base].ny;
+        meshlet.normal[2] = cubeVertices[base].nz;
         meshlet.normal[3] = 0.0f;
     }
 
@@ -385,6 +372,7 @@ bool Renderer::Impl::createMeshletData(std::string& error) {
 
 void Renderer::Impl::releaseMeshPipeline() {
     destroy(meshPipeline);
+    destroy(meshMaterialPipeline);
     destroy(meshRootSignature);
     if (meshCameraBuffer && meshCameraMapped) {
         D3D12_RANGE noWrite{0, 0};
@@ -427,17 +415,17 @@ bool Renderer::Impl::buildMeshPipeline(std::string& error) {
         return false;
     }
     if (!meshRootSignature) {
-        D3D12_DESCRIPTOR_RANGE ranges[4]{};
-        for (unsigned index = 0; index < 4; ++index) {
+        D3D12_DESCRIPTOR_RANGE ranges[5]{};
+        for (unsigned index = 0; index < 5; ++index) {
             ranges[index].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
             ranges[index].NumDescriptors = 1;
-            ranges[index].BaseShaderRegister = index; // t0 material, t1..t3 meshlet data
+            ranges[index].BaseShaderRegister = index; // t0 material array, t1..t3 meshlet data, t4 material records
             ranges[index].OffsetInDescriptorsFromTableStart = index;
         }
         D3D12_ROOT_PARAMETER parameters[4]{};
         parameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
         parameters[0].Constants.ShaderRegister = 0;
-        parameters[0].Constants.Num32BitValues = 56;
+        parameters[0].Constants.Num32BitValues = 58;
         parameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
         parameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
         parameters[1].Descriptor.ShaderRegister = 1;
@@ -446,23 +434,24 @@ bool Renderer::Impl::buildMeshPipeline(std::string& error) {
         parameters[2].Descriptor.ShaderRegister = 2;
         parameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
         parameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        parameters[3].DescriptorTable.NumDescriptorRanges = 4;
+        parameters[3].DescriptorTable.NumDescriptorRanges = 5;
         parameters[3].DescriptorTable.pDescriptorRanges = ranges;
         parameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
         D3D12_STATIC_SAMPLER_DESC sampler{};
-        sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+        sampler.Filter = D3D12_FILTER_ANISOTROPIC;
         sampler.AddressU = sampler.AddressV = sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
         sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
         sampler.MinLOD = 0;
         sampler.MaxLOD = D3D12_FLOAT32_MAX;
-        sampler.MaxAnisotropy = 1;
+        sampler.MaxAnisotropy = 8;
         sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
         D3D12_ROOT_SIGNATURE_DESC description{};
         description.NumParameters = 4;
         description.pParameters = parameters;
         description.NumStaticSamplers = 1;
         description.pStaticSamplers = &sampler;
-        description.Flags = D3D12_ROOT_SIGNATURE_FLAG_NONE;
+        description.Flags = static_cast<D3D12_ROOT_SIGNATURE_FLAGS>(
+            D3D12_ROOT_SIGNATURE_FLAG_CBV_SRV_UAV_HEAP_DIRECTLY_INDEXED | D3D12_ROOT_SIGNATURE_FLAG_SAMPLER_HEAP_DIRECTLY_INDEXED);
         ID3DBlob* signature = nullptr;
         ID3DBlob* diagnostics = nullptr;
         HRESULT hr = D3D12SerializeRootSignature(&description, D3D_ROOT_SIGNATURE_VERSION_1,
@@ -541,6 +530,47 @@ bool Renderer::Impl::buildMeshPipeline(std::string& error) {
         return false;
     }
     track(meshPipeline);
+    // Cooked materials reuse the SM 6.6 material pixel shader with the same mesh
+    // amplification/mesh stages. The PS reads textures from ResourceDescriptorHeap, which
+    // the root signature above now permits.
+    if (materialPath && shaders::kMaterialPS.size) {
+        D3D12_SHADER_BYTECODE materialPixel{};
+        materialPixel.pShaderBytecode = shaders::kMaterialPS.data;
+        materialPixel.BytecodeLength = shaders::kMaterialPS.size;
+        PipelineStream materialStream;
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_ROOT_SIGNATURE, meshRootSignature);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_AS, amplification);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_MS, meshShader);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_PS, materialPixel);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_BLEND, blend);
+        D3D12_RASTERIZER_DESC materialRaster = raster;
+        // The cube meshlet data winds +Y/-Y faces opposite to the raster cube; culling
+        // them removed the ground and every roof. Cooked materials render both sides.
+        materialRaster.CullMode = D3D12_CULL_MODE_NONE;
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_RASTERIZER, materialRaster);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL, depth);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_RENDER_TARGET_FORMATS, formats);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL_FORMAT,
+                           detail::DepthDsvFormat);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_SAMPLE_DESC, sample);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_SAMPLE_MASK, sampleMask);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_PRIMITIVE_TOPOLOGY,
+                           D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+        materialStream.add(D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_NODE_MASK, nodeMask);
+        D3D12_PIPELINE_STATE_STREAM_DESC materialDescription{};
+        materialDescription.SizeInBytes = materialStream.bytes.size();
+        materialDescription.pPipelineStateSubobjectStream = materialStream.bytes.data();
+        HRESULT materialHr = device2->CreatePipelineState(&materialDescription,
+                                                           IID_PPV_ARGS(&meshMaterialPipeline));
+        if (SUCCEEDED(materialHr)) {
+            track(meshMaterialPipeline);
+        } else {
+            meshMaterialPipeline = nullptr;
+            addDiagnostic("NG-E-MESH-MATERIAL",
+                          "mesh material pipeline creation failed (" +
+                              detail::hresultText(materialHr) + ")");
+        }
+    }
     meshPipelineCreated = true;
     meshError.clear();
     return true;
@@ -560,13 +590,14 @@ bool Renderer::Impl::renderMeshPath(ID3D12GraphicsCommandList4* list,
         camera.params[0] = static_cast<float>(meshletCount);
         std::memcpy(meshCameraMapped, &camera, sizeof(camera));
     }
-    ID3D12DescriptorHeap* heaps[] = {srvHeap};
-    list->SetDescriptorHeaps(1, heaps);
-    list->SetPipelineState(meshPipeline);
+    ID3D12DescriptorHeap* heaps[] = {srvHeap,materialSamplerHeap};
+    list->SetDescriptorHeaps(2, heaps);
+    list->SetPipelineState(materialPath && meshMaterialPipeline ? meshMaterialPipeline : meshPipeline);
     list->SetGraphicsRootSignature(meshRootSignature);
     list->SetGraphicsRootDescriptorTable(3, gpuDescriptor(detail::SlotMaterialTable));
     list->SetGraphicsRootConstantBufferView(1,
-                                           sceneConstantBuffer->GetGPUVirtualAddress());
+                                           sceneConstantBuffer->GetGPUVirtualAddress()+
+                                           swapChain->GetCurrentBackBufferIndex()*detail::SceneConstantStride);
     list->SetGraphicsRootConstantBufferView(2, meshCameraBuffer->GetGPUVirtualAddress());
     unsigned drawn = 0;
     unsigned culled = 0;
@@ -579,8 +610,35 @@ bool Renderer::Impl::renderMeshPath(ID3D12GraphicsCommandList4* list,
         std::memcpy(constants.color, item.color, sizeof(constants.color));
         constants.roughness = item.roughness;
         constants.metalness = item.metalness;
-        constants.textureIndex = item.texture;
-        list->SetGraphicsRoot32BitConstants(0, 56, &constants, 0);
+        if (materialPath) {
+            unsigned material = item.material < 0 ? 0u : static_cast<unsigned>(item.material);
+            if (material >= configuredMaterials.size()) material = 0;
+            const MaterialUpload& entry = configuredMaterials[material];
+            if (materialBindless) {
+                // Bindless material records: albedoIndex is the GpuMaterial record, not
+                // a packed texture index. The record carries textures and wetness/wear.
+                constants.albedoIndex = material;
+            } else {
+                constants.albedoIndex = entry.albedo;
+            }
+            constants.normalIndex = entry.normal;
+            constants.ormIndex = entry.orm;
+            constants.uvScale = entry.uvScale;
+        } else {
+            // The legacy mesh pixel shader reads the bounded texture slot. Resolve the
+            // material-table slot exactly like the raster path instead of treating the
+            // slot number as a texture-array slice.
+            unsigned textureIndex = detail::MaterialDefaultSlot;
+            unsigned generation = 0;
+            if (!materials.resolve(item.texture, item.textureGeneration, textureIndex, generation)) {
+                textureIndex = detail::MaterialDefaultSlot;
+            }
+            constants.albedoIndex = textureIndex;
+            constants.normalIndex = 0;
+            constants.ormIndex = 0;
+            constants.uvScale = 1.0f;
+        }
+        list->SetGraphicsRoot32BitConstants(0, 58, &constants, 0);
         // One amplification group per instance; it culls the six face meshlets and
         // DispatchMesh launches one group per visible meshlet.
         list6->DispatchMesh(1, 1, 1);

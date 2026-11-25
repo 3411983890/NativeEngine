@@ -1,0 +1,13 @@
+{
+  "assetId": "T06_leaflet",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game vegetation source texture, square1024x1024 preferred, one healthy isolated single leaf bladeOnly, orthographic front surface facing viewer, flattened and de-lit natural diffuse color. TRUE transparent RGBA, no baked shadow or specular highlight. Root at UV(0.5,0.0625), tip upward with content inside 6.25% safety margins. Preserve natural aspect ratio. No petiole extension, no branches, other leaves, flowers, holes, labels, borders, ruler, checkerboard or background. Single original BaseColor+Alpha texture, not an atlas or render. Species Melia azedarach 苦楝: ONE individual leaflet from a chinaberry compound leaf, NOT the entire compound leaf. Ovate-lanceolate pointed blade, toothed margin, slightly asymmetrical base, natural medium green, fine pinnate veins. Individual small leaflet blade with no rachis or other leaflets.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-04151d27-278f-4af5-bbfa-b0808584ca93.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

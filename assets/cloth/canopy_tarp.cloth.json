@@ -1,0 +1,85 @@
+{
+  "schema": "nativegpu.cloth/2",
+  "id": "canopy_tarp",
+  "revision": 0,
+  "seed": 23,
+  "kind": "environment",
+  "mesh": {
+    "type": "grid",
+    "columns": 24,
+    "rows": 20,
+    "widthMetres": 3,
+    "heightMetres": 2.4
+  },
+  "material": {
+    "arealDensityKgM2": 0.55,
+    "thicknessMetres": 0.006,
+    "stretchCompliance": 2e-8,
+    "shearCompliance": 4e-7,
+    "damping": 0.5,
+    "dragCoefficient": 1.2,
+    "bendAngleCompliance": 500
+  },
+  "pins": [
+    {
+      "column": 0,
+      "row": 0
+    },
+    {
+      "column": 23,
+      "row": 0
+    },
+    {
+      "column": 0,
+      "row": 19
+    },
+    {
+      "column": 23,
+      "row": 19
+    }
+  ],
+  "collision": {
+    "thicknessMetres": 0.008,
+    "plane": {
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "offsetMetres": 0
+    },
+    "spheres": [
+      {
+        "centre": [
+          0,
+          1.2,
+          0
+        ],
+        "radiusMetres": 0.35
+      }
+    ],
+    "capsules": []
+  },
+  "lod": [
+    {
+      "maxDistanceMetres": 12,
+      "columns": 24,
+      "rows": 20
+    },
+    {
+      "maxDistanceMetres": 36,
+      "columns": 12,
+      "rows": 10
+    },
+    {
+      "maxDistanceMetres": 90,
+      "columns": 6,
+      "rows": 5
+    }
+  ],
+  "budget": {
+    "maxVertices": 4096,
+    "maxSubsteps": 4,
+    "iterations": 10
+  }
+}

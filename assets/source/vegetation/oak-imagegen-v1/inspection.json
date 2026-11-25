@@ -1,0 +1,70 @@
+{
+  "kind": "asset-file-inspection",
+  "date": "2026-10-25",
+  "renderValidation": false,
+  "files": [
+    {
+      "file": "oak_bark_basecolor.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_bark_normal_dx.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_bark_orm.png",
+      "dimensionsMatch": true,
+      "metallicNonzeroPixels": 0
+    },
+    {
+      "file": "oak_bark_ao.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_bark_roughness.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_bark_metallic.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_bark_height.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_leaves_basecolor_alpha.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_leaves_normal_dx.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_leaves_orm.png",
+      "dimensionsMatch": true,
+      "metallicNonzeroPixels": 0
+    },
+    {
+      "file": "oak_leaves_ao.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_leaves_roughness.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_leaves_metallic.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_leaves_thickness.png",
+      "dimensionsMatch": true
+    },
+    {
+      "file": "oak_leaves_opacity.png",
+      "dimensionsMatch": true
+    }
+  ],
+  "alphaMismatch": 0
+}

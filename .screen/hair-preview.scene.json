@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "projectId": "d7a00000-0000-4000-8000-000000000001",
+  "name": "Hair pass preview",
+  "revision": 0,
+  "settings": {
+    "walkSpeed": 1.5,
+    "runSpeed": 3,
+    "jumpSpeed": 3,
+    "gravity": 20
+  },
+  "lighting": {
+    "ambient": [
+      0.05,
+      0.052,
+      0.06
+    ],
+    "skyColor": [
+      0.05,
+      0.06,
+      0.08
+    ],
+    "keyDirection": [
+      0.35,
+      0.55,
+      0.75
+    ],
+    "keyColor": [
+      1,
+      0.97,
+      0.92
+    ],
+    "keyIntensity": 3.6,
+    "toneMap": true,
+    "exposure": 1.7,
+    "fogDensity": 0,
+    "quality": 0
+  },
+  "entities": [
+    {
+      "id": "d7a00000-0000-4000-8000-000000000010",
+      "name": "Preview floor",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.25,
+        0
+      ],
+      "scale": [
+        8,
+        0.5,
+        8
+      ],
+      "color": [
+        0.18,
+        0.19,
+        0.2
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "friction": 0.8
+      }
+    },
+    {
+      "id": "d7a00000-0000-4000-8000-000000000011",
+      "name": "Hair rig",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.6,
+        1,
+        0.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "components": {
+        "camera": {
+          "mode": "thirdPerson",
+          "initialYaw": 0,
+          "initialPitch": 0
+        }
+      },
+      "character": {
+        "file": "builtin/robot/character.json",
+        "sha256": "3e4605f3f980f70cc7ae48e2c7b1d9bfee54e0750c2c01c305df5c5f58d1b809",
+        "binarySha256": "debc001615054fe0f477ee5a406f2c4e3354968c56266825c0fd4bc65b5e8ff2",
+        "anchor": "feet",
+        "rootMotion": "extract",
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "offset": [
+          0,
+          0,
+          0
+        ],
+        "controller": {
+          "stepHeight": 0.2,
+          "orbitDistance": 0.9,
+          "orbitHeight": 0.95,
+          "targetHeight": 0.92
+        }
+      }
+    }
+  ],
+  "materials": {
+    "m0": {
+      "albedo": "flat",
+      "normal": "flat",
+      "orm": "flat",
+      "uvScale": 1,
+      "roughness": 0.62,
+      "metalness": 0,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0
+    },
+    "m1": {
+      "albedo": "flat",
+      "normal": "flat",
+      "orm": "flat",
+      "uvScale": 1,
+      "roughness": 0.62,
+      "metalness": 0,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0
+    },
+    "default": {
+      "albedo": "flat",
+      "normal": "flat",
+      "orm": "flat",
+      "uvScale": 4,
+      "roughness": 0.88,
+      "metalness": 0
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "blood_spray",
+  "revision": 0,
+  "seed": 1009,
+  "durationTicks": 90,
+  "loop": false,
+  "maxAlive": 240,
+  "bounds": { "min": [-3, -3, -3], "max": [3, 3, 3] },
+  "budget": { "maxSpawnPerTick": 96, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [{
+    "id": "spray",
+    "shape": { "type": "cone", "radius": 0.06, "angleRadians": 0.55 },
+    "position": [0, 0, 0],
+    "ratePerSecond": 0,
+    "bursts": [{ "tick": 0, "count": 48 }],
+    "lifetimeTicks": [30, 72],
+    "localSpace": false,
+    "modules": [
+      { "id": "initial", "type": "initialize", "params": { "velocity": [0, 0.6, 2.6], "color": [0.42, 0.03, 0.03, 0.9], "size": [0.02, 0.06] } },
+      { "id": "gravity", "type": "acceleration", "after": ["initial"], "params": { "value": [0, -9.81, 0] } },
+      { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 1.6 } },
+      { "id": "fade", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+        { "t": 0, "value": [0.42, 0.03, 0.03, 0.9] }, { "t": 1, "value": [0.12, 0.01, 0.01, 0] }
+      ] } }
+    ],
+    "renderers": [{ "type": "sprite", "texture": "textures/lamp.albedo.ngtex", "blend": "premultiplied", "lit": false }]
+  }],
+  "events": []
+}

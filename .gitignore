@@ -1,5 +1,12 @@
 .tools/
 build/
+build-simulation/
+build-fogtown/
+/build-f4/
+/build-hot/
+/build-vegetation/
+/build-verify/
+saves/
 dist/
 reports/
 work/
@@ -13,4 +20,10 @@ node_modules/
 
 *.log
 Thumbs.db
+/.workbuddy/
+/.workbuddy-ai/
+/generated-images/
+/nativegpu/last-build-state.json
+/NativeEngine.lnk
+/.NativeEngine Docs.qoder.site
 

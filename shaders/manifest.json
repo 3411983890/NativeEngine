@@ -1,8 +1,454 @@
 {
   "$schema": "./manifest.schema.json",
-  "version": 5,
+  "version": 17,
   "comment": "Authoritative shader build list. Every blob is compiled by the pinned DXC from tools/bootstrap-dxc.ps1 and embedded into the native binary. Raster and composite shaders are compiled with D3DCompile (SM 5.1) from embedded source so the base renderer never depends on DXC.",
   "blobs": [
+    {
+      "symbol": "kWorldFieldClear",
+      "source": "shaders/field_world.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSClear"
+    },
+    {
+      "symbol": "kWorldFieldAggregate",
+      "source": "shaders/field_world.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSAggregate"
+    },
+    {
+      "symbol": "kLocalFieldClear",
+      "source": "shaders/field_local.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSClear"
+    },
+    {
+      "symbol": "kLocalFieldSplat",
+      "source": "shaders/field_local.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSParticleSplat"
+    },
+    {
+      "symbol": "kLocalFieldResolve",
+      "source": "shaders/field_local.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSResolve"
+    },
+    {
+      "symbol": "kLocalFieldProject",
+      "source": "shaders/field_local.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSProject"
+    },
+    {
+      "symbol": "kLocalFieldFinalize",
+      "source": "shaders/field_local.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSFinalize"
+    },
+    {
+      "symbol": "kLocalFieldImportScalar",
+      "source": "shaders/field_local.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSImportScalar"
+    },
+    {
+      "symbol": "kClothBatchTick",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSBatchTick",
+      "defines": [
+        "CLOTH_GROUPED",
+        "CLOTH_BATCH"
+      ]
+    },
+    {
+      "symbol": "kClothGroupedTick",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSGroupedTick",
+      "defines": [
+        "CLOTH_GROUPED"
+      ]
+    },
+    {
+      "symbol": "kClothDrawVS",
+      "source": "shaders/cloth_draw.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSMain",
+      "defines": [
+        "PASS_VS"
+      ]
+    },
+    {
+      "symbol": "kClothDrawPS",
+      "source": "shaders/cloth_draw.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "defines": [
+        "PASS_PS"
+      ]
+    },
+    {
+      "symbol": "kClothReset",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSReset"
+    },
+    {
+      "symbol": "kClothTeleport",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSTeleport"
+    },
+    {
+      "symbol": "kClothResetLambda",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSResetLambda"
+    },
+    {
+      "symbol": "kClothPrepareWind",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSPrepareWind"
+    },
+    {
+      "symbol": "kClothSampleWind",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSSampleWind",
+      "defines": [
+        "CLOTH_FIELD_WIND"
+      ]
+    },
+    {
+      "symbol": "kClothCommitWind",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSCommitWind"
+    },
+    {
+      "symbol": "kClothAerodynamics",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSAerodynamics"
+    },
+    {
+      "symbol": "kClothIntegrate",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSIntegrate"
+    },
+    {
+      "symbol": "kClothMembrane",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSMembrane"
+    },
+    {
+      "symbol": "kClothHinge",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSHinge"
+    },
+    {
+      "symbol": "kClothContacts",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSContacts"
+    },
+    {
+      "symbol": "kClothVelocity",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSVelocity"
+    },
+    {
+      "symbol": "kClothNormals",
+      "source": "shaders/cloth.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSNormals"
+    },
+    {
+      "symbol": "kGpuSpriteReset",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSReset",
+      "defines": [
+        "PASS_COMPUTE"
+      ]
+    },
+    {
+      "symbol": "kGpuSpritePrepareSource",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSPrepareSource",
+      "defines": [
+        "PASS_COMPUTE"
+      ]
+    },
+    {
+      "symbol": "kGpuSpriteGather",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSGather",
+      "defines": [
+        "PASS_COMPUTE"
+      ]
+    },
+    {
+      "symbol": "kGpuSpriteFinish",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSFinish",
+      "defines": [
+        "PASS_COMPUTE"
+      ]
+    },
+    {
+      "symbol": "kGpuSpritePad",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSPad",
+      "defines": [
+        "PASS_COMPUTE"
+      ]
+    },
+    {
+      "symbol": "kGpuSpritePrepareSort",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSPrepareSort",
+      "defines": [
+        "PASS_COMPUTE"
+      ]
+    },
+    {
+      "symbol": "kGpuSpriteSort",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSSort",
+      "defines": [
+        "PASS_COMPUTE"
+      ]
+    },
+    {
+      "symbol": "kGpuSpriteVS",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSMain",
+      "defines": [
+        "PASS_VS"
+      ]
+    },
+    {
+      "symbol": "kGpuSpritePS",
+      "source": "shaders/gpu_effect_sprites.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "defines": [
+        "PASS_PS"
+      ]
+    },
+    {
+      "symbol": "kEffectPoolInit",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSInit",
+      "description": "Initialize generic sprite SoA pool and GPU dead list"
+    },
+    {
+      "symbol": "kEffectPoolPrepareSim",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSPrepareSim",
+      "description": "GPU alive count to indirect simulation dispatch"
+    },
+    {
+      "symbol": "kEffectPoolSimulate",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSSimulate",
+      "description": "Generic particle modules, alive compaction and dead recycling"
+    },
+    {
+      "symbol": "kEffectPoolSimulateField",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSSimulate",
+      "defines": [
+        "FIELD_VELOCITY"
+      ],
+      "description": "Read-only sparse wind/flow sampling with explicit lease snapshot metadata"
+    },
+    {
+      "symbol": "kEffectPoolPrepareSpawn",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSPrepareSpawn",
+      "description": "GPU free-capacity reservation and indirect spawn dispatch"
+    },
+    {
+      "symbol": "kEffectPoolSpawn",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSSpawn",
+      "description": "Point sphere cone box line emission into cooked sprite SoA"
+    },
+    {
+      "symbol": "kEffectPoolFinish",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSFinish",
+      "description": "Finalize alive count and indirect sprite draw arguments"
+    },
+    {
+      "symbol": "kFieldQuery",
+      "source": "shaders/field_query.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSFieldQuery",
+      "defines": [],
+      "description": "Sparse visual field snapshot queries with explicit validity, age, region and channel permissions"
+    },
+    {
+      "symbol": "kEffectSpriteVS",
+      "source": "shaders/effect_sprites.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSMain",
+      "defines": [
+        "PASS_VS"
+      ],
+      "description": "Native effect sprite billboards from a structured instance buffer"
+    },
+    {
+      "symbol": "kEffectSpritePS",
+      "source": "shaders/effect_sprites.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "defines": [
+        "PASS_PS"
+      ],
+      "description": "Unlit effects with additive, premultiplied and cutout blending"
+    },
+    {
+      "symbol": "kQualityLocalShadowCache",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSLocalShadowCache",
+      "defines": [],
+      "description": "Cached static local-light cube depth plus dynamic DXR occlusion"
+    },
+    {
+      "symbol": "kQualityNoise",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSNoise",
+      "defines": [],
+      "description": "Persistent 3D cloud noise and weather field"
+    },
+    {
+      "symbol": "kQualityIbl",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSIbl",
+      "defines": [],
+      "description": "GGX prefiltered sky cubemap"
+    },
+    {
+      "symbol": "kQualityBrdf",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSBrdf",
+      "defines": [],
+      "description": "Split-sum environment BRDF integration"
+    },
+    {
+      "symbol": "kQualityProbe",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSProbe",
+      "defines": [],
+      "description": "DDGI material hit lighting, relocation, irradiance and distance moments"
+    },
+    {
+      "symbol": "kQualityCloudShadow",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSCloudShadow",
+      "defines": [],
+      "description": "World-space Beer cloud transmittance shadow map"
+    },
+    {
+      "symbol": "kQualityFogInject",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSFogInject",
+      "defines": [],
+      "description": "Froxel density and shadowed light injection with static-light reprojection"
+    },
+    {
+      "symbol": "kQualityFogIntegrate",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSFogIntegrate",
+      "defines": [],
+      "description": "Front-to-back Beer-Lambert froxel integration"
+    },
+    {
+      "symbol": "kQualityCloud",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSCloud",
+      "defines": [],
+      "description": "Half-resolution self-shadowed clouds with temporal reconstruction"
+    },
+    {
+      "symbol": "kQualityReset",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSReset",
+      "defines": [],
+      "description": "Reset DDGI irradiance, visibility and relocation histories"
+    },
+    {
+      "symbol": "kQualityCompositeVS",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSQuality",
+      "defines": [],
+      "description": "World lighting fullscreen composite vertex shader"
+    },
+    {
+      "symbol": "kQualityCompositePS",
+      "source": "shaders/lighting_quality.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSQuality",
+      "defines": [],
+      "description": "Depth-aware cloud and froxel HDR composite"
+    },
     {
       "symbol": "kRaytracingShadows",
       "source": "shaders/rt_shadows.hlsl",
@@ -16,7 +462,9 @@
       "source": "shaders/mesh_shaders.hlsl",
       "target": "as_6_5",
       "entry": "ASMain",
-      "defines": ["PASS_AMPLIFICATION"],
+      "defines": [
+        "PASS_AMPLIFICATION"
+      ],
       "description": "Mesh shader sample: per-instance meshlet culling"
     },
     {
@@ -24,7 +472,9 @@
       "source": "shaders/mesh_shaders.hlsl",
       "target": "ms_6_5",
       "entry": "MSMain",
-      "defines": ["PASS_MESH"],
+      "defines": [
+        "PASS_MESH"
+      ],
       "description": "Mesh shader sample: emit meshlet vertices and triangles"
     },
     {
@@ -32,7 +482,9 @@
       "source": "shaders/mesh_shaders.hlsl",
       "target": "ps_6_5",
       "entry": "PSMain",
-      "defines": ["PASS_PIXEL"],
+      "defines": [
+        "PASS_PIXEL"
+      ],
       "description": "Mesh shader sample pixel shader (same lighting as the raster path)"
     },
     {
@@ -42,6 +494,481 @@
       "entry": "CSMain",
       "defines": [],
       "description": "Compute probe: lighting reduction plus SM 6.6 heap-vs-table descriptor verification"
+    },
+    {
+      "symbol": "kParticleSimulate",
+      "source": "shaders/particles.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSSimulate",
+      "defines": [
+        "PASS_SIMULATE"
+      ],
+      "description": "Particle integration plus deterministic integer-atomic field splat"
+    },
+    {
+      "symbol": "kParticleDispatchArguments",
+      "source": "shaders/particle_dispatch.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSBuildParticleDispatch",
+      "defines": [],
+      "description": "GPU-written particle dispatch arguments for ExecuteIndirect"
+    },
+    {
+      "symbol": "kParticleResolve",
+      "source": "shaders/particles.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSResolve",
+      "defines": [
+        "PASS_RESOLVE"
+      ],
+      "description": "Integer volume to filterable RGBA16F volume resolve"
+    },
+    {
+      "symbol": "kParticleVolumeVS",
+      "source": "shaders/particles.hlsl",
+      "target": "vs_6_0",
+      "entry": "VSFullscreen",
+      "defines": [
+        "PASS_VOLUME"
+      ],
+      "description": "Fullscreen triangle for the volumetric composite"
+    },
+    {
+      "symbol": "kParticleVolumePS",
+      "source": "shaders/particles.hlsl",
+      "target": "ps_6_0",
+      "entry": "PSVolume",
+      "defines": [
+        "PASS_VOLUME"
+      ],
+      "description": "Ray-marched field volume with self-shadowing and heat emission"
+    },
+    {
+      "symbol": "kFluidBuoyancy",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSBuoyancy",
+      "defines": [],
+      "description": "Field solver: heat-driven buoyancy into the velocity field"
+    },
+    {
+      "symbol": "kFluidAdvectVelocity",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSAdvectVelocity",
+      "defines": [],
+      "description": "Field solver: semi-Lagrangian velocity self-advection"
+    },
+    {
+      "symbol": "kFluidAdvectState",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSAdvectState",
+      "defines": [],
+      "description": "Field solver: semi-Lagrangian density and heat advection"
+    },
+    {
+      "symbol": "kFluidDivergence",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSDivergence",
+      "defines": [],
+      "description": "Field solver: velocity divergence"
+    },
+    {
+      "symbol": "kFluidJacobi",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSJacobi",
+      "defines": [],
+      "description": "Field solver: one Jacobi pressure iteration"
+    },
+    {
+      "symbol": "kFluidGradient",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSGradientSubtract",
+      "defines": [],
+      "description": "Field solver: pressure gradient subtraction"
+    },
+    {
+      "symbol": "kFluidCopyState",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSCopyState",
+      "defines": [],
+      "description": "Field solver: canonical state copy back"
+    },
+    {
+      "symbol": "kFluidCurl",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSCurl",
+      "defines": [],
+      "description": "Field solver: velocity curl for vorticity confinement"
+    },
+    {
+      "symbol": "kFluidVorticity",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSVorticity",
+      "defines": [],
+      "description": "Field solver: vorticity confinement force"
+    },
+    {
+      "symbol": "kFluidMacCormack",
+      "source": "shaders/fluid.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSMacCormackState",
+      "defines": [],
+      "description": "Field solver: MacCormack second-order state advection correction"
+    },
+    {
+      "symbol": "kParticleAccumulate",
+      "source": "shaders/particles.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSAccumulate",
+      "defines": [
+        "PASS_ACCUMULATE"
+      ],
+      "description": "Temporal accumulation of the half-res volume march into history"
+    },
+    {
+      "symbol": "kParticleCompositeVS",
+      "source": "shaders/particles.hlsl",
+      "target": "vs_6_0",
+      "entry": "VSComposite",
+      "defines": [
+        "PASS_COMPOSITE"
+      ],
+      "description": "Fullscreen triangle for the temporal volume composite"
+    },
+    {
+      "symbol": "kParticleCompositePS",
+      "source": "shaders/particles.hlsl",
+      "target": "ps_6_0",
+      "entry": "PSComposite",
+      "defines": [
+        "PASS_COMPOSITE"
+      ],
+      "description": "Depth-aware bilateral upsample of the accumulated volume history"
+    },
+    {
+      "symbol": "kEffectPoolBudget",
+      "source": "shaders/effect_pool.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSBudget",
+      "defines": [],
+      "description": "Initialize/reset shared instance and global GPU particle admission ledgers"
+    },
+    {
+      "symbol": "kMaterialCapturePS",
+      "source": "shaders/material.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSCapture",
+      "defines": [
+        "PASS_PS"
+      ]
+    },
+    {
+      "symbol": "kMaterialInlineEnvironmentPS",
+      "source": "shaders/material.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "defines": [
+        "PASS_PS",
+        "PASS_INLINE"
+      ]
+    },
+    {
+      "symbol": "kMaterialSkinVS",
+      "source": "shaders/material.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSSkin",
+      "defines": [
+        "PASS_VS"
+      ],
+      "description": "GPU morph, skeletal skinning and model-space soft deformation"
+    },
+    {
+      "symbol": "kMaterialVS",
+      "source": "shaders/material.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSMain",
+      "defines": [
+        "PASS_VS"
+      ],
+      "description": "Cooked material vertex shader (SM 6.6 bindless heap)"
+    },
+    {
+      "symbol": "kMaterialPS",
+      "source": "shaders/material.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "defines": [
+        "PASS_PS"
+      ],
+      "description": "Cooked material pixel shader with ResourceDescriptorHeap textures"
+    },
+    {
+      "symbol": "kSmokeInitializeState",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSInitializeState",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeInitializeVelocity",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSInitializeVelocity",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeReact",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSReact",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeAdvectVelocity",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSAdvectVelocity",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeCurl",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSCurl",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeForces",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSForces",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeDivergence",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSDivergence",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeClearPressure",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSClearPressure",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokePressure",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSPressure",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeProject",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSProject",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeDiagnostics",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSDiagnostics",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeAdvectState",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSAdvectState",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeCorrectState",
+      "source": "shaders/smoke.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSCorrectState",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeParticleClear",
+      "source": "shaders/smoke_particles.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSClear",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeParticleSplat",
+      "source": "shaders/smoke_particles.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSSplat",
+      "defines": []
+    },
+    {
+      "symbol": "kSmokeParticleResolve",
+      "source": "shaders/smoke_particles.hlsl",
+      "ieeeStrict": true,
+      "target": "cs_6_6",
+      "entry": "CSResolve",
+      "defines": []
+    },
+    {
+      "symbol": "kCompositeMediaVS",
+      "source": "shaders/composite_media.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSMain",
+      "defines": []
+    },
+    {
+      "symbol": "kCompositeMediaPS",
+      "source": "shaders/composite_media.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "defines": []
+    },
+    {
+      "symbol": "kVegetationCull",
+      "source": "shaders/vegetation.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSCull",
+      "description": "GPU instance compaction into the visible list and append counter"
+    },
+    {
+      "symbol": "kVegetationArgs",
+      "source": "shaders/vegetation.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSArgs",
+      "description": "Turns the append count into indirect draw arguments without a readback"
+    },
+    {
+      "symbol": "kVegetationReset",
+      "source": "shaders/vegetation.hlsl",
+      "target": "cs_6_6",
+      "entry": "CSReset",
+      "description": "Resets the visible append counter"
+    },
+    {
+      "symbol": "kVegetationVS",
+      "source": "shaders/vegetation.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSMain",
+      "description": "Packed-instance transform, bounded wind, three-float4 vertex record"
+    },
+    {
+      "symbol": "kVegetationPS",
+      "source": "shaders/vegetation.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "description": "Double-sided foliage: wrapped diffuse, thickness transmission, mask cutout"
+    },
+    {
+      "symbol": "kVegetationVSShadow",
+      "source": "shaders/vegetation.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSShadow",
+      "description": "Key-light depth transform of the same packed instances and wind displacement"
+    },
+    {
+      "symbol": "kVegetationPSShadow",
+      "source": "shaders/vegetation.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSShadow",
+      "description": "Alpha-tested depth-only caster: a leaf card casts a leaf shadow"
+    },
+    {
+      "symbol": "kHairVS",
+      "source": "shaders/hair.hlsl",
+      "target": "vs_6_6",
+      "entry": "VSMain",
+      "defines": [
+        "PASS_VS"
+      ],
+      "description": "Coverage-corrected ribbon expansion from packed strand and point records"
+    },
+    {
+      "symbol": "kHairPS",
+      "source": "shaders/hair.hlsl",
+      "target": "ps_6_6",
+      "entry": "PSMain",
+      "defines": [
+        "PASS_PS"
+      ],
+      "description": "Fibre shading, deep-opacity self-shadow, backlight transmission and debug channels"
+    },
+    {
+      "symbol": "kWaterVS",
+      "source": "shaders/water_surface.hlsl",
+      "target": "vs_6_0",
+      "entry": "VSMain",
+      "description": "Continuous dielectric water over immutable HDR scene snapshots"
+    },
+    {
+      "symbol": "kWaterPS",
+      "source": "shaders/water_surface.hlsl",
+      "target": "ps_6_0",
+      "entry": "PSMain",
+      "description": "Continuous dielectric water over immutable HDR scene snapshots"
+    },
+    {
+      "symbol": "kWaterRippleCS",
+      "source": "shaders/water_ripple.hlsl",
+      "target": "cs_6_0",
+      "entry": "CSMain",
+      "description": "Bounded visual wave residual seeded by authoritative CPU water events"
+    },
+    {
+      "symbol": "kWaterfallVS",
+      "source": "shaders/waterfall.hlsl",
+      "target": "vs_6_0",
+      "entry": "VSMain",
+      "description": "Falling water sheet between an upstream and a downstream water body"
+    },
+    {
+      "symbol": "kWaterfallPS",
+      "source": "shaders/waterfall.hlsl",
+      "target": "ps_6_0",
+      "entry": "PSMain",
+      "description": "Streaked, broken waterfall sheet driven by the transfer ledger"
+    },
+    {
+      "symbol": "kWorldTerrainVS",
+      "source": "shaders/world.hlsl",
+      "target": "vs_6_0",
+      "entry": "VSMain",
+      "description": "World terrain and instanced component vertex transform"
+    },
+    {
+      "symbol": "kWorldTerrainPS",
+      "source": "shaders/world.hlsl",
+      "target": "ps_6_0",
+      "entry": "PSMain",
+      "description": "World terrain and instanced component shading"
     }
   ]
 }

@@ -1,15 +1,222 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://nativegpu.local/schemas/scene.schema.json",
-  "title": "NativeGPU Scene v1",
-  "description": "Authoritative shape of a NativeGPU scene. The runtime additionally enforces unique entity UUIDs, exactly one player spawn and at least one ground; JSON Schema cannot express those cross-object invariants portably.",
+  "title": "NativeGPU Scene v2",
+  "description": "Authoritative shape of a NativeGPU scene. v1 keeps inline materials; v2 adds a named material table whose textures resolve to cooked .ngtex slices. The runtime additionally enforces unique entity UUIDs, exactly one player spawn and at least one ground; JSON Schema cannot express those cross-object invariants portably.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "projectId", "name", "revision", "entities", "settings"],
+  "required": [
+    "schemaVersion",
+    "projectId",
+    "name",
+    "revision",
+    "entities",
+    "settings"
+  ],
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "projectId": { "$ref": "#/$defs/uuid" },
-    "name": { "$ref": "#/$defs/name" },
+    "schemaVersion": {
+      "enum": [
+        1,
+        2
+      ]
+    },
+    "materials": {
+      "type": "object",
+      "maxProperties": 256,
+      "additionalProperties": {
+        "$ref": "#/$defs/namedMaterial"
+      }
+    },
+    "lighting": {
+      "$ref": "#/$defs/lighting"
+    },
+    "audio": {
+      "$ref": "#/$defs/audio"
+    },
+    "water": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "sha256",
+        "origin"
+      ],
+      "properties": {
+        "file": {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "^[^:\\\\]+\\.ngwater\\.json$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "origin": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": -1000000,
+            "maximum": 1000000
+          }
+        },
+        "roughness": {
+          "type": "number",
+          "minimum": 0.025,
+          "maximum": 1
+        },
+        "absorption": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "scattering": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "obstaclesFromColliders": {
+          "type": "boolean"
+        },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "file",
+              "sha256",
+              "origin",
+              "source",
+              "landing",
+              "flowCubicMetresPerSecond"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "maxLength": 512,
+                "pattern": "^[^:\\\\]+\\.ngwater\\.json$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "origin": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000,
+                  "maximum": 1000000
+                }
+              },
+              "source": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "number",
+                  "minimum": -1000,
+                  "maximum": 1000
+                }
+              },
+              "landing": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "number",
+                  "minimum": -1000,
+                  "maximum": 1000
+                }
+              },
+              "flowCubicMetresPerSecond": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10000
+              },
+              "sourceRadiusMetres": {
+                "type": "number",
+                "minimum": 0.05,
+                "maximum": 100
+              },
+              "landingRadiusMetres": {
+                "type": "number",
+                "minimum": 0.05,
+                "maximum": 100
+              },
+              "transitSeconds": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 60
+              },
+              "widthMetres": {
+                "type": "number",
+                "minimum": 0.1,
+                "maximum": 50
+              },
+              "exitNormalSpeed": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 50
+              }
+            }
+          }
+        }
+      }
+    },
+    "vegetation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "regions"
+      ],
+      "properties": {
+        "regions": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "file"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "pattern": "^[^:\\\\]+\\.ngvrg$"
+              },
+              "cooked": {
+                "type": "string"
+              },
+              "textures": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "projectId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "name": {
+      "$ref": "#/$defs/name"
+    },
     "revision": {
       "type": "integer",
       "minimum": 0,
@@ -19,13 +226,21 @@
       "type": "array",
       "minItems": 1,
       "maxItems": 10000,
-      "items": { "$ref": "#/$defs/entity" },
+      "items": {
+        "$ref": "#/$defs/entity"
+      },
       "allOf": [
         {
           "contains": {
             "type": "object",
-            "properties": { "kind": { "const": "player" } },
-            "required": ["kind"]
+            "properties": {
+              "kind": {
+                "const": "player"
+              }
+            },
+            "required": [
+              "kind"
+            ]
           },
           "minContains": 1,
           "maxContains": 1
@@ -33,23 +248,212 @@
         {
           "contains": {
             "type": "object",
-            "properties": { "kind": { "const": "ground" } },
-            "required": ["kind"]
+            "properties": {
+              "kind": {
+                "const": "ground"
+              }
+            },
+            "required": [
+              "kind"
+            ]
           },
           "minContains": 1
         },
         {
           "contains": {
             "type": "object",
-            "properties": { "kind": { "const": "light" } },
-            "required": ["kind"]
+            "properties": {
+              "kind": {
+                "const": "light"
+              }
+            },
+            "required": [
+              "kind"
+            ]
           },
           "minContains": 0,
-          "maxContains": 4
+          "maxContains": 64
         }
       ]
     },
-    "settings": { "$ref": "#/$defs/settings" }
+    "settings": {
+      "$ref": "#/$defs/settings"
+    },
+    "joints": {
+      "type": "array",
+      "maxItems": 256,
+      "description": "XPBD joints between entities. Bodies are referenced by entity id so a joint survives the rigid world rebuild.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "bodyA"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "point",
+              "hinge",
+              "rope"
+            ]
+          },
+          "bodyA": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "bodyB": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "anchorA": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "anchorB": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "axis": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "hingeSpan": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "restLength": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "compliance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "lowerLimit": {
+            "type": "number",
+            "minimum": -3.15,
+            "maximum": 3.15
+          },
+          "upperLimit": {
+            "type": "number",
+            "minimum": -3.15,
+            "maximum": 3.15
+          },
+          "breakForce": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "collideConnected": {
+            "type": "boolean"
+          },
+          "motorSpeed": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100
+          },
+          "motorMaxTorque": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "friction": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "world": {
+      "type": "object",
+      "description": "Reference to a cooked procedural world. The manifest and its chunks live under the project assets directory; the scene only records which manifest is current.",
+      "additionalProperties": false,
+      "required": [
+        "worldId",
+        "generatorVersion",
+        "cookedManifest",
+        "manifestHash"
+      ],
+      "properties": {
+        "worldId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"
+        },
+        "generatorVersion": {
+          "type": "string",
+          "pattern": "^worldgen-[0-9]+$"
+        },
+        "manifestHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "inputDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "cookedManifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "sha256"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "maxLength": 240,
+              "pattern": "^[^:\\\\]+\\.json$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "recipe": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "sha256"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "maxLength": 240,
+              "pattern": "^[^:\\\\]+\\.json$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        }
+      }
+    }
   },
   "$defs": {
     "uuid": {
@@ -66,17 +470,25 @@
       "type": "array",
       "minItems": 3,
       "maxItems": 3,
-      "items": { "type": "number" }
+      "items": {
+        "type": "number"
+      }
     },
     "color": {
       "type": "array",
       "minItems": 3,
       "maxItems": 3,
-      "items": { "type": "number", "minimum": 0, "maximum": 1 }
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
     },
     "position": {
       "allOf": [
-        { "$ref": "#/$defs/vector3" },
+        {
+          "$ref": "#/$defs/vector3"
+        },
         {
           "items": {
             "type": "number",
@@ -88,7 +500,9 @@
     },
     "scale": {
       "allOf": [
-        { "$ref": "#/$defs/vector3" },
+        {
+          "$ref": "#/$defs/vector3"
+        },
         {
           "items": {
             "type": "number",
@@ -101,60 +515,1992 @@
     "material": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["albedo", "roughness", "metalness", "pattern"],
+      "required": [
+        "albedo",
+        "roughness",
+        "metalness",
+        "pattern"
+      ],
       "properties": {
-        "albedo": { "$ref": "#/$defs/color" },
-        "roughness": { "type": "number", "minimum": 0, "maximum": 1 },
-        "metalness": { "type": "number", "minimum": 0, "maximum": 1 },
-        "pattern": { "enum": ["checker", "brick", "metal"] }
+        "albedo": {
+          "$ref": "#/$defs/color"
+        },
+        "roughness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "metalness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "pattern": {
+          "enum": [
+            "checker",
+            "brick",
+            "metal"
+          ]
+        }
+      }
+    },
+    "namedMaterial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "albedo"
+      ],
+      "properties": {
+        "layered": {
+          "type": "object",
+          "required": [
+            "schema",
+            "name",
+            "layers"
+          ],
+          "properties": {
+            "schema": {
+              "enum": [
+                "nativegpu.layered-material/1",
+                "nativegpu.layered-material/2"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "layers": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 4
+            },
+            "surfaceRelief": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        "textureMappings": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "albedo": {
+              "$ref": "#/$defs/textureMapping"
+            },
+            "normal": {
+              "$ref": "#/$defs/textureMapping"
+            },
+            "orm": {
+              "$ref": "#/$defs/textureMapping"
+            },
+            "emissive": {
+              "$ref": "#/$defs/textureMapping"
+            },
+            "occlusion": {
+              "$ref": "#/$defs/textureMapping"
+            },
+            "coat": {
+              "$ref": "#/$defs/textureMapping"
+            },
+            "coatRoughness": {
+              "$ref": "#/$defs/textureMapping"
+            },
+            "coatNormal": {
+              "$ref": "#/$defs/textureMapping"
+            }
+          }
+        },
+        "albedo": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "normal": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "orm": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "emissive": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "emissiveFactor": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "emissiveStrength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "occlusion": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "coat": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "coatRoughness": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "coatNormal": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "occlusionStrength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "unlit": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ior": {
+          "anyOf": [
+            {
+              "const": 0
+            },
+            {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 3.4028234663852886e+38
+            }
+          ]
+        },
+        "uvScale": {
+          "type": "number",
+          "minimum": 0.05,
+          "maximum": 1000
+        },
+        "roughness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "metalness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "wetness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "wear": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "clearcoat": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "clearcoatRoughness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "alphaMode": {
+          "enum": [
+            "OPAQUE",
+            "MASK",
+            "BLEND"
+          ]
+        },
+        "alphaCutoff": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
       }
     },
     "light": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["color", "intensity", "range"],
+      "required": [
+        "color",
+        "intensity",
+        "range"
+      ],
       "properties": {
-        "color": { "$ref": "#/$defs/color" },
-        "intensity": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 },
-        "range": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000 }
+        "color": {
+          "$ref": "#/$defs/color"
+        },
+        "intensity": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "range": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1000
+        },
+        "castSurfaceShadow": {
+          "type": "boolean"
+        },
+        "castVolumetricShadow": {
+          "type": "boolean"
+        },
+        "volumetricIntensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "masterGainDb": {
+          "type": "number",
+          "minimum": -60,
+          "maximum": 6
+        },
+        "loudnessTargetLufs": {
+          "type": "number",
+          "minimum": -40,
+          "maximum": -5
+        },
+        "emitters": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/audioEmitter"
+          }
+        },
+        "sounds": {
+          "type": "object",
+          "maxProperties": 64,
+          "propertyNames": {
+            "pattern": "^[A-Za-z0-9_./-]{1,64}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "file",
+              "sha256"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "maxLength": 512,
+                "pattern": "^[^:\\\\]+\\.ngsnd$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "audioEmitter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "entity",
+        "sound"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "entity": {
+          "$ref": "#/$defs/uuid"
+        },
+        "sound": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_./-]{1,64}$"
+        },
+        "trigger": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "bus": {
+          "enum": [
+            "sfx",
+            "ambience",
+            "music",
+            "voice",
+            "ui"
+          ]
+        },
+        "gainDb": {
+          "type": "number",
+          "minimum": -60,
+          "maximum": 12
+        },
+        "minDistance": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 100
+        },
+        "maxDistance": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "loop": {
+          "type": "boolean"
+        },
+        "occlusion": {
+          "type": "boolean"
+        },
+        "spatial": {
+          "type": "boolean"
+        },
+        "pitch": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 4
+        },
+        "offset": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": -100000,
+            "maximum": 100000
+          }
+        }
+      }
+    },
+    "lighting": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ambient": {
+          "$ref": "#/$defs/color"
+        },
+        "skyColor": {
+          "$ref": "#/$defs/color"
+        },
+        "keyDirection": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 1
+          }
+        },
+        "keyColor": {
+          "$ref": "#/$defs/color"
+        },
+        "keyIntensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fogColor": {
+          "$ref": "#/$defs/color"
+        },
+        "fogDensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "fogHeightFalloff": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "fogBaseHeight": {
+          "type": "number",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "toneMap": {
+          "type": "boolean"
+        },
+        "exposure": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 100
+        },
+        "cloudCoverage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "cloudHeight": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "cloudThickness": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "cloudSpeed": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "localShadows": {
+          "type": "boolean"
+        },
+        "ibl": {
+          "type": "boolean"
+        },
+        "ddgi": {
+          "type": "boolean"
+        },
+        "cloudShadows": {
+          "type": "boolean"
+        },
+        "temporal": {
+          "type": "boolean"
+        },
+        "maxShadowLights": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "sha256"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "maxLength": 512,
+              "pattern": "^[^\\\\:\\u0000-\\u001f]+\\.ngenv$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "intensity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "rotation": {
+              "type": "number",
+              "minimum": -3600,
+              "maximum": 3600
+            }
+          }
+        },
+        "fogVolumes": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "center",
+              "extent",
+              "density"
+            ],
+            "properties": {
+              "center": {
+                "$ref": "#/$defs/position"
+              },
+              "extent": {
+                "$ref": "#/$defs/scale"
+              },
+              "density": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10
+              }
+            }
+          }
+        }
+      }
+    },
+    "vehicle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "speed"
+      ],
+      "properties": {
+        "speed": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 80
+        },
+        "direction": {
+          "enum": [
+            -1,
+            1
+          ]
+        }
+      }
+    },
+    "physics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "static",
+            "dynamic"
+          ]
+        },
+        "mass": {
+          "type": "number",
+          "minimum": 0.05,
+          "maximum": 1000
+        },
+        "friction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.5
+        },
+        "restitution": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.95
+        }
+      }
+    },
+    "destructible": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "strength",
+        "fragments"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "fragments": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 28
+        },
+        "debrisLifetime": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 120
+        },
+        "structural": {
+          "type": "boolean"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "mode": {
+          "enum": [
+            "entity",
+            "bonded"
+          ]
+        },
+        "cells": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        },
+        "voronoi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 259,
+          "description": "Baked shard set (nativegpu.voronoi/1) drawn instead of box cells. Requires mode \"bonded\"."
+        }
       }
     },
     "entity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name", "kind", "position", "scale", "color", "collider"],
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "position",
+        "scale",
+        "color",
+        "collider"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/uuid" },
-        "name": { "$ref": "#/$defs/name" },
-        "kind": {
-          "enum": ["ground", "wall", "prop", "player", "key", "door", "goal", "light"]
+        "id": {
+          "$ref": "#/$defs/uuid"
         },
-        "position": { "$ref": "#/$defs/position" },
-        "scale": { "$ref": "#/$defs/scale" },
-        "color": { "$ref": "#/$defs/color" },
-        "material": { "$ref": "#/$defs/material" },
-        "light": { "$ref": "#/$defs/light" },
-        "collider": { "type": "boolean" }
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "kind": {
+          "enum": [
+            "ground",
+            "wall",
+            "prop",
+            "player",
+            "key",
+            "door",
+            "goal",
+            "light",
+            "vehicle"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/position"
+        },
+        "scale": {
+          "$ref": "#/$defs/scale"
+        },
+        "color": {
+          "$ref": "#/$defs/color"
+        },
+        "material": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/material"
+            },
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+            }
+          ]
+        },
+        "light": {
+          "$ref": "#/$defs/light"
+        },
+        "vehicle": {
+          "$ref": "#/$defs/vehicle"
+        },
+        "physics": {
+          "$ref": "#/$defs/physics"
+        },
+        "destructible": {
+          "$ref": "#/$defs/destructible"
+        },
+        "collider": {
+          "type": "boolean"
+        },
+        "components": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "transform": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "default": [
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                "scale": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "default": [
+                    1,
+                    1,
+                    1
+                  ]
+                },
+                "yaw": {
+                  "type": "number",
+                  "default": 0,
+                  "minimum": -100000,
+                  "maximum": 100000
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "renderable": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "offset": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "default": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "collider": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "interactable": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "range": {
+                  "type": "number",
+                  "default": 2.2,
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "verticalRange": {
+                  "type": "number",
+                  "default": 2.5,
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "actorOffset": {
+                  "type": "number",
+                  "default": 0.9,
+                  "minimum": -100000,
+                  "maximum": 100000
+                },
+                "prompt": {
+                  "type": "string",
+                  "default": "Interact",
+                  "maxLength": 1024
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "trigger": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "half": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "default": [
+                    1,
+                    1,
+                    1
+                  ]
+                },
+                "once": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "fired": {
+                  "type": "boolean",
+                  "default": false
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "inventory": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "object",
+                  "default": {},
+                  "additionalProperties": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000,
+                    "default": 0
+                  }
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "progress": {
+              "type": "object",
+              "properties": {
+                "flags": {
+                  "type": "object",
+                  "default": {},
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "hud": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "default": "",
+                  "maxLength": 1024
+                },
+                "remaining": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000,
+                  "default": 0
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "animator": {
+              "type": "object",
+              "properties": {
+                "clip": {
+                  "type": "string",
+                  "default": "",
+                  "maxLength": 1024
+                },
+                "request": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000,
+                  "default": 0
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "behavior": {
+              "type": "object",
+              "properties": {
+                "instances": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "default": [],
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 1024
+                      },
+                      "script": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 1024
+                      },
+                      "properties": {
+                        "type": "object",
+                        "default": {},
+                        "additionalProperties": {
+                          "oneOf": [
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "oneOf": [
+                                  {
+                                    "type": "boolean"
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "oneOf": [
+                                        {
+                                          "type": "boolean"
+                                        },
+                                        {
+                                          "type": "number"
+                                        },
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "maxItems": 256
+                                        },
+                                        {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "maxItems": 256
+                                  },
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "oneOf": [
+                                        {
+                                          "type": "boolean"
+                                        },
+                                        {
+                                          "type": "number"
+                                        },
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "maxItems": 256
+                                        },
+                                        {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              "maxItems": 256
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": {
+                                "oneOf": [
+                                  {
+                                    "type": "boolean"
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "oneOf": [
+                                        {
+                                          "type": "boolean"
+                                        },
+                                        {
+                                          "type": "number"
+                                        },
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "maxItems": 256
+                                        },
+                                        {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "maxItems": 256
+                                  },
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "oneOf": [
+                                        {
+                                          "type": "boolean"
+                                        },
+                                        {
+                                          "type": "number"
+                                        },
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "maxItems": 256
+                                        },
+                                        {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "oneOf": [
+                                              {
+                                                "type": "boolean"
+                                              },
+                                              {
+                                                "type": "number"
+                                              },
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                },
+                                                "maxItems": 256
+                                              },
+                                              {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    },
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "script"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "rigidbody": {
+              "type": "object",
+              "properties": {
+                "dynamic": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "mass": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 1000,
+                  "default": 14
+                },
+                "velocity": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -1000,
+                    "maximum": 1000
+                  },
+                  "default": [
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                "friction": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1.5,
+                  "default": 0.62
+                },
+                "restitution": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 0.95,
+                  "default": 0.06
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "character": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "sha256",
+            "binarySha256"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\:\\u0000]+\\.json$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "binarySha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "clip": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "speed": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 16
+            },
+            "timeOffset": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 120
+            },
+            "yaw": {
+              "type": "number",
+              "minimum": -1000,
+              "maximum": 1000
+            },
+            "scale": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0.0001,
+                "maximum": 10000
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "offset": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -100000,
+                "maximum": 100000
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "rootMotion": {
+              "enum": [
+                "asset",
+                "preserve",
+                "extract"
+              ]
+            },
+            "anchor": {
+              "enum": [
+                "feet",
+                "center"
+              ]
+            },
+            "controller": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "stepHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                },
+                "eyeHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                },
+                "interactionHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                },
+                "orbitDistance": {
+                  "type": "number",
+                  "minimum": 0.001,
+                  "maximum": 100000
+                },
+                "orbitHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                },
+                "targetHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                }
+              }
+            },
+            "rig": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "footLock": {
+                  "type": "boolean"
+                },
+                "turnInPlace": {
+                  "type": "boolean"
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 100
+                },
+                "turnThreshold": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 3.14
+                },
+                "turnStepHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 5
+                },
+                "turnStepDuration": {
+                  "type": "number",
+                  "minimum": 0.01,
+                  "maximum": 10
+                },
+                "turnCooldown": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 10
+                },
+                "maxTwist": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 6.28
+                },
+                "maxSlopeCosine": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "swingPrediction": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 10
+                },
+                "maxFootCorrection": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 10
+                },
+                "pelvisLower": {
+                  "type": "number",
+                  "minimum": -10,
+                  "maximum": 0
+                },
+                "pelvisUpper": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 10
+                },
+                "maxStepHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 10
+                },
+                "maxPelvisShift": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "soleRoll": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1.5
+                }
+              }
+            },
+            "materials": {
+              "type": "object",
+              "maxProperties": 256,
+              "propertyNames": {
+                "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+              },
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+              }
+            }
+          }
+        },
+        "imported": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "asset",
+            "part",
+            "instance"
+          ],
+          "properties": {
+            "asset": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "part": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "instance": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "mesh": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "sha256"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\:]+$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "heightfield": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "sha256",
+            "enabled",
+            "origin",
+            "size",
+            "minHeightMetres",
+            "maxHeightMetres",
+            "maxErrorMetres"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\:]+$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "origin": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number"
+              }
+            },
+            "size": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "minHeightMetres": {
+              "type": "number",
+              "minimum": -1000,
+              "maximum": 1000
+            },
+            "maxHeightMetres": {
+              "type": "number",
+              "minimum": -1000,
+              "maximum": 1000
+            },
+            "maxErrorMetres": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
       },
       "allOf": [
         {
-          "if": { "properties": { "kind": { "const": "light" } }, "required": ["kind"] },
-          "then": { "required": ["light"] },
-          "else": { "not": { "required": ["light"] } }
+          "if": {
+            "required": [
+              "imported"
+            ]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": [
+                  "mesh"
+                ]
+              },
+              {
+                "required": [
+                  "character"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "light"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "light"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "light"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "vehicle"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "vehicle"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "vehicle"
+              ]
+            }
+          }
         }
       ]
     },
     "settings": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["walkSpeed", "runSpeed", "jumpSpeed", "gravity"],
+      "required": [
+        "walkSpeed",
+        "runSpeed",
+        "jumpSpeed",
+        "gravity"
+      ],
       "properties": {
-        "walkSpeed": { "type": "number", "minimum": 0.1, "maximum": 30 },
-        "runSpeed": { "type": "number", "minimum": 0.1, "maximum": 60 },
-        "jumpSpeed": { "type": "number", "minimum": 0.1, "maximum": 30 },
-        "gravity": { "type": "number", "minimum": 0.1, "maximum": 100 }
+        "walkSpeed": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 30
+        },
+        "runSpeed": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 60
+        },
+        "jumpSpeed": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 30
+        },
+        "gravity": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 100
+        }
       },
       "description": "runSpeed must also be greater than or equal to walkSpeed; the runtime validates that relation."
+    },
+    "textureMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "minimum": -1000000,
+            "maximum": 1000000
+          }
+        },
+        "scale": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "minimum": -1000000,
+            "maximum": 1000000
+          }
+        },
+        "rotation": {
+          "type": "number",
+          "minimum": -1000000,
+          "maximum": 1000000
+        },
+        "wrapS": {
+          "enum": [
+            "repeat",
+            "clamp",
+            "mirror"
+          ]
+        },
+        "wrapT": {
+          "enum": [
+            "repeat",
+            "clamp",
+            "mirror"
+          ]
+        },
+        "magFilter": {
+          "enum": [
+            "nearest",
+            "linear"
+          ]
+        },
+        "minFilter": {
+          "enum": [
+            "nearest",
+            "linear",
+            "nearest-mipmap-nearest",
+            "linear-mipmap-nearest",
+            "nearest-mipmap-linear",
+            "linear-mipmap-linear"
+          ]
+        }
+      }
     }
   }
 }

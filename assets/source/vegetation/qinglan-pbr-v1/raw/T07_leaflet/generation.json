@@ -1,0 +1,13 @@
+{
+  "assetId": "T07_leaflet",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game vegetation source texture, square1024x1024 preferred, one healthy isolated single leaf bladeOnly, orthographic front surface facing viewer, flattened and de-lit natural diffuse color. TRUE transparent RGBA, no baked shadow or specular highlight. Root at UV(0.5,0.0625), tip upward with content inside 6.25% safety margins. Preserve natural aspect ratio. No petiole extension, no branches, other leaves, flowers, holes, labels, borders, ruler, checkerboard or background. Single original BaseColor+Alpha texture, not an atlas or render. Species Pterocarya stenoptera 枫杨: ONE individual Chinese wingnut leaflet, NOT the whole pinnate leaf. Elongated oblong-lanceolate, finely serrated edges, acute tip, distinctly asymmetrical rounded-to-oblique base, natural mature green and fine side veins. No rachis and no adjacent leaflets.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-7126b0a2-e818-484f-913f-75471975aa90.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

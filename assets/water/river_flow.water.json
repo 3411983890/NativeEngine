@@ -1,0 +1,38 @@
+{
+  "schema": "nativegpu.water/1",
+  "id": "river_flow",
+  "revision": 0,
+  "seed": 27,
+  "backend": "shallow",
+  "extentMetres": [24, 8],
+  "cellMetres": 0.125,
+  "stillHeightMetres": 0.25,
+  "bathymetry": {
+    "type": "channel",
+    "heightMetres": -0.1,
+    "widthMetres": 5,
+    "depthMetres": 0.25,
+    "bankSlope": 1.2
+  },
+  "boundaries": { "type": "closed", "inflowCubicMetresPerSecond": 0, "outflowCubicMetresPerSecond": 0 },
+  "sources": [
+    {
+      "x": -10,
+      "z": 0,
+      "radiusMetres": 0.8,
+      "flowCubicMetresPerSecond": 0.35,
+      "speedMetresPerSecond": 0.9,
+      "direction": [1, 0]
+    }
+  ],
+  "drains": [
+    { "x": 10, "z": 0, "radiusMetres": 0.8, "flowCubicMetresPerSecond": 0.35 }
+  ],
+  "obstacles": [
+    { "x": -2, "z": 1.2, "radiusMetres": 0.7, "topHeightMetres": 0.1 },
+    { "x": 3, "z": -1.5, "radiusMetres": 0.9, "topHeightMetres": 0.7 }
+  ],
+  "waves": { "amplitudeMetres": 0, "wavelengthMetres": 1, "speedMetresPerSecond": 0, "direction": [1, 0], "components": 1 },
+  "material": { "refractionIndex": 1.333, "absorptionPerMetre": 0.55, "foamThreshold": 0.35 },
+  "budget": { "maxCells": 262144, "maxSubsteps": 8 }
+}

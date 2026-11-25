@@ -1,0 +1,308 @@
+<p class="lede">让 AI 做地图，难点从来不是"让它吐 JSON"——那今天就能做到。难点是：<strong>它吐出来的东西必须可复现、可局部修复、可被机器判定为"能用"</strong>。这一页给出完整路径，以及一条硬结论：AI 该产出的是 <strong>500 token 的规格</strong>，不是 <strong>36,000 token 的场景</strong>。</p>
+
+<div class="meta-row">
+  <span class="badge badge--plan">设计稿</span>
+  <span class="badge badge--partial">验证链路已存在</span>
+  <span class="meta">目标版本 0.12+ · 依赖地形系统（未实现）</span>
+</div>
+
+<div class="callout callout--note">
+<span class="callout-title">这条路径的地基已经在了</span>
+<p>事务层、12 条 lint（含步行可达性）、9 种实体、植被散布、固定机位截图、图像回归、帧预算、确定性回放——这些不是要新建的东西，而是<strong>已经有了、只是还没串成一条生成回路</strong>。所以这一页的重点不是"造轮子"，是"定契约"。</p>
+</div>
+
+<h2 id="starting-point">一、起点：你们已经在做 AI 地编了</h2>
+
+<p>先看一个容易被忽略的事实：<code>assets/town.scene.json</code> 不是手写的，它由 <code>tools/town/gen-scene.mjs</code> 生成。而那个生成器里，整个城镇的布局是<strong>一张 10 行的常量表加一个循环</strong>：</p>
+
+<pre><code>const buildings = [
+  { side: -1, z: -26, width: 9, height: 7.0,  wall: 'brick_red',  floors: 2, awning: true },
+  { side: -1, z: -16, width: 9, height: 8.6,  wall: 'plaster',    floors: 3, awning: false },
+  { side: -1, z:  -6, width: 9, height: 12.0, wall: 'brick_grey', floors: 4, tower: true },
+  // ... 共 10 个地块
+];</code></pre>
+
+<p>这就是一张<strong>人类手写的 MapSpec</strong>。所以"AI 地编"要替换的对象不是场景 JSON，而是这张表——把常量换成模型产出的规格，把循环换成求解器。架构上不需要新范式，只需要补上中间那层。</p>
+
+<h3 id="numbers">为什么不能让模型直接写场景</h3>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>事实</th><th>数值</th><th>含义</th></tr></thead>
+<tbody>
+<tr><td>town 场景体积</td><td>237 KB / 608 实体 / 120×132 m</td><td>这是当前"一张完整地图"的实际量级</td></tr>
+<tr><td>单实体 JSON</td><td>平均 205 B ≈ 57 token</td><td>UUID + 名称 + 位置 + 尺寸 + 材质 + 碰撞</td></tr>
+<tr><td>整场景输出</td><td>≈ 36,000 token</td><td><strong>一次生成就吃掉整个输出预算</strong>，且无法 diff</td></tr>
+<tr><td>实体密度</td><td>0.038 /m²</td><td>可直接换算任何地图规模的预算</td></tr>
+<tr><td>10,000 实体上限</td><td>≈ 0.26 km²</td><td>密度不变时的理论上限</td></tr>
+<tr><td>120 m 视距下的一张图</td><td>150×150 m ≈ 860 实体</td><td><strong>舒适区</strong>：留 10 倍余量给细节与植被</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>把 36,000 token 的输出拿去做迭代是行不通的：改一个街区要重出全文，改错了无法回滚到"第 400 个实体之前"，两个版本的差异没法看，模型也无法理解自己上一版错在哪。而一张 2 KB 的规格表 ≈ 500 token，<strong>迭代成本降低 60 倍</strong>，还能进 Git 做 diff。</p>
+
+<div class="callout callout--warn">
+<span class="callout-title">一条纪律</span>
+<p><strong>场景 JSON 是构建产物，不是源文件。</strong>任何把 <code>.scene.json</code> 当手写源文件、让模型整篇覆盖的做法，都会在第二次修改时崩掉——因为它同时丢掉了种子、意图和可回滚性。</p>
+</div>
+
+<h2 id="contract">二、"完整可用"是五条可执行合同</h2>
+
+<p>"可用"如果只是形容词，AI 就永远无法被追责。所以先把验收写成断言——每一条都对应仓库里<strong>已经存在</strong>的命令。</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>#</th><th>断言</th><th>判据</th><th>命令</th><th>性质</th></tr></thead>
+<tbody>
+<tr><td>G1</td><td><strong>结构完整</strong></td><td>schema 校验通过，恰好一个 player、至少一个 ground、revision 递增</td><td><code>node tools/scene.mjs validate</code></td><td>硬门禁</td></tr>
+<tr><td>G2</td><td><strong>可玩</strong></td><td>12 条 lint 零 error：无重叠、无越界、门有钥匙</td><td><code>node tools/scene.mjs lint --json</code></td><td>硬门禁</td></tr>
+<tr><td>G3</td><td><strong>可达</strong></td><td>钥匙与终点从出生点<strong>步行可达</strong>（0.5 m 栅格洪泛）</td><td>含在 G2（<code>KEY/GOAL-UNREACHABLE</code>）</td><td>硬门禁</td></tr>
+<tr><td>G4</td><td><strong>可加载</strong></td><td>打包成功，产物能被原生宿主读入</td><td><code>node tools/scene.mjs build</code></td><td>硬门禁</td></tr>
+<tr><td>G5</td><td><strong>画面非退化</strong></td><td>固定机位出图：非全黑/全雾、几何覆盖率达标、相机不在实体内部</td><td><code>NativeGPU --smoke --screenshot</code></td><td>硬门禁（弱）</td></tr>
+<tr><td>G6</td><td><strong>跑得动</strong></td><td>GPU 中位帧时间达标，<code>budget.status = within</code></td><td><code>--budget auto</code></td><td>硬门禁</td></tr>
+<tr><td>G7</td><td><strong>可复现</strong></td><td>同 seed 两次运行摘要一致</td><td><code>tools/determinism.ps1</code> / <code>replay.ps1</code></td><td>硬门禁</td></tr>
+<tr><td>G8</td><td><strong>观感不退化</strong></td><td>与已接受基线比较：meanAbsError / SSIM 在阈值内</td><td><code>tools/image-regression.ps1</code></td><td><strong>人接受</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<p>注意 G5 与 G8 的分工：<strong>G5 机器判"不是坏图"，G8 人判"是好图"</strong>。美学不该伪装成自动指标——否则模型会学会刷指标而不是做好看。人只做一件事：在 <code>image-regression.ps1 -Accept</code> 那一刻按下接受。</p>
+
+<h2 id="pipeline">三、七层管线</h2>
+
+<pre><code>        自然语言 / 参考图
+              |
+              v
++----------------------------------------------------+
+| L0  intent     LLM: theme / scale / gameplay       |  &lt;- 唯一由模型负责
++----------------------------------------------------+
+              |  MapSpec: &lt;= 2 KB, seed, no coordinates
+              v
++----------------------------------------------------+
+| L1  terrain    noise -&gt; erosion -&gt; hydrology       |  确定性
+| L2  skeleton   cost road graph -&gt; lots -&gt; pads     |  确定性
+| L3  structure  facade modules -&gt; roofs -&gt; props    |  确定性
+| L4  detail     scatter rules -&gt; veg packages       |  确定性
+| L5  gameplay   connectivity -&gt; spawn/door/goal     |  确定性
++----------------------------------------------------+
+              |  产物: .r16 + .splat + .scene.json + veg 包
+              v
++----------------------------------------------------+
+| L6  bake       texture cook / geometry / build     |  现有
++----------------------------------------------------+
+              |
+              v
++----------------------------------------------------+
+| L7  gates      G1-G8 -&gt; pass / typed failure       |  现有
++----------------------------------------------------+
+              |
+              +--&gt; 修复算子：几何级自修 / 规格级回模型</code></pre>
+
+<p>这张图里最重要的边界是 <strong>L0 与 L1 之间那道横线</strong>。模型只在线上方活动，输出的是"意图 + 参数 + 约束"；线下全部是纯函数 <code>solve(spec, seed) → artifacts</code>，同样的输入必须给出逐字节相同的输出。这条边界一旦破了，"可复现"和"可局部修复"就同时消失。</p>
+
+<h2 id="mapspec">四、MapSpec：模型唯一该写的东西</h2>
+
+<p>规格的设计目标有三个：字段少到模型不会写错、语义强到求解器不用猜、体积小到可以反复迭代。</p>
+
+<pre><code>{
+  "schema": "nativegpu.map/1",
+  "seed": "harbour-0714",
+  "theme": { "culture": "north-european", "era": "industrial", "palette": "cold-damp" },
+
+  "terrain": {
+    "extent": [160, 160],
+    "relief": "coastal-hills",        // 求解器内置的地形原型，不是自由文本
+    "reliefStrength": 0.55,           // 0..1，映射到 ±25 m
+    "water": { "kind": "bay", "level": -2.0, "edge": "south" },
+    "erosion": { "hydraulic": 0.6, "thermal": 0.3, "iterations": 240 }
+  },
+
+  "settlement": {
+    "kind": "harbour-town",
+    "footprint": [110, 90],
+    "density": 0.62,                  // 建筑覆盖率
+    "grid": 4.0,                      // 结构模数，必须是 1 m 的倍数
+    "storeys": [2, 4],
+    "landmark": { "count": 1, "role": "church-tower", "at": "street-end" }
+  },
+
+  "gameplay": {
+    "objective": "fetch-and-return",
+    "route": { "length": [120, 180], "loops": 1 },
+    "challenge": { "gates": 1, "verticality": "low" }
+  },
+
+  "presentation": {
+    "timeOfDay": "dusk", "weather": "mist",
+    "heroShot": { "subject": "landmark", "framing": "three-quarter" }
+  },
+
+  "budget": { "entities": 900, "drawCalls": 1200, "targetMs": 16.6 }
+}</code></pre>
+
+<p>三条纪律，缺一条就会退化成"模型在猜坐标"：</p>
+
+<dl class="kv">
+<dt>不写坐标</dt><dd>没有 <code>position</code>、没有 <code>scale</code>。位置是求解结果，不是输入。</dd>
+<dt>不写实体</dt><dd>没有 <code>entities</code> 数组。数量由密度与地块决定，不由模型数出来。</dd>
+<dt>必带 seed</dt><dd>同一份 spec 在任何机器、任何时间都必须产出同一张地图。seed 是规格的一部分，不是运行时参数。</dd>
+</dl>
+
+<p><code>relief</code>、<code>kind</code> 这些字段是<strong>枚举</strong>而不是自由文本，这是刻意的：让模型在有限词汇里做选择，比让它描述"一个有点像挪威渔村但更破败的地方"可靠得多。自由文本只能出现在 <code>theme.palette</code> 这类纯表现字段上，且必须映射到已存在的材质名。</p>
+
+<h2 id="solvers">五、求解器：把"像"变成"算"</h2>
+
+<h3 id="terrain">5.1 地形：一个顶层块，不是一种实体</h3>
+
+<p>地形不该做成第 10 种 <code>kind</code>。理由是三个具体约束：它不该占用 10,000 实体预算；它不该进 TLAS（否则 66k 顶点要逐块进加速结构）；一张图通常只有一块地形，而 <code>kind</code> 的语义是"可增删的实例"。</p>
+
+<p>所以它应该和 <code>lighting</code>、<code>materials</code> 并列，作为文档级资产引用：</p>
+
+<pre><code>"terrain": {
+  "file": "terrain/harbour.r16",
+  "sha256": "…",
+  "size": [257, 257],          // 顶点数，257² = 66,049
+  "extent": [160, 160],        // 米
+  "heightRange": [-25, 25],
+  "splat": "terrain/harbour.splat"
+}</code></pre>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>项</th><th>数值</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>高度图源</td><td>257² × 2 B = <strong>132 KB</strong></td><td>R16，0.62 m 精度，25 cm 高程分辨率</td></tr>
+<tr><td>顶点缓冲</td><td>66,049 × 32 B = <strong>2.1 MB</strong></td><td>pos3 + normal3 + uv2</td></tr>
+<tr><td>索引缓冲</td><td>393,216 × 4 B = <strong>1.6 MB</strong></td><td>256² 格 × 2 三角</td></tr>
+<tr><td>绘制</td><td><strong>1 次</strong></td><td>一次 <code>DrawIndexedInstanced</code>，无需 LOD（far = 120 m）</td></tr>
+<tr><td>权重图</td><td>257² × 4 B = <strong>264 KB</strong></td><td>RGBA8 装 4 层：草 / 岩 / 沙 / 路</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>碰撞上有一条明确的不做：<strong>不做 heightfield 刚体</strong>。物理是 120 Hz 盒体 SAT + 凸包窄相，heightfield 是另一个量级的工作，而且角色根本不需要它——角色只需要一个贴地查询。</p>
+
+<pre><code>// CPU 侧双线性采样 + 中心差分求法线；O(1)，无状态
+float3 sampleTerrain(float2 xz);   // 返回 (y, nx, nz)
+bool   walkableAt(float2 xz);      // 坡度 &lt; 阈值 && 不在水面下</code></pre>
+
+<p>真正让地形"接得进去"的是一个已经存在的接缝。植被系统里的 <code>SurfaceSampler</code> 从一开始就把"地面是什么"抽象成了接口，注释写得很直白：</p>
+
+<pre><code>// engine/vegetation/surface.mjs
+// A static triangle soup sampled vertically. This is the adapter for an already
+// imported scene mesh; a terrain height field is a different adapter with the same
+// interface, which is why the sampler owns the query instead of the scatter code.</code></pre>
+
+<p>也就是说，地形接入植被<strong>不需要改散布代码</strong>，只需要加一个 <code>HeightfieldSurface</code>，实现同样的 <code>heightAt / normalAt / materialAt</code> 三件套，并把 sampler 版本号写进 cook 记录——地形一改，旧散布自动失效，而不是悄悄浮空。</p>
+
+<h3 id="layout">5.2 骨架：路网 → 地块 → 高度场</h3>
+
+<p>因为实体<strong>没有旋转</strong>（<code>components.transform.yaw</code> 在 schema 里存在，但原生渲染与物理都不消费它），所有几何都是轴对齐盒体。这不是缺陷，而是风格约束：它把设计空间压成了<strong>网格语法</strong>，而这正是生成式系统最容易做对的形式。</p>
+
+<ol>
+<li><strong>路网</strong>：在 4 m 粗网格上跑最小代价路径，代价 = 坡度² + 水面惩罚 + 已有道路折扣。结果是正交或 45° 折线（折线用短盒段拼接，因为不能旋转）。</li>
+<li><strong>地块</strong>：沿街做 BSP 递归切分，每块必须有一段临街面（frontage ≥ 4 m），进深 8–14 m。切分树本身是确定性的，seed 只影响切分位置。</li>
+<li><strong>高度场</strong>：每个地块的高程取四角地形高度的中位数，地块内部填平——这样建筑不会歪在坡上，而街道保留起伏。这一步是"看起来像人做的"和"看起来像程序堆的"的分界线。</li>
+</ol>
+
+<h3 id="facade">5.3 结构：立面是一张模块表</h3>
+
+<p>一栋建筑 = 沿街立面按 1 m 模数排布的模块序列：<code>wall / window / door / shopfront / awning / sign</code>，每层一行，屋顶用坡顶或平顶收口。模块本身就是盒体 + 材质槽，所以这条路<strong>完全落在现有表达力内</strong>，不需要任意网格。</p>
+
+<p>生成时只需要决定三件事：层数（由密度场给出）、开间节奏（seed 驱动的交替模式）、材质套系（由 <code>theme.palette</code> 映射到已有的 <code>brick_red / plaster / stone</code> 等名字）。其余全是查表。</p>
+
+<h3 id="detail">5.4 细节：复用已有的散布系统</h3>
+
+<p>道具与植被都走同一条路：规则 + 种子 → 内容寻址包，<strong>不进场景实体</strong>。植被系统的 <code>scatter.mjs</code> 已经实现了"坡度 / 高度 / 到路距离 / 簇噪声"四类规则，草的密度按距离降级。AI 在这里要做的只是<strong>从 spec 推导规则参数</strong>，而不是重新发明散布算法。</p>
+
+<div class="callout callout--note">
+<span class="callout-title">这条分工很重要</span>
+<p>散布是<strong>性能问题</strong>（页、量化、LOD、impostor），不是生成问题。把 10,000 棵树塞进场景 JSON 会同时撞上实体上限和事务层。让 AI 碰散布参数、不碰散布实现。</p>
+</div>
+
+<h3 id="playability">5.5 玩法：把 lint 的洪泛反用成求解器</h3>
+
+<p>这是整条路径里最省力的一步。lint 已经有一个 0.5 m 栅格的步行可达性判定（<code>KEY-UNREACHABLE</code> / <code>GOAL-UNREACHABLE</code>），它本质上是在算<strong>连通分量</strong>。生成时用同一个算法做构造，而不是事后判定：</p>
+
+<ol>
+<li>先铺满可行走地面，跑一次洪泛 → 得到若干连通分量。</li>
+<li>取最大的两个分量，找出它们的<strong>邻接边</strong>（只隔一堵墙的地方）。</li>
+<li>门就放在那条边上，钥匙放在 A 侧，终点放在 B 侧。</li>
+<li>出生点选在 A 侧、离门最远且视野开阔的位置。</li>
+</ol>
+
+<p>这样出来的地图<strong>构造上就满足 G3</strong>，不靠重试。判定与生成共用一个图，是最划算的复用——否则你会陷入"生成 → lint 报不可达 → 改一处 → 另一处又断了"的循环，而每次循环都要花掉一次模型调用。</p>
+
+<h2 id="repair">六、修复闭环：只有规格级失败才回模型</h2>
+
+<p>门禁失败时，第一反应不该是"让模型重写一遍"。绝大多数失败是几何级的，求解器自己能修，而且修得比模型准。</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>失败类型</th><th>典型 code</th><th>修复算子</th><th>回模型？</th></tr></thead>
+<tbody>
+<tr><td>几何重叠</td><td><code>NG-LINT-OVERLAP</code></td><td>沿最小穿透轴推开，或删除低优先级道具</td><td>否</td></tr>
+<tr><td>越界 / 埋地</td><td><code>NG-LINT-OUT-OF-WORLD</code></td><td>clamp 到 <code>worldExtent</code>，抬高到地面以上</td><td>否</td></tr>
+<tr><td>终点不可达</td><td><code>NG-LINT-GOAL-UNREACHABLE</code></td><td>在最近阻挡体上开 1.2 m 缺口</td><td>否</td></tr>
+<tr><td>钥匙在门后</td><td><code>NG-LINT-KEY-AFTER-DOOR</code></td><td>交换两侧归属，重跑 5.5 的分配</td><td>否</td></tr>
+<tr><td>实体超预算</td><td><code>NG-LINT-ENTITY-BUDGET</code></td><td>降低散布密度 / 合并同材质薄片</td><td>规格级：是</td></tr>
+<tr><td>帧时间超标</td><td><code>budget.status = exhausted</code></td><td>降阴影档 / 降植被密度</td><td>规格级：是</td></tr>
+<tr><td>画面退化</td><td>G5 覆盖率过低</td><td>枚举可行机位，重选 hero shot</td><td>否</td></tr>
+<tr><td>schema 违规</td><td><code>NG-E-SCENE-SCHEMA</code></td><td><strong>不修</strong>——这是 emitter 的 bug</td><td>否，抛给工程</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>最后一行是关键：<strong>schema 违规说明代码写错了，不是模型想错了。</strong>如果把它当成"模型输出不合格"去重试，你会得到十次相同的失败，并且永远修不好那个 emitter。</p>
+
+<p>所有修复都走事务：<code>preview → apply</code>，留下 diff 和 <code>expectedRevision</code>。这样"AI 改了哪几刀"是可审计的，而且任何一刀都能 <code>undo</code>。这一条直接复用现有的事务层，不需要新机制。</p>
+
+<h2 id="composition">七、观感不是玄学，是四条可计算的构图约束</h2>
+
+<p>盒体 + 平面投影 UV 的表达上限确实存在，但它不等于"一定难看"。难看的典型原因是构图而不是材质。有四条规则可以用几何查询近似判定，成本很低：</p>
+
+<dl class="kv">
+<dt>视线终点要有地标</dt><dd>沿主街方向投射射线，终点 40 m 内必须有高于两侧 1.5 倍的体量。否则街道会"泄气"。</dd>
+<dt>街道高宽比 1 : 1 ~ 1 : 1.5</dt><dd>由地块进深与层高直接算出，生成时就能约束，不需要事后调。</dd>
+<dt>主光与相机夹角 30°–60°</dt><dd>从 <code>lighting.keyDirection</code> 与 hero 机位方向点积得出。夹角太小没有体积感，太大全是阴影。</dd>
+<dt>雾要把远景压成三层</dt><dd>用 <code>fogDensity</code> 反算可见深度，确保前景/中景/远景各有一层，而不是一片灰。</dd>
+</dl>
+
+<p>这四条都不需要"审美模型"，只需要射线与视锥查询。真正需要人的只有一件事：接受基线。</p>
+
+<h2 id="phases">八、分阶段</h2>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>阶段</th><th>做什么</th><th>验收</th><th>规模</th></tr></thead>
+<tbody>
+<tr><td><strong>P0</strong> 规格与发射器</td><td>MapSpec schema + <code>spec → scene</code> 发射器，先复刻现有 town</td><td>生成结果与手写 town 的实体数、包围盒、lint 结果一致；spec ≤ 2 KB</td><td>小</td></tr>
+<tr><td><strong>P1</strong> 地形</td><td><code>terrain</code> 顶层块、R16 导入、单次绘制、<code>heightAt</code>、<code>HeightfieldSurface</code></td><td>160 m 瓦片进 G6；植被落在坡面上不浮空；探针报告通过</td><td>中</td></tr>
+<tr><td><strong>P2</strong> 骨架与结构</td><td>路网、地块细分、立面模块表、地标</td><td>从 spec 生成 110×90 m 聚落，G1–G4 全绿，零手写坐标</td><td>大</td></tr>
+<tr><td><strong>P3</strong> 玩法</td><td>连通图反用、门/钥匙/终点、出生点选位</td><td>连续 3 张图 100% 可通，无重试</td><td>中</td></tr>
+<tr><td><strong>P4</strong> 闭环</td><td>修复算子、报告、批量生成</td><td>注入 8 类故障，几何级 6 类自动修复，2 类升级人工</td><td>中</td></tr>
+<tr><td><strong>P5</strong> 风格</td><td>参考图 → spec、风格向量、接受基线库</td><td>同一主题下 5 张图互相可辨且同风格</td><td>持续</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>P0 值得单独强调：它不产生新能力，但它是<strong>整条路径的回归基线</strong>。如果 AI 复刻不出人类手写的那张 town，说明规格的表达力不够，此时继续做地形和布局只会放大错误。</p>
+
+<h2 id="limits">九、明确不做</h2>
+
+<div class="callout callout--limit">
+<span class="callout-title">边界</span>
+<ul>
+<li><strong>不做"一句话出 3A 地图"。</strong>表达面是盒体 + 9 种 kind + 平面投影 UV，上限是"风格化的正交聚落"，不是写实。</li>
+<li><strong>不让模型输出坐标或实体。</strong>破坏这条，可复现与局部修复同时失效。</li>
+<li><strong>不做 heightfield 刚体。</strong>只做贴地查询；物理仍是盒体与凸包。</li>
+<li><strong>不做旋转几何。</strong><code>yaw</code> 字段今天不被渲染与物理消费，先补 OBB 路径再谈斜街。</li>
+<li><strong>不用自动指标替代审美。</strong>G8 由人接受；机器只判"是不是坏图"。</li>
+<li><strong>不做扩散模型直出高度图并直接使用。</strong>必须过侵蚀仿真（水力 + 热力 + 流量累积），否则流域不连续，一眼假。</li>
+</ul>
+</div>
+
+<h2 id="next">下一步</h2>
+
+<p>如果只做一件事，做 <strong>P0</strong>：把 <code>tools/town/gen-scene.mjs</code> 里那 10 行常量表换成一份 <code>map.json</code>，再加一个 60 行的发射器。它不会让画面变好，但会立刻暴露规格设计里的所有问题——而这些问题是后面五个阶段都要踩的。</p>

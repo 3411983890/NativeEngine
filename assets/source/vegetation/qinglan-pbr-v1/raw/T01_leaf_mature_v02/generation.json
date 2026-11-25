@@ -1,0 +1,59 @@
+{
+  "assetId": "T01_leaf_mature_v02",
+  "records": [
+    {
+      "map": "thickness",
+      "prompt": "Edit target: supplied single willow leaf texture. Produce ONLY a relative optical THICKNESS data map matching the source's exact leaf silhouette, canvas dimensions, root, tip, position, scale, orientation and vein layout. No new composition. One grayscale map: black empty background, thin blade around gray 95, slightly thicker veins around gray150, central midrib and basal connection brighter around200. No illumination, no shadow, no shading gradient pretending to be thickness, no bevel on outer edge. White thicker, black thinner/empty. Single technical image, no text, panels or border. Preserve exact UV registration; this is AI-inferred relative thickness, not calibrated measured metres.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-cdbadf68-a940-444e-b32e-8bd4f24cc867.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": "basecolor.png"
+    },
+    {
+      "map": "orm",
+      "prompt": "Edit the supplied willow leaf texture into ONLY a packed linear ORM material DATA MAP for that SAME exact leaf in the SAME pixel positions and dimensions. Preserve canvas, silhouette, root, tip, veins, orientation and scale exactly. R=ambient occlusion, mostly 245-255 on this isolated flat leaf, subtle crevice AO on veins; G=roughness naturally 120-175 with slightly smoother midrib, not a shaded grayscale photograph; B=metallic EXACT zero everywhere. Thus the leaf will appear yellow-orange/ochre as a data map, not green or purple. Background R=255 G=200 B=0. No lighting gradients, no shadows, no labels, no legend, no panels, no border. A single flat technical data image aligned to the source UV.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-5ed30476-1026-4c09-9be2-0a2f388f0a9b.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": "basecolor.png"
+    },
+    {
+      "map": "normal_dx",
+      "prompt": "Edit the supplied willow leaf texture into ONLY a tangent-space DirectX -Y NORMAL MAP. Preserve the exact canvas dimensions, leaf silhouette, root, tip, position, orientation, scale and vein layout with pixel registration to the input. No new composition. Output purple-blue RGB data, flat (128,128,255) background and smooth blade, fine raised vein relief only; normalized upward normals, no baked illumination, no text, no panels. DirectX green channel convention. One single normal texture matching the referenced BaseColor UVs. No color leaf, no grayscale image, no checkerboard.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-f4dd9dd9-3e30-4f7d-b276-add57127f202.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": "basecolor.png"
+    },
+    {
+      "map": "height",
+      "prompt": "Edit target: the supplied willow leaf BASE COLOR texture. Create ONLY a matching grayscale RELATIVE HEIGHT texture for that exact leaf on that exact canvas. Preserve its exact silhouette, root, tip, vein positions, orientation, size, crop, and every background pixel position: NO new leaf, NO recentering, NO scaling, NO atlas, NO panels. Output one square grayscale height map, not a photograph: raised central midrib and finer veins are brighter gray; lamina is medium gray with subtle microrelief, empty background pure black; no directional lighting or shadows, no outline bevel. Match the input dimensions exactly. White means raised, black recessed; inferred art data, not physical measurement. No text, labels, checkerboard or border. Keep the flat blade's overall height field subtle, with a gently raised midrib. This map will be sampled using the exact same UVs as the supplied color image.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-bc262828-7609-4d51-9b8b-b2f43daca8d1.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": "basecolor.png"
+    },
+    {
+      "map": "baseColor",
+      "prompt": "Use case: photorealistic-natural. Asset type: game vegetation BASE COLOR + genuine RGBA alpha, one isolated mature weeping willow leaf (Salix babylonica), bladeOnly. Generate ONE SINGLE healthy narrow lanceolate leaf, front surface facing the viewer, orthographic top-down, flattened blade, natural green de-lit diffuse color and fine veins, delicate serrated edges. No long petiole, no branches, no other leaves, no flowers. Square canvas 1024x1024 preferred; real transparent background. Leaf base horizontally centered at UV (0.5,0.0625), meaning x50%, y93.75% in top-left raster coordinates. Tip points vertically up, at y6.25% or below; left/right margin >=6.25%; preserve the willow leaf's naturally slender aspect ratio, do not make a broad leaf to fill canvas. Central vein vertical. Entire leaf including its base and tip visible. Keep all four transparent safety margins. Color only: no baked lighting, no directional shadows, no gloss highlights, no ambient shadow, no backdrop, no checkerboard pattern, no labels, text, borders or ruler. No holes, insects, disease or tears. This is a single original botanical texture source, NOT an atlas, collage, PBR contact sheet or a 3D render. Author a second natural mature-leaf variant: slightly more slender blade, slightly asymmetric serrations and subtle natural pale green tonal variation, still healthy and perfectly upright. This is a new independently authored leaf, not a collage.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-8010a042-ff8b-426b-af3e-2e16656b61c8.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ],
+  "sourceGeometryReview": {
+    "assetId": "T01_leaf_mature_v02",
+    "width": 1254,
+    "height": 1254,
+    "bounds": {
+      "minX": 523,
+      "minY": 25,
+      "maxX": 743,
+      "maxY": 1224
+    },
+    "trueTransparency": true,
+    "edgeCutoff": false,
+    "status": "needs-canonical-normalization"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "nativegpu.vector-field/1",
+  "id": "gust_wind",
+  "domain": "visual",
+  "originMetres": [-8,-4,-8],
+  "cellMetres": 1,
+  "region": {"min": [1,1,1], "max": [15,15,15]},
+  "haloCells": 1,
+  "maxAgeTicks": 4,
+  "loopTicks": 240,
+  "tracks": {
+    "windVelocity": [
+      {"tick": 0, "metresPerSecond": [4,1,-2]},
+      {"tick": 120, "metresPerSecond": [-3,2,2]},
+      {"tick": 240, "metresPerSecond": [4,1,-2]}
+    ]
+  }
+}

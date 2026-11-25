@@ -1,0 +1,220 @@
+{
+  "schema": "nativegpu.hairstyle/1",
+  "id": "demo_bob",
+  "seed": 7,
+  "character": {
+    "headBone": "head",
+    "assetId": "assets/builtin/robot/character.json",
+    "scalpHash": "2c89620310eec33212483a1c9480a569",
+    "characterHash": "f84448f458ec6b00da9fb98865c0d2ddc2a13973bcb32f783620651cd6254930",
+    "units": "metres",
+    "coordinateSystem": "left-handed-y-up"
+  },
+  "references": [],
+  "analysis": null,
+  "regions": [
+    {
+      "material": "hair",
+      "simulation": "guide",
+      "lockedFields": [],
+      "id": "bangs",
+      "azimuthDegrees": [
+        -38,
+        38
+      ],
+      "polarDegrees": [
+        0,
+        68
+      ],
+      "densityPerCm2": 140,
+      "lengthMetres": 0.11,
+      "comb": [
+        0,
+        -0.25,
+        1
+      ],
+      "taper": {
+        "power": 1.4,
+        "root": 1,
+        "tip": 0.35
+      }
+    },
+    {
+      "material": "hair",
+      "simulation": "guide",
+      "lockedFields": [
+        "lengthMetres"
+      ],
+      "id": "crown",
+      "azimuthDegrees": [
+        -180,
+        180
+      ],
+      "polarDegrees": [
+        0,
+        26
+      ],
+      "densityPerCm2": 140,
+      "lengthMetres": 0.18,
+      "comb": [
+        0,
+        -0.35,
+        0.5
+      ],
+      "taper": {
+        "power": 1.4,
+        "root": 1,
+        "tip": 0.35
+      }
+    },
+    {
+      "material": "hair",
+      "simulation": "guide",
+      "lockedFields": [],
+      "id": "left_side",
+      "azimuthDegrees": [
+        42,
+        132
+      ],
+      "polarDegrees": [
+        10,
+        82
+      ],
+      "densityPerCm2": 140,
+      "lengthMetres": 0.2,
+      "comb": [
+        0.4,
+        -0.5,
+        0.2
+      ],
+      "taper": {
+        "power": 1.4,
+        "root": 1,
+        "tip": 0.35
+      }
+    },
+    {
+      "material": "hair",
+      "simulation": "guide",
+      "lockedFields": [],
+      "id": "right_side",
+      "azimuthDegrees": [
+        -132,
+        -42
+      ],
+      "polarDegrees": [
+        10,
+        82
+      ],
+      "densityPerCm2": 140,
+      "lengthMetres": 0.2,
+      "comb": [
+        -0.4,
+        -0.5,
+        0.2
+      ],
+      "taper": {
+        "power": 1.4,
+        "root": 1,
+        "tip": 0.35
+      }
+    },
+    {
+      "material": "hair",
+      "simulation": "guide",
+      "lockedFields": [],
+      "id": "back",
+      "azimuthDegrees": [
+        128,
+        -128
+      ],
+      "polarDegrees": [
+        8,
+        88
+      ],
+      "densityPerCm2": 140,
+      "lengthMetres": 0.22,
+      "comb": [
+        0,
+        -0.5,
+        -0.4
+      ],
+      "taper": {
+        "power": 1.4,
+        "root": 1,
+        "tip": 0.35
+      }
+    }
+  ],
+  "strands": {
+    "widthMetres": 0.00007,
+    "rootJitterMetres": 0.0012,
+    "streamsPerGuide": 40
+  },
+  "guides": {
+    "segments": 12,
+    "radiusMetres": 0.00007,
+    "maxGuides": 4096
+  },
+  "material": {
+    "groups": [
+      {
+        "id": "hair",
+        "albedo": [
+          0.09,
+          0.06,
+          0.04
+        ],
+        "roughness": 0.3,
+        "radialRoughness": 0.28,
+        "longitudinalRoughness": 0.3,
+        "absorption": [
+          0.6,
+          0.42,
+          0.3
+        ],
+        "melanin": 0.9366666666666666,
+        "redness": 0.25
+      }
+    ]
+  },
+  "physics": {
+    "gravityMetresPerSecond2": 9.81,
+    "bendCompliance": 0.0004,
+    "stretchCompliance": 0.000002,
+    "shapeStiffness": 0.35,
+    "damping": 0.9,
+    "substeps": 2,
+    "iterations": 4,
+    "windResponse": 0.35,
+    "maxSpeedMetresPerSecond": 25,
+    "shoulderContact": null,
+    "sweptCollision": true
+  },
+  "lod": [
+    {
+      "level": 0,
+      "strandFraction": 1,
+      "segmentScale": 1,
+      "maxDistanceMetres": 4
+    },
+    {
+      "level": 1,
+      "strandFraction": 0.5,
+      "segmentScale": 0.7,
+      "maxDistanceMetres": 12
+    },
+    {
+      "level": 2,
+      "strandFraction": 0.18,
+      "segmentScale": 0.5,
+      "maxDistanceMetres": 24
+    }
+  ],
+  "budget": {
+    "maxStrands": 120000,
+    "maxPoints": 6000000
+  },
+  "locks": [],
+  "guideOverrides": []
+}

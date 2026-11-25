@@ -1,0 +1,27 @@
+{
+  "assetId": "T01_leaf_mature_v03",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Use case: photorealistic-natural. Asset type: game vegetation BASE COLOR + genuine RGBA alpha, one isolated mature weeping willow leaf (Salix babylonica), bladeOnly. Generate ONE SINGLE healthy narrow lanceolate leaf, front surface facing the viewer, orthographic top-down, flattened blade, natural green de-lit diffuse color and fine veins, delicate serrated edges. No long petiole, no branches, no other leaves, no flowers. Square canvas 1024x1024 preferred; real transparent background. Leaf base horizontally centered at UV (0.5,0.0625), meaning x50%, y93.75% in top-left raster coordinates. Tip points vertically up, at y6.25% or below; left/right margin >=6.25%; preserve the willow leaf's naturally slender aspect ratio, do not make a broad leaf to fill canvas. Central vein vertical. Entire leaf including its base and tip visible. Keep all four transparent safety margins. Color only: no baked lighting, no directional shadows, no gloss highlights, no ambient shadow, no backdrop, no checkerboard pattern, no labels, text, borders or ruler. No holes, insects, disease or tears. This is a single original botanical texture source, NOT an atlas, collage, PBR contact sheet or a 3D render. Author a third natural mature-leaf variant: a slightly shorter narrower blade, rich natural green and distinct fine venation. Keep the central vein vertical and no curl or damage. This is a new single leaf, not a collage.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-45ddc5d3-872a-4198-b5b4-1e6c935d39fc.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ],
+  "sourceGeometryReview": {
+    "assetId": "T01_leaf_mature_v03",
+    "width": 1254,
+    "height": 1254,
+    "bounds": {
+      "minX": 509,
+      "minY": 53,
+      "maxX": 754,
+      "maxY": 1192
+    },
+    "trueTransparency": true,
+    "edgeCutoff": false,
+    "status": "needs-canonical-normalization"
+  }
+}

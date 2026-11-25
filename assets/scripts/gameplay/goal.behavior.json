@@ -1,0 +1,27 @@
+{
+  "apiVersion": 1,
+  "version": 1,
+  "properties": {
+    "type": "object",
+    "properties": {
+      "requiredDoor": {
+        "type": "string",
+        "default": "",
+        "maxLength": 1024
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  },
+  "state": {
+    "type": "object",
+    "properties": {
+      "complete": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  }
+}

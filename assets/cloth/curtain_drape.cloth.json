@@ -1,0 +1,84 @@
+{
+  "schema": "nativegpu.cloth/2",
+  "id": "curtain_drape",
+  "revision": 0,
+  "seed": 37,
+  "kind": "environment",
+  "mesh": {
+    "type": "grid",
+    "columns": 16,
+    "rows": 22,
+    "widthMetres": 1.6,
+    "heightMetres": 2.2
+  },
+  "material": {
+    "arealDensityKgM2": 0.18,
+    "thicknessMetres": 0.002,
+    "stretchCompliance": 1e-8,
+    "shearCompliance": 5e-7,
+    "damping": 0.6,
+    "dragCoefficient": 0.9,
+    "bendAngleCompliance": 2000
+  },
+  "pins": [
+    {
+      "column": 0,
+      "row": 21
+    },
+    {
+      "column": 3,
+      "row": 21
+    },
+    {
+      "column": 6,
+      "row": 21
+    },
+    {
+      "column": 9,
+      "row": 21
+    },
+    {
+      "column": 12,
+      "row": 21
+    },
+    {
+      "column": 15,
+      "row": 21
+    }
+  ],
+  "collision": {
+    "thicknessMetres": 0.004,
+    "plane": {
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "offsetMetres": 0
+    },
+    "spheres": [],
+    "capsules": []
+  },
+  "lod": [
+    {
+      "maxDistanceMetres": 6,
+      "columns": 16,
+      "rows": 22
+    },
+    {
+      "maxDistanceMetres": 20,
+      "columns": 8,
+      "rows": 11
+    },
+    {
+      "maxDistanceMetres": 50,
+      "columns": 5,
+      "rows": 6
+    }
+  ],
+  "budget": {
+    "maxVertices": 4096,
+    "maxSubsteps": 4,
+    "iterations": 8
+  }
+}

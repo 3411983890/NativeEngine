@@ -17,14 +17,14 @@
                         "recordedAt":  "2026-10-20",
                         "adapter":  "NVIDIA GeForce RTX 5060 Laptop GPU",
                         "driverVersion":  "32.0.16.1714",
-                        "tool":  "tools/image-regression.ps1",
-                        "method":  "Capture --probe at the declared fixed view, measure the full frame against the accepted baseline, then set each ceiling/floor to the measured value plus a documented margin. Measured on 2026-10-20: meanAbsError 0, changedPercent 0, maxChannelDelta 0, SSIM 1.0; see docs/IMAGE-REGRESSION.md section 4."
+                        "tool":  ".incrementalTesting/rendering/image-regression.ps1",
+                        "method":  "Capture --probe at the declared fixed view, measure the full frame against the accepted baseline, then set each ceiling/floor to the measured value plus a documented margin. Measured on 2026-10-20: meanAbsError 0, changedPercent 0, maxChannelDelta 0, SSIM 1.0; see .developmentAgent/rendering/IMAGE-REGRESSION.md section 4."
                     },
     "baselines":  [
                       {
                           "id":  "courtyard-default",
-                          "description":  "Default renderer path (DXR shadows on, mesh path default) at the fixed courtyard view used by tools/error-contract.ps1. Pins the accepted frame; any unexplained drift in lighting, geometry, or composition fails the gate.",
-                          "scene":  "assets/courtyard.scene.json",
+                          "description":  "Default raster path (DXR shadows on, mesh path off; the mesh path is experimental) at the fixed courtyard view used by .incrementalTesting/rendering/error-contract.ps1. Pins the accepted frame; any unexplained drift in lighting, geometry, or composition fails the gate.",
+                          "scene":  ".screen/courtyard.scene.json",
                           "camera":  "9,5.5,10,-2,0.8,0",
                           "resolution":  "1280x720",
                           "screenshotFrame":  200,
@@ -49,9 +49,9 @@
                                                        "measured":  1
                                                    }
                                       },
-                          "sourceCommit":  "16ea86ae324de382deac14ef7a17725ef8d543c1",
-                          "acceptedAtUtc":  "2026-10-20T14:06:10.3162320Z",
-                          "sha256":  "baca62f4a954864ff5177b7775ce5b19b5e811cb07a3e273f4bbea25a24088f3"
+                          "sourceCommit":  "31c00bc53c0b4f9a3add04c0b38cb900de766db5",
+                          "acceptedAtUtc":  "2026-10-22T06:15:23.4205161Z",
+                          "sha256":  "0e19d24664df47813574c33aa7cfc462586c42ef3cd7b0f1d67812ecd913cf5a"
                       }
                   ]
 }

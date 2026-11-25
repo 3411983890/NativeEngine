@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 2,
+  "projectId": "c3a00000-0000-4000-8000-000000000003",
+  "name": "Joint yard",
+  "revision": 1,
+  "entities": [
+    {
+      "id": "c3a00000-0000-4000-8000-000000000110",
+      "name": "Yard floor",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.2,
+        0
+      ],
+      "scale": [
+        26,
+        0.4,
+        26
+      ],
+      "color": [
+        0.22,
+        0.23,
+        0.24
+      ],
+      "material": {
+        "albedo": [
+          0.22,
+          0.23,
+          0.24
+        ],
+        "roughness": 0.86,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000111",
+      "name": "Player spawn",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        9
+      ],
+      "scale": [
+        0.6,
+        1.8,
+        0.6
+      ],
+      "color": [
+        0.06,
+        0.65,
+        0.82
+      ],
+      "material": {
+        "albedo": [
+          0.06,
+          0.65,
+          0.82
+        ],
+        "roughness": 0.55,
+        "metalness": 0.1,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000120",
+      "name": "Gate post",
+      "kind": "prop",
+      "position": [
+        0.6,
+        1.7,
+        -6
+      ],
+      "scale": [
+        0.3,
+        3.4,
+        0.3
+      ],
+      "color": [
+        0.34,
+        0.36,
+        0.4
+      ],
+      "material": {
+        "albedo": [
+          0.34,
+          0.36,
+          0.4
+        ],
+        "roughness": 0.7,
+        "metalness": 0.2,
+        "pattern": "metal"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000121",
+      "name": "Motorised gate",
+      "kind": "prop",
+      "position": [
+        2.2,
+        1.6,
+        -6
+      ],
+      "scale": [
+        3,
+        3,
+        0.2
+      ],
+      "color": [
+        0.42,
+        0.5,
+        0.58
+      ],
+      "material": {
+        "albedo": [
+          0.42,
+          0.5,
+          0.58
+        ],
+        "roughness": 0.5,
+        "metalness": 0.45,
+        "pattern": "metal"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 40,
+        "friction": 0.5,
+        "restitution": 0.05
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000130",
+      "name": "Door post",
+      "kind": "prop",
+      "position": [
+        -1,
+        1.7,
+        -6
+      ],
+      "scale": [
+        0.3,
+        3.4,
+        0.3
+      ],
+      "color": [
+        0.36,
+        0.3,
+        0.24
+      ],
+      "material": {
+        "albedo": [
+          0.36,
+          0.3,
+          0.24
+        ],
+        "roughness": 0.8,
+        "metalness": 0.05,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000131",
+      "name": "Swing door",
+      "kind": "prop",
+      "position": [
+        -2.4,
+        1.6,
+        -6
+      ],
+      "scale": [
+        2.6,
+        3,
+        0.2
+      ],
+      "color": [
+        0.58,
+        0.42,
+        0.26
+      ],
+      "material": {
+        "albedo": [
+          0.58,
+          0.42,
+          0.26
+        ],
+        "roughness": 0.82,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 26,
+        "friction": 0.6,
+        "restitution": 0.05
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000140",
+      "name": "Hanging lamp",
+      "kind": "prop",
+      "position": [
+        4.6,
+        3.7,
+        -3
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ],
+      "color": [
+        0.86,
+        0.72,
+        0.4
+      ],
+      "material": {
+        "albedo": [
+          0.86,
+          0.72,
+          0.4
+        ],
+        "roughness": 0.45,
+        "metalness": 0.35,
+        "pattern": "metal"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 8,
+        "friction": 0.4,
+        "restitution": 0.1
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000115",
+      "name": "Joint lab exit",
+      "kind": "goal",
+      "position": [
+        0,
+        0.04,
+        -8.6
+      ],
+      "scale": [
+        1.2,
+        0.08,
+        1.2
+      ],
+      "color": [
+        0.25,
+        0.9,
+        0.55
+      ],
+      "material": {
+        "albedo": [
+          0.25,
+          0.9,
+          0.55
+        ],
+        "roughness": 0.35,
+        "metalness": 0,
+        "pattern": "metal"
+      },
+      "collider": false
+    }
+  ],
+  "joints": [
+    {
+      "type": "hinge",
+      "bodyA": "c3a00000-0000-4000-8000-000000000121",
+      "bodyB": "c3a00000-0000-4000-8000-000000000120",
+      "anchorA": [
+        -1.5,
+        0,
+        0
+      ],
+      "anchorB": [
+        0.1,
+        -0.1,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "hingeSpan": 0.35,
+      "lowerLimit": -1.5,
+      "upperLimit": 0,
+      "friction": 0.7,
+      "motorSpeed": -0.9,
+      "motorMaxTorque": 5000,
+      "collideConnected": false
+    },
+    {
+      "type": "hinge",
+      "bodyA": "c3a00000-0000-4000-8000-000000000131",
+      "bodyB": "c3a00000-0000-4000-8000-000000000130",
+      "anchorA": [
+        1.3,
+        0,
+        0
+      ],
+      "anchorB": [
+        -0.1,
+        -0.1,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "hingeSpan": 0.35,
+      "lowerLimit": -1.3,
+      "upperLimit": 1.3,
+      "friction": 0.4,
+      "collideConnected": false
+    },
+    {
+      "type": "rope",
+      "bodyA": "c3a00000-0000-4000-8000-000000000140",
+      "anchorA": [
+        0,
+        0,
+        0
+      ],
+      "anchorB": [
+        4.6,
+        6,
+        -3
+      ],
+      "restLength": 2.3,
+      "compliance": 0.0005
+    }
+  ],
+  "settings": {
+    "walkSpeed": 3.2,
+    "runSpeed": 6.4,
+    "jumpSpeed": 7,
+    "gravity": 20
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "rain_loop",
+  "revision": 0,
+  "seed": 401,
+  "durationTicks": 120,
+  "loop": true,
+  "maxAlive": 4000,
+  "bounds": { "min": [-12, -1, -12], "max": [12, 14, 12] },
+  "budget": { "maxSpawnPerTick": 240, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [{
+    "id": "drops",
+    "shape": { "type": "box", "extent": [20, 0.2, 20] },
+    "position": [0, 12, 0],
+    "ratePerSecond": 900,
+    "bursts": [],
+    "lifetimeTicks": [60, 84],
+    "localSpace": false,
+    "modules": [
+      { "id": "initial", "type": "initialize", "params": { "velocity": [0.4, -9.5, 0.2], "color": [0.62, 0.72, 0.85, 0.55], "size": [0.012, 0.09] } },
+      { "id": "gravity", "type": "acceleration", "after": ["initial"], "params": { "value": [0, -9.81, 0] } }
+    ],
+    "renderers": [{ "type": "sprite", "texture": "textures/lamp.albedo.ngtex", "blend": "premultiplied", "lit": false }]
+  }],
+  "events": []
+}

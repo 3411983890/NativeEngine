@@ -1,0 +1,34 @@
+{
+  "schema": "nativegpu.textures/1",
+  "size": 64,
+  "preserveAspect": false,
+  "budgetBytes": null,
+  "totalBytes": 21932,
+  "overBudget": false,
+  "decisions": [],
+  "textures": [
+    {
+      "name": "reference_glow",
+      "semantic": "albedo",
+      "file": "reference_glow.albedo.ngtex",
+      "source": "reference_glow.albedo.png",
+      "width": 64,
+      "height": 64,
+      "sourceWidth": 64,
+      "sourceHeight": 64,
+      "mips": 7,
+      "bytes": 21932,
+      "format": "rgba8",
+      "formatCode": 0,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 100
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "sha256": "f7a815a4ebc8730411d2b412d1ad7eb4f7596da04220063754f2d273b0f5d55b"
+    }
+  ]
+}

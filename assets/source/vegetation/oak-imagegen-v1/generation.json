@@ -1,0 +1,42 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-25",
+  "assets": [
+    {
+      "name": "oak_bark_normal_dx",
+      "prompt": "Convert the provided oak bark albedo into a tangent-space NORMAL MAP ONLY. Input is the exact target UV layout, preserve every ridge, crack and flake location and canvas framing, no new features. DirectX convention: +X encoded red, -Y encoded green (green down), +Z blue, flat surface RGB 128,128,255. Raised bark and recessed fissures with moderate realistic depth. Output only purple-blue RGB normal vector data, no original brown color, no illumination, no text, no borders, no side-by-side views. Match source dimensions and alignment. Full opaque canvas.",
+      "reference": "oak_bark_basecolor_prototype.png",
+      "path": "C:\\Users\\34119\\.codex\\generated_images\\01a17116-121d-7a33-824e-d2f9ce2114f2\\exec-40c92a02-a06d-479d-a049-d6fe2d7f4fc1.png"
+    },
+    {
+      "name": "oak_leaves_normal_dx",
+      "prompt": "Convert the provided twelve oak leaf atlas to a tangent-space NORMAL MAP ONLY, preserve the exact 3 columns by 4 rows placement, silhouette, petioles, holes, veins and UV registration. DirectX normal convention: red +X, green -Y, blue +Z, neutral flat RGB 128,128,255. Small raised central and secondary veins, subtle lamina folds, no inflated spherical leaves. Empty atlas background neutral RGB 128,128,255, opaque output; leaf coverage continues to come from the original albedo alpha. No green leaf color, no text, no labels, no decorative layout. Match input canvas dimensions and leaf positions exactly.",
+      "reference": "oak_leaves_basecolor_alpha_prototype.png",
+      "path": "C:\\Users\\34119\\.codex\\generated_images\\01a17116-121d-7a33-824e-d2f9ce2114f2\\exec-feebb983-68d1-415b-aabe-71da8879ada0.png"
+    },
+    {
+      "name": "oak_bark_orm",
+      "prompt": "Convert exact input oak bark into a single packed RGB PBR ORM DATA TEXTURE, preserve every ridge and fissure position and exact UV registration. R channel is ambient occlusion: exposed ridges near 1, crevices moderately darker. G channel is roughness: dry bark 0.75 to 0.95 with fine subtle variation. B channel metallic must be exactly zero everywhere (nonmetal). Therefore output looks yellow/ochre/greenish where appropriate, NEVER brown albedo, never blue. No lighting or shadows except AO in R, no legend, text, border, panels or multiple maps. Entire opaque canvas, same framing and resolution. One data map only.",
+      "reference": "oak_bark_basecolor_prototype.png",
+      "path": "C:\\Users\\34119\\.codex\\generated_images\\01a17116-121d-7a33-824e-d2f9ce2114f2\\exec-585414c1-e2f1-45db-9114-06f9c3f8d23c.png"
+    },
+    {
+      "name": "oak_leaves_orm",
+      "prompt": "Convert exact input twelve-leaf atlas into one opaque RGB ORM packed DATA TEXTURE. Keep exact 3 by 4 positions, silhouettes, veins, petioles and insect holes. R=ambient occlusion, mostly white/unoccluded on individual flat leaves, mild vein occlusion only; G=roughness, mature leaf blades around 0.45-0.65, younger leaves slightly smoother, dry yellow leaf rougher; B=metallic EXACT ZERO across entire image. Thus this is a yellow/orange data atlas, NOT a green botanical photograph, NOT lit beauty render. Empty background RGB (255,180,0), leaves original alpha used separately from albedo. Exact input framing and no text, labels, borders or collages.",
+      "reference": "oak_leaves_basecolor_alpha_prototype.png",
+      "path": "C:\\Users\\34119\\.codex\\generated_images\\01a17116-121d-7a33-824e-d2f9ce2114f2\\exec-6aec4b36-08ac-4cbe-b7e9-94dda2083827.png"
+    },
+    {
+      "name": "oak_leaves_thickness",
+      "prompt": "Convert exact input twelve oak leaf atlas into one opaque GRAYSCALE THICKNESS DATA MAP. Preserve exact leaf shapes, location, size, orientation, petioles and holes of input 3 columns 4 rows. White means thick, black means thin/empty. Black empty background and holes, lamina medium dark gray 0.2-0.4, main veins and stems light gray 0.7-0.9, fine branching secondary veins slightly lighter than lamina. Natural slight thickness variation, no directional shading, no green, no transparency, no text or labels or frame, no layout changes. This is relative material thickness for backlit transmission, not AO, opacity or a grayscale photograph.",
+      "reference": "oak_leaves_basecolor_alpha_prototype.png",
+      "path": "C:\\Users\\34119\\.codex\\generated_images\\01a17116-121d-7a33-824e-d2f9ce2114f2\\exec-87652e26-a3d8-4d3b-ba41-ecdba41f9d94.png"
+    },
+    {
+      "name": "oak_bark_height",
+      "prompt": "Convert exact input oak bark into one GRAYSCALE HEIGHT DATA MAP, preserve exact bark crack ridge flake positions and canvas registration. White means raised ridges and highest flakes, black means deepest fissures, midgray intermediate surface. Infer geometric relief rather than simply desaturating albedo, exclude coloration and directional lighting. Realistic multiscale bark height, not white outlines or embossed beauty render. Full opaque canvas matching source framing, no labels, no text, no frame, no panels. Seamless edge intent consistent with the input.",
+      "reference": "oak_bark_basecolor_prototype.png",
+      "path": "C:\\Users\\34119\\.codex\\generated_images\\01a17116-121d-7a33-824e-d2f9ce2114f2\\exec-7cf19cc6-bfc8-475d-9242-e51226c62f65.png"
+    }
+  ]
+}

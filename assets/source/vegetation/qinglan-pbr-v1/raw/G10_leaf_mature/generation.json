@@ -1,0 +1,13 @@
+{
+  "assetId": "G10_leaf_mature",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Use case: photorealistic-natural. Game vegetation single-leaf BASE COLOR source, preferred square1024x1024. ONE isolated healthy intact leaf, orthographic flat front view, true transparent RGBA. De-lit diffuse natural botanical color, fine veins, NO directional lighting, highlights, shadows, backdrop, checkerboard, border, labels, watermark, collage, branches or other leaves. Keep the COMPLETE silhouette within a large transparent safety margin: top/bottom/left/right at least10%. Center the basal attachment at x50%, y90% of canvas, tip points vertically UP at y10% or below. Preserve natural aspect ratio; narrow blades stay NARROW. For short petiole include it completely, attachment at its basal end. Source will later be canonicalized to UV(0.5,0.0625). Species Artemisia argyi 艾草: one single mature mugwort leaf with clearly pinnately lobed broad blade, connected green lobes, natural medium green FRONT surface, pale main veins, no silver underside showing. Include a complete short basal petiole so all side lobes lie ABOVE the attachment; leafProfile=bladeWithPetiole. No detached leaflets.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-07291093-07ce-4c61-ad6e-c5fd77170ae9.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

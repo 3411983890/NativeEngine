@@ -1,0 +1,13 @@
+{
+  "assetId": "T08_leaf_mature",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game vegetation source texture, square1024x1024 preferred, one healthy isolated single leaf bladeOnly, orthographic front surface facing viewer, flattened and de-lit natural diffuse color. TRUE transparent RGBA, no baked shadow or specular highlight. Root at UV(0.5,0.0625), tip upward with content inside 6.25% safety margins. Preserve natural aspect ratio. No petiole extension, no branches, other leaves, flowers, holes, labels, borders, ruler, checkerboard or background. Single original BaseColor+Alpha texture, not an atlas or render. Species Diospyros kaki 柿树: one mature persimmon leaf, broadly elliptical ovate, smooth entire margin, tapering base and short pointed tip, pronounced central midrib with gently curving lateral veins, natural rich green without glossy lighting. No fruit.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-b309744b-8d1c-4adb-b1a3-4938888f4d92.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

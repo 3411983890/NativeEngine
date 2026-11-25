@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "status": "complete-authoring-prototype-not-engine-validated",
+  "date": "2026-10-25",
+  "generation": "built-in image_gen; original prompts in ../generation.json",
+  "preparation": "deterministic channel packing, scalar extraction, roughness range mapping, vector normalization; no repainting or UV warping",
+  "warnings": [
+    "AI-inferred data are not physical measurements or geometry bakes.",
+    "Exact cross-map feature registration, tile-edge continuity, normal Y sign and visual quality require material preview.",
+    "Original leaf alpha is preserved, including fractional coverage; choose MASK cutoff in preview.",
+    "No mips, runtime cooking, compression, engine material assignment or render validation performed.",
+    "Thickness shader hookup is planned; these source files do not implement that feature.",
+    "Whole-tree impostors and voxel representations require a finished 3D tree and are not part of the leaf/bark source set."
+  ],
+  "files": [
+    {
+      "file": "oak_bark_basecolor.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "baseColor",
+      "colorSpace": "srgb",
+      "sha256": "e3289fe542998b34ad845bd941f39207f3ccb75a5984681f4e05bec6f0efec0d",
+      "alpha": "opaque"
+    },
+    {
+      "file": "oak_bark_normal_dx.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "normal",
+      "colorSpace": "linear",
+      "sha256": "35cf347e320ff255ffca6d42dc1a878e1be7e38dc170c6382865a928004025a3",
+      "convention": "DirectX -Y requested from image_gen; sign must be confirmed in renderer preview",
+      "maxNormalLengthError": 0.006650333382466234
+    },
+    {
+      "file": "oak_bark_orm.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "orm",
+      "colorSpace": "linear",
+      "sha256": "1a893a7f2940031d48a44db65be35c78a0d439d8cb5d217a4d3657ff9f527118",
+      "channels": {
+        "R": "ambient occlusion",
+        "G": "roughness",
+        "B": "metalness = 0",
+        "A": "1"
+      }
+    },
+    {
+      "file": "oak_bark_ao.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "occlusion",
+      "colorSpace": "linear",
+      "sha256": "c4d1b649f83d0807f46f417ca72f6bc02f8f7923f7d1acb7e5e9dfd4ff6862da"
+    },
+    {
+      "file": "oak_bark_roughness.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "roughness",
+      "colorSpace": "linear",
+      "sha256": "3e08c34f142ddba747a051927b854d1bfc0bb2e2290033663b21e9d5ca8b2cb4"
+    },
+    {
+      "file": "oak_bark_metallic.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "metallic",
+      "colorSpace": "linear",
+      "sha256": "63f981bd8765467c6f658f8736eb61b6ccd237c05f6aa360434ad09e1a3c3fd6"
+    },
+    {
+      "file": "oak_bark_height.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "height",
+      "colorSpace": "linear",
+      "sha256": "cfdd494abb6be61cfecbcf444fe39151ecc54c0c76952b6398678acdb26ae88a",
+      "encoding": "white = raised, black = recessed; not calibrated metres"
+    },
+    {
+      "file": "oak_leaves_basecolor_alpha.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "baseColor",
+      "colorSpace": "srgb",
+      "sha256": "f8f3784bd3c7294571e23d87c03bccc62578cd6411b9d669cb5f8f719de7d000",
+      "alpha": "original generated coverage"
+    },
+    {
+      "file": "oak_leaves_normal_dx.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "normal",
+      "colorSpace": "linear",
+      "sha256": "06bbfd87291d59323faf7b49239556469a8f53dc241a8f6e565b3b6d7ad3a415",
+      "convention": "DirectX -Y requested from image_gen; sign must be confirmed in renderer preview",
+      "maxNormalLengthError": 0.006392486168711242
+    },
+    {
+      "file": "oak_leaves_orm.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "orm",
+      "colorSpace": "linear",
+      "sha256": "9bf1fd8a40b8e776dbcc96753d5075db34bffd06a49cefc6f4455b69beb24334",
+      "channels": {
+        "R": "ambient occlusion",
+        "G": "roughness",
+        "B": "metalness = 0",
+        "A": "1"
+      }
+    },
+    {
+      "file": "oak_leaves_ao.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "occlusion",
+      "colorSpace": "linear",
+      "sha256": "d4812ccd09c1a3bc75689247c64327706f4c92a785237972ab41e9892c78079c"
+    },
+    {
+      "file": "oak_leaves_roughness.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "roughness",
+      "colorSpace": "linear",
+      "sha256": "43d5e126fc4fd19149cb4c5ed5245c87d3c49dff3fe0719f9c02d217c43596ba"
+    },
+    {
+      "file": "oak_leaves_metallic.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "metallic",
+      "colorSpace": "linear",
+      "sha256": "63f981bd8765467c6f658f8736eb61b6ccd237c05f6aa360434ad09e1a3c3fd6"
+    },
+    {
+      "file": "oak_leaves_thickness.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "thickness",
+      "colorSpace": "linear",
+      "sha256": "56eb81d2e637db6b05a32a5ebdb01d115d628c56cb5211edac0a94ebd29c54b9",
+      "encoding": "white = relatively thick, black = thin/empty; not calibrated metres"
+    },
+    {
+      "file": "oak_leaves_opacity.png",
+      "width": 1254,
+      "height": 1254,
+      "semantic": "opacity",
+      "colorSpace": "linear",
+      "sha256": "684a561d2a4f6dfd7a0c1c523e742ba76a45b8eab88393fdf6e79e41ae70dabd",
+      "encoding": "exact source alpha, white = covered"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+<p class="lede">NativeGPU 的分层不是按"模块大小"切的，而是按<strong>谁能改什么</strong>切的。内容、工具、AI、编辑器、运行时、渲染器六层之间只有窄接口，且所有写操作都必须穿过同一道事务闸门。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已冻结</span>
+  <span class="meta">RHI 边界见 .developmentAgent/rendering/RHI.md · 几何架构见 .developmentAgent/rendering/GEOMETRY-LAYOUT.md</span>
+</div>
+
+<h2 id="layers">六层结构</h2>
+
+<pre><code>┌──────────────────────────────────────────────────────────────┐
+│ ① 内容层   assets/                                          │
+│    .scene.json · .ngtex · scripts/*.lua · animation/*.bin    │
+├──────────────────────────────────────────────────────────────┤
+│ ② 工具层   engine/scene/ + tools/          （Node.js）       │
+│    validate · preview · commit · undo · recover · query · lint│
+├──────────────────────────────────────────────────────────────┤
+│ ③ AI 层    ai/                             （stdio MCP）     │
+│    12 个工具，只能调用 ② 与受控进程启动                       │
+├──────────────────────────────────────────────────────────────┤
+│ ④ 编辑器   editor/                     （Electron / Web）    │
+│    草稿 → 差异预览 → 提交；原生进程管理；按需快照              │
+├──────────────────────────────────────────────────────────────┤
+│ ⑤ 运行时   host/ + engine/native/            （C++17）       │
+│    输入 · 120 Hz 固定步长 · 物理 · 动画 · 玩法 · 摘要         │
+├──────────────────────────────────────────────────────────────┤
+│ ⑥ 渲染     renderer/ + shaders/              （D3D12）       │
+│    RHI::Device → 光栅 / DXR / Mesh / compute · 证据上报       │
+└──────────────────────────────────────────────────────────────┘</code></pre>
+
+<p>关键约束：<strong>② 是唯一的写入路径</strong>。③ 和 ④ 都不持有直接写 <code>assets/</code> 的能力，它们调用的是同一份 <code>engine/scene/</code> 实现。这条约束让"编辑器改的"和"Agent 改的"在语义上完全等价，也让审计只需要看一个地方。</p>
+
+<h2 id="dirs">目录职责</h2>
+
+<table>
+<thead><tr><th>目录</th><th>职责</th><th>不该放什么</th></tr></thead>
+<tbody>
+<tr><td><code>host/</code></td><td>Win32 窗口、命令行解析、场景加载、热重载轮询、冒烟报告、预算管理器</td><td>渲染细节、玩法规则</td></tr>
+<tr><td><code>renderer/</code></td><td>D3D12 设备与交换链、描述符、Fence、帧图、DXR 加速结构、RHI 适配器</td><td>场景语义、玩法状态</td></tr>
+<tr><td><code>shaders/</code></td><td>HLSL 源码 + <code>manifest.json</code> 编译清单</td><td>运行时逻辑</td></tr>
+<tr><td><code>engine/native/</code></td><td>固定步长玩法、碰撞、角色控制器、刚体物理、动画控制器、确定性摘要</td><td>D3D12 调用</td></tr>
+<tr><td><code>engine/native/gameplay/</code></td><td>组件注册表、Lua 宿主、六阶段调度、存档快照</td><td>直接操作 GPU</td></tr>
+<tr><td><code>engine/scene/</code></td><td>Schema 校验、事务、撤销 / 恢复、内容寻址构建、查询 DSL、设计期 lint</td><td>渲染与物理</td></tr>
+<tr><td><code>engine/material/</code></td><td>材质图与 MIR（中间表示）</td><td>运行时状态</td></tr>
+<tr><td><code>ai/</code></td><td>MCP 服务与工具契约说明</td><td>任何直接文件写入</td></tr>
+<tr><td><code>editor/</code></td><td>UI、Electron 宿主、本机场景/进程服务</td><td>独立的事务实现</td></tr>
+<tr><td><code>tools/</code></td><td>bootstrap、构建、CI、验证、打包、离线烘焙、场景 CLI</td><td>产品逻辑</td></tr>
+<tr><td><code>tests/</code></td><td>Node 测试、原生测试、图像契约与基线</td><td>—</td></tr>
+</tbody>
+</table>
+
+<h2 id="frame">帧路径</h2>
+
+<p>宿主每帧只做四件事：收集输入、推进固定步长模拟、构造绘制列表、提交给 RHI。渲染器不认识"实体"，只认识 <code>DrawItem</code> 与 <code>LightDesc</code>。</p>
+
+<pre><code>host/main.cpp
+   │  输入采样
+   ├─▶ Game::update(input, dt)          // 累加器 → N × 1/120 s
+   │      物理 · 动画 · 玩法 · 摘要
+   ├─▶ Game::drawItems()  → std::vector&lt;DrawItem&gt;
+   └─▶ nativegpu::rhi::Device::submit(viewProjection, eye, draws, lights)
+            │
+            └─▶ nativegpu::Renderer (D3D12)
+                  深度 pass · 双目标光栅 · DXR 阴影 · 合成 · 体积 · UI</code></pre>
+
+<p><code>Device</code> 是 R06 冻结的最小边界，只有 9 组方法：生命周期、<code>resize</code>、<code>submit</code>、质量开关、截图、证据查询。它不是完整 RHI——没有资源/管线对象、没有多队列、没有绑定模型。故障注入、对象计数这类测试钩子被明确排除在边界外，通过 <code>nativeHandle()</code> 取回后端指针使用。</p>
+
+<h3 id="fixed-step">固定步长与渲染解耦</h3>
+
+<p>模拟固定 120 Hz，渲染不推进模拟。60 FPS 时每帧两个 tick；240 帧冒烟 = 480 tick，这是确定性证据里被断言的事实。帧间隔只由宿主传入，模拟代码不允许读墙上时钟——这条规则由静态扫描强制执行。</p>
+
+<h3 id="queues">队列</h3>
+
+<table>
+<thead><tr><th>队列</th><th>用途</th><th>同步</th></tr></thead>
+<tbody>
+<tr><td>GRAPHICS</td><td>光栅、DXR 派发、合成、体积 ray march</td><td>帧 fence，3 帧在途</td></tr>
+<tr><td>COMPUTE</td><td>粒子模拟、场求解、compute 探针</td><td>跨队列 fence，提交前后各一次</td></tr>
+<tr><td>COPY</td><td>纹理上传、回读</td><td>与 graphics 共用 fence</td></tr>
+</tbody>
+</table>
+
+<h2 id="data">数据流：一次改动经过什么</h2>
+
+<pre><code>Agent / 编辑器
+   │  { projectId, expectedRevision, commands[] }
+   ▼
+engine/scene/index.mjs
+   ├─ 应用到副本 → 全量校验 → 失败则整批拒绝
+   ├─ 写 .pending.json → 原子替换 .scene.json → 写 .history.json
+   └─ revision + 1
+   ▼
+NativeGPU.exe（每 ~400 ms 轮询）
+   └─ 加载新 revision → 重建玩法与渲染资源 → 报告 hotReloads +1</code></pre>
+
+<p>失败不会留下半个场景：要么旧 revision 继续服务，要么整批拒绝并返回结构化错误。<code>.snapshot.json</code> 保存上一有效场景，<code>.pending.json</code> 用于中断恢复，<code>.lock</code> 阻止同一文件并行写入。</p>
+
+<h2 id="evidence">证据如何产生</h2>
+
+<p>每次 <code>verify.ps1</code> / <code>ci.ps1</code> 都在 <code>reports/&lt;version&gt;/&lt;commit12&gt;/&lt;UTC 时间戳&gt;/</code> 下新建目录，并刷新 <code>reports/latest/</code> 别名。同一输入重跑不会覆盖历史证据。</p>
+
+<p><code>run.json</code> 记录：commit、<code>worktreeDirty</code>、<code>staleBuild</code>、Node 版本、适配器名称与驱动、DXC 版本、场景哈希，以及每个产物的 SHA-256。这份文件是"这次数字可信吗"的唯一依据。</p>
+
+<div class="callout callout--limit">
+<span class="callout-title">当前架构的边界</span>
+<p>只有一个图形后端（<code>d3d12</code>），<code>supports("vulkan")</code> 为 false；<code>Device</code> 不是完整 RHI；没有运行时 glTF 导入；没有内嵌实时视口（编辑器用的是独立进程 + 按需快照）。这些不是"以后补一下"，而是明确排在路线图上的工作包。</p>
+</div>

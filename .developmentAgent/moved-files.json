@@ -1,0 +1,425 @@
+{
+  "generatedAt": "2026-10-27T04:11:40.566Z",
+  "moves": [
+    {
+      "from": "docs/ANIMATION-M1-M4.md",
+      "to": ".developmentAgent/animation-audio/ANIMATION-M1-M4.md"
+    },
+    {
+      "from": "docs/ANIMATION-PLAN.md",
+      "to": ".developmentAgent/animation-audio/ANIMATION-PLAN.md"
+    },
+    {
+      "from": "docs/ANIMATION.md",
+      "to": ".developmentAgent/animation-audio/ANIMATION.md"
+    },
+    {
+      "from": "docs/AUDIO-PLAN.md",
+      "to": ".developmentAgent/animation-audio/AUDIO-PLAN.md"
+    },
+    {
+      "from": "docs/BUDGET.md",
+      "to": ".developmentAgent/core/BUDGET.md"
+    },
+    {
+      "from": "docs/CAPTURE.md",
+      "to": ".developmentAgent/core/CAPTURE.md"
+    },
+    {
+      "from": "docs/CHROMIUM-START.md",
+      "to": ".developmentAgent/core/CHROMIUM-START.md"
+    },
+    {
+      "from": "docs/CI.md",
+      "to": ".developmentAgent/core/CI.md"
+    },
+    {
+      "from": "docs/CLOTH-BATCH.md",
+      "to": ".developmentAgent/rendering/CLOTH-BATCH.md"
+    },
+    {
+      "from": "docs/CLOTH-GPU.md",
+      "to": ".developmentAgent/rendering/CLOTH-GPU.md"
+    },
+    {
+      "from": "docs/CLOTH-GROUPED.md",
+      "to": ".developmentAgent/rendering/CLOTH-GROUPED.md"
+    },
+    {
+      "from": "docs/CLOTH-REFERENCE.md",
+      "to": ".developmentAgent/rendering/CLOTH-REFERENCE.md"
+    },
+    {
+      "from": "docs/CLOTH-RENDERING.md",
+      "to": ".developmentAgent/rendering/CLOTH-RENDERING.md"
+    },
+    {
+      "from": "docs/COMPUTE.md",
+      "to": ".developmentAgent/core/COMPUTE.md"
+    },
+    {
+      "from": "docs/DEEPSEEK-VEGETATION-PRODUCTION-PROMPT.md",
+      "to": ".developmentAgent/vegetation/DEEPSEEK-VEGETATION-PRODUCTION-PROMPT.md"
+    },
+    {
+      "from": "docs/DEEPSEEK-VEGETATION-REALISM-SPEEDTREE-PROMPT.md",
+      "to": ".developmentAgent/vegetation/DEEPSEEK-VEGETATION-REALISM-SPEEDTREE-PROMPT.md"
+    },
+    {
+      "from": "docs/DETERMINISM.md",
+      "to": ".developmentAgent/core/DETERMINISM.md"
+    },
+    {
+      "from": "docs/DEV-TASKS.md",
+      "to": ".developmentAgent/core/DEV-TASKS.md"
+    },
+    {
+      "from": "docs/EDITOR-FEATURES.md",
+      "to": ".developmentAgent/editor/EDITOR-FEATURES.md"
+    },
+    {
+      "from": "docs/EDITOR-VIEWPORT.md",
+      "to": ".developmentAgent/editor/EDITOR-VIEWPORT.md"
+    },
+    {
+      "from": "docs/EDITOR.md",
+      "to": ".developmentAgent/editor/EDITOR.md"
+    },
+    {
+      "from": "docs/EFFECT-DEPOSIT-ADMISSION.md",
+      "to": ".developmentAgent/simulation-effects/EFFECT-DEPOSIT-ADMISSION.md"
+    },
+    {
+      "from": "docs/EFFECT-DEPOSIT-SERVICE.md",
+      "to": ".developmentAgent/simulation-effects/EFFECT-DEPOSIT-SERVICE.md"
+    },
+    {
+      "from": "docs/EFFECT-FIELD-CONSUMER.md",
+      "to": ".developmentAgent/simulation-effects/EFFECT-FIELD-CONSUMER.md"
+    },
+    {
+      "from": "docs/EFFECT-FIELD-DEPOSITS.md",
+      "to": ".developmentAgent/simulation-effects/EFFECT-FIELD-DEPOSITS.md"
+    },
+    {
+      "from": "docs/EFFECT-GPU-REFERENCE.md",
+      "to": ".developmentAgent/simulation-effects/EFFECT-GPU-REFERENCE.md"
+    },
+    {
+      "from": "docs/EFFECT-GPU-RENDERING.md",
+      "to": ".developmentAgent/simulation-effects/EFFECT-GPU-RENDERING.md"
+    },
+    {
+      "from": "docs/ERROR-CONTRACTS.md",
+      "to": ".developmentAgent/core/ERROR-CONTRACTS.md"
+    },
+    {
+      "from": "docs/EXTERNAL-ASSETS.md",
+      "to": ".developmentAgent/assets/EXTERNAL-ASSETS.md"
+    },
+    {
+      "from": "docs/FIELD-DEPOSIT-PHASES.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-DEPOSIT-PHASES.md"
+    },
+    {
+      "from": "docs/FIELD-EFFECT-COORDINATOR.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-EFFECT-COORDINATOR.md"
+    },
+    {
+      "from": "docs/FIELD-HOST.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-HOST.md"
+    },
+    {
+      "from": "docs/FIELD-JOINT-PUBLICATION.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-JOINT-PUBLICATION.md"
+    },
+    {
+      "from": "docs/FIELD-LOCAL-GPU.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-LOCAL-GPU.md"
+    },
+    {
+      "from": "docs/FIELD-PLAN.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-PLAN.md"
+    },
+    {
+      "from": "docs/FIELD-PUBLICATION-SCHEDULER.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-PUBLICATION-SCHEDULER.md"
+    },
+    {
+      "from": "docs/FIELD-PUBLICATION-TRANSACTIONS.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-PUBLICATION-TRANSACTIONS.md"
+    },
+    {
+      "from": "docs/FIELD-REALISM-GOAL.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-REALISM-GOAL.md"
+    },
+    {
+      "from": "docs/FIELD-REFERENCE.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-REFERENCE.md"
+    },
+    {
+      "from": "docs/FIELD-SERVICE-JOINT-PUBLICATION.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-SERVICE-JOINT-PUBLICATION.md"
+    },
+    {
+      "from": "docs/FIELD-SHARING-GPU.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-SHARING-GPU.md"
+    },
+    {
+      "from": "docs/FIELD-WORLD-GPU.md",
+      "to": ".developmentAgent/simulation-effects/FIELD-WORLD-GPU.md"
+    },
+    {
+      "from": "docs/GAMEPLAY-DEVELOPMENT.md",
+      "to": ".developmentAgent/simulation-effects/GAMEPLAY-DEVELOPMENT.md"
+    },
+    {
+      "from": "docs/GAMEPLAY.md",
+      "to": ".developmentAgent/simulation-effects/GAMEPLAY.md"
+    },
+    {
+      "from": "docs/GEOMETRY-LAYOUT.md",
+      "to": ".developmentAgent/rendering/GEOMETRY-LAYOUT.md"
+    },
+    {
+      "from": "docs/GEOMETRY-PACKAGE.md",
+      "to": ".developmentAgent/rendering/GEOMETRY-PACKAGE.md"
+    },
+    {
+      "from": "docs/IDEA-TRIAGE.md",
+      "to": ".developmentAgent/core/IDEA-TRIAGE.md"
+    },
+    {
+      "from": "docs/IMAGE-REGRESSION.md",
+      "to": ".developmentAgent/rendering/IMAGE-REGRESSION.md"
+    },
+    {
+      "from": "docs/LIGHTING-QUALITY.md",
+      "to": ".developmentAgent/rendering/LIGHTING-QUALITY.md"
+    },
+    {
+      "from": "docs/LIGHTING-SYSTEM-RESEARCH.md",
+      "to": ".developmentAgent/rendering/LIGHTING-SYSTEM-RESEARCH.md"
+    },
+    {
+      "from": "docs/LIGHTING-VS-MEGALIGHTS.md",
+      "to": ".developmentAgent/rendering/LIGHTING-VS-MEGALIGHTS.md"
+    },
+    {
+      "from": "docs/MATERIAL-FIXES-2026-10-23.md",
+      "to": ".developmentAgent/rendering/MATERIAL-FIXES-2026-10-23.md"
+    },
+    {
+      "from": "docs/MATERIAL-PIPELINE-RESEARCH.md",
+      "to": ".developmentAgent/rendering/MATERIAL-PIPELINE-RESEARCH.md"
+    },
+    {
+      "from": "docs/MATERIAL-PIPELINE.md",
+      "to": ".developmentAgent/rendering/MATERIAL-PIPELINE.md"
+    },
+    {
+      "from": "docs/MATERIAL-ROADMAP.md",
+      "to": ".developmentAgent/rendering/MATERIAL-ROADMAP.md"
+    },
+    {
+      "from": "docs/MESH-BINDLESS.md",
+      "to": ".developmentAgent/rendering/MESH-BINDLESS.md"
+    },
+    {
+      "from": "docs/NANITE-LUMEN-PLAN.md",
+      "to": ".developmentAgent/rendering/NANITE-LUMEN-PLAN.md"
+    },
+    {
+      "from": "docs/NEXT-PHASE.md",
+      "to": ".developmentAgent/core/NEXT-PHASE.md"
+    },
+    {
+      "from": "docs/NIGHT-TOWN.md",
+      "to": ".developmentAgent/simulation-effects/NIGHT-TOWN.md"
+    },
+    {
+      "from": "docs/OUTPUT-CONTRACT.md",
+      "to": ".developmentAgent/core/OUTPUT-CONTRACT.md"
+    },
+    {
+      "from": "docs/PARTICLES-FIELDS-CLOTH-WATER-PLAN.md",
+      "to": ".developmentAgent/simulation-effects/PARTICLES-FIELDS-CLOTH-WATER-PLAN.md"
+    },
+    {
+      "from": "docs/PERF-BASELINE.md",
+      "to": ".developmentAgent/core/PERF-BASELINE.md"
+    },
+    {
+      "from": "docs/PHYSICS-DESTRUCTION.md",
+      "to": ".developmentAgent/simulation-effects/PHYSICS-DESTRUCTION.md"
+    },
+    {
+      "from": "docs/PHYSICS-SCALE-PLAN.md",
+      "to": ".developmentAgent/simulation-effects/PHYSICS-SCALE-PLAN.md"
+    },
+    {
+      "from": "docs/REPLAY.md",
+      "to": ".developmentAgent/core/REPLAY.md"
+    },
+    {
+      "from": "docs/RHI.md",
+      "to": ".developmentAgent/rendering/RHI.md"
+    },
+    {
+      "from": "docs/RT-SHADOWS.md",
+      "to": ".developmentAgent/rendering/RT-SHADOWS.md"
+    },
+    {
+      "from": "docs/SCENE-LINT.md",
+      "to": ".developmentAgent/core/SCENE-LINT.md"
+    },
+    {
+      "from": "docs/SCENE-QUERY.md",
+      "to": ".developmentAgent/core/SCENE-QUERY.md"
+    },
+    {
+      "from": "docs/SDF-BAKE.md",
+      "to": ".developmentAgent/rendering/SDF-BAKE.md"
+    },
+    {
+      "from": "docs/SIMULATION-DEVELOPMENT.md",
+      "to": ".developmentAgent/simulation-effects/SIMULATION-DEVELOPMENT.md"
+    },
+    {
+      "from": "docs/SIMULATION-FIELDS-HOST.md",
+      "to": ".developmentAgent/simulation-effects/SIMULATION-FIELDS-HOST.md"
+    },
+    {
+      "from": "docs/SMOKE-EFFECT-SERVICE.md",
+      "to": ".developmentAgent/simulation-effects/SMOKE-EFFECT-SERVICE.md"
+    },
+    {
+      "from": "docs/SMOKE-FIELD-PROJECTION.md",
+      "to": ".developmentAgent/simulation-effects/SMOKE-FIELD-PROJECTION.md"
+    },
+    {
+      "from": "docs/SMOKE-FIRE-SOLVER.md",
+      "to": ".developmentAgent/simulation-effects/SMOKE-FIRE-SOLVER.md"
+    },
+    {
+      "from": "docs/SMOKE-PARTICLE-SOURCES.md",
+      "to": ".developmentAgent/simulation-effects/SMOKE-PARTICLE-SOURCES.md"
+    },
+    {
+      "from": "docs/SMOKE-RENDERING.md",
+      "to": ".developmentAgent/simulation-effects/SMOKE-RENDERING.md"
+    },
+    {
+      "from": "docs/SMOKE-SHARING.md",
+      "to": ".developmentAgent/simulation-effects/SMOKE-SHARING.md"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "to": ".developmentAgent/core/STATUS.md"
+    },
+    {
+      "from": "docs/TEXTURE-MATERIAL-PLAN.md",
+      "to": ".developmentAgent/rendering/TEXTURE-MATERIAL-PLAN.md"
+    },
+    {
+      "from": "docs/TOOLCHAIN.md",
+      "to": ".developmentAgent/core/TOOLCHAIN.md"
+    },
+    {
+      "from": "docs/VEGETATION-AI-TEXTURE-AND-DAMAGE-SPEC.md",
+      "to": ".developmentAgent/vegetation/VEGETATION-AI-TEXTURE-AND-DAMAGE-SPEC.md"
+    },
+    {
+      "from": "docs/VEGETATION-DEFECTS-AND-PLAN.md",
+      "to": ".developmentAgent/vegetation/VEGETATION-DEFECTS-AND-PLAN.md"
+    },
+    {
+      "from": "docs/VEGETATION-EDITOR.md",
+      "to": ".developmentAgent/vegetation/VEGETATION-EDITOR.md"
+    },
+    {
+      "from": "docs/VEGETATION-HAIR-DEVELOPMENT-PLAN.md",
+      "to": ".developmentAgent/vegetation/VEGETATION-HAIR-DEVELOPMENT-PLAN.md"
+    },
+    {
+      "from": "docs/VEGETATION-HAIR-STATUS.md",
+      "to": ".developmentAgent/vegetation/VEGETATION-HAIR-STATUS.md"
+    },
+    {
+      "from": "docs/VEGETATION-PLAN.md",
+      "to": ".developmentAgent/vegetation/VEGETATION-PLAN.md"
+    },
+    {
+      "from": "docs/VOLUMETRICS-PLAN.md",
+      "to": ".developmentAgent/rendering/VOLUMETRICS-PLAN.md"
+    },
+    {
+      "from": "docs/WATER-REFERENCE.md",
+      "to": ".developmentAgent/core/WATER-REFERENCE.md"
+    },
+    {
+      "from": "README.md",
+      "to": ".developmentAgent/project/root-readme.md"
+    },
+    {
+      "from": "ai/README.md",
+      "to": ".developmentAgent/project/ai-readme.md"
+    },
+    {
+      "from": "shaders/README.md",
+      "to": ".developmentAgent/project/shaders-readme.md"
+    },
+    {
+      "from": "assets/source/vegetation/oak-imagegen-v1/README.md",
+      "to": ".developmentAgent/project/asset-source-readmes/oak-imagegen-v1/README.md"
+    },
+    {
+      "from": "assets/source/vegetation/oak-imagegen-v1/complete/README.md",
+      "to": ".developmentAgent/project/asset-source-readmes/oak-imagegen-v1/complete/README.md"
+    },
+    {
+      "from": "samples/fogtown/README.md",
+      "to": ".developmentAgent/samples/fogtown/README.md"
+    },
+    {
+      "from": "samples/fogtown/docs/authoring-guide.md",
+      "to": ".developmentAgent/samples/fogtown/docs/authoring-guide.md"
+    },
+    {
+      "from": "samples/fogtown/docs/feature-coverage.md",
+      "to": ".developmentAgent/samples/fogtown/docs/feature-coverage.md"
+    },
+    {
+      "from": "samples/fogtown/docs/known-limitations.md",
+      "to": ".developmentAgent/samples/fogtown/docs/known-limitations.md"
+    },
+    {
+      "from": "samples/fogtown/docs/walkthrough.md",
+      "to": ".developmentAgent/samples/fogtown/docs/walkthrough.md"
+    },
+    {
+      "from": ".workbuddy-ai/memory/2026-10-21.md",
+      "to": ".developmentAgent/agent-memory/workbuddy-ai/2026-10-21.md"
+    },
+    {
+      "from": ".workbuddy-ai/memory/2026-10-22.md",
+      "to": ".developmentAgent/agent-memory/workbuddy-ai/2026-10-22.md"
+    },
+    {
+      "from": ".workbuddy-ai/memory/2026-10-23.md",
+      "to": ".developmentAgent/agent-memory/workbuddy-ai/2026-10-23.md"
+    },
+    {
+      "from": ".workbuddy-ai/memory/2026-10-25.md",
+      "to": ".developmentAgent/agent-memory/workbuddy-ai/2026-10-25.md"
+    },
+    {
+      "from": ".workbuddy-ai/memory/2026-10-26.md",
+      "to": ".developmentAgent/agent-memory/workbuddy-ai/2026-10-26.md"
+    },
+    {
+      "from": ".workbuddy/memory/2026-10-26.md",
+      "to": ".developmentAgent/agent-memory/workbuddy/2026-10-26.md"
+    }
+  ]
+}

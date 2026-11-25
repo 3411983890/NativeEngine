@@ -1,0 +1,33 @@
+{
+  "model": "DamagedHelmet",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "license": "CC-BY-4.0 AND CC-BY-NC-4.0",
+  "attribution": [
+    {
+      "author": "ctxwing",
+      "copyright": "Copyright 2018 ctxwing",
+      "contribution": "Rebuild and conversion to glTF",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "author": "theblueturtle_",
+      "copyright": "Copyright 2016 theblueturtle_",
+      "contribution": "Earlier version of model",
+      "license": "CC-BY-NC-4.0"
+    }
+  ],
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 1481,
+      "sha256": "dcc3f92c30a2e6f3a9dadae2ba9c759bdd7e0e29e41fc3c6fc68f682962b3eec",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/DamagedHelmet/README.md"
+    },
+    {
+      "file": "DamagedHelmet.glb",
+      "bytes": 3773916,
+      "sha256": "a1e3b04de97b11de564ce6e53b95f02954a297f0008183ac63a4f5974f6b32d8",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/DamagedHelmet/glTF-Binary/DamagedHelmet.glb"
+    }
+  ]
+}

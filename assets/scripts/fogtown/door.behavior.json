@@ -1,0 +1,47 @@
+{
+  "apiVersion": 1,
+  "version": 1,
+  "properties": {
+    "type": "object",
+    "properties": {
+      "actor": {
+        "type": "string",
+        "default": "",
+        "maxLength": 1024
+      },
+      "item": {
+        "type": "string",
+        "default": "",
+        "maxLength": 1024
+      },
+      "flag": {
+        "type": "string",
+        "default": "",
+        "maxLength": 1024
+      },
+      "message": {
+        "type": "string",
+        "default": "门已开启。",
+        "maxLength": 1024
+      },
+      "lockedMessage": {
+        "type": "string",
+        "default": "暂时无法开启。",
+        "maxLength": 1024
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  },
+  "state": {
+    "type": "object",
+    "properties": {
+      "opened": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  }
+}

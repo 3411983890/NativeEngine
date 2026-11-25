@@ -1,0 +1,119 @@
+<p class="lede">渲染器只认识两样东西：<code>DrawItem</code> 列表和 <code>LightDesc</code> 列表。它不知道"实体"、不知道玩法、不知道场景文件。这条边界由一个 9 方法的 <code>rhi::Device</code> 接口守住，也是未来接第二个后端的唯一入口。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">D3D12 主路径</span>
+  <span class="badge badge--partial">RHI 仅一个后端</span>
+  <span class="meta">renderer/ · shaders/ · .developmentAgent/rendering/RHI.md</span>
+</div>
+
+<h2 id="frame-graph">帧图</h2>
+
+<pre><code>① 深度 pass        R32_TYPELESS（DSV D32_FLOAT / SRV R32_FLOAT）
+        │
+② 光栅 pass        双渲染目标：
+        │          sceneBaseColor = 环境光 + 点光
+        │          sceneKeyLight  = key light 项（不含阴影）
+        ├──▶ ③ DXR 阴影  R16_FLOAT 可见性贴图（1 ray/pixel）
+        │
+④ 合成 pass        base + key × mask → 交换链
+        │
+⑤ 体积 / 粒子      froxel 雾、体积云、96³ ray march
+        │
+⑥ UI / HUD</code></pre>
+
+<p>把 key light 拆成独立目标不是洁癖：阴影只在合成阶段乘一次，避免"直射项被重复加"的经典错误。关掉 DXR 时把 mask 清成 1，结果与纯光栅路径<strong>逐像素一致</strong>——不需要第二条渲染路径，也就不会出现"两条路径各自漂移"。</p>
+
+<h2 id="rhi">RHI 边界</h2>
+
+<pre><code>host/main.cpp ──(帧路径)──▶ nativegpu::rhi::Device ──▶ nativegpu::Renderer (D3D12)
+                                  │
+                                  └─ conformance() 契约检查</code></pre>
+
+<table>
+<thead><tr><th>方法</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>backend()</code> / <code>initialized()</code></td><td>后端名与状态机</td></tr>
+<tr><td><code>initialize(descriptor)</code> / <code>shutdown()</code></td><td>生命周期；descriptor 含窗口、宽高、validation 开关</td></tr>
+<tr><td><code>resize(w, h)</code></td><td>0 尺寸被拒绝</td></tr>
+<tr><td><code>submit(viewProjection, eye, draws, lights)</code></td><td>每帧提交</td></tr>
+<tr><td><code>setRtShadows</code> / <code>setMeshShaders</code> / <code>setCompositeDebugView</code></td><td>质量与调试开关</td></tr>
+<tr><td><code>requestScreenshot</code> / <code>captureScreenshot</code></td><td>帧内复制、帧后读取</td></tr>
+<tr><td><code>stats()</code> / <code>capabilitiesJson()</code> / <code>probesJson()</code> / <code>videoMemoryBytes()</code></td><td>证据与预算输入</td></tr>
+</tbody>
+</table>
+
+<p>契约检查（<code>tests/rhi_conformance.cpp</code>，13 项）不只验证"合规实现能通过"，还用两个<em>故意违规</em>的 mock 后端证明检查真的会失败。否则这套检查只是装饰。</p>
+
+<pre><code>auto device = nativegpu::rhi::wrap("d3d12", renderer, error);  // 当前唯一可用后端
+nativegpu::rhi::backends();      // {"d3d12"}
+nativegpu::rhi::supports("vulkan");  // false</code></pre>
+
+<h2 id="dxr">DXR 静态阴影</h2>
+
+<p>逐像素从深度重建世界坐标，发射一条硬阴影光线，把 0/1 可见性写进 <code>R16_FLOAT</code> 贴图。范围就是这么多：<strong>一条光线、二值可见性、静态几何</strong>。</p>
+
+<table>
+<thead><tr><th>项</th><th>实现</th></tr></thead>
+<tbody>
+<tr><td>着色器</td><td><code>shaders/rt_shadows.hlsl</code>：raygen / miss / closest-hit</td></tr>
+<tr><td>编译</td><td>DXC 1.9.2609 → <code>lib_6_5</code> DXIL，内嵌进可执行文件</td></tr>
+<tr><td>管线</td><td>RTPSO（DXIL library + hit group + shader config + pipeline config + global root signature）</td></tr>
+<tr><td>SBT</td><td>192 字节 Shader Binding Table</td></tr>
+<tr><td>加速结构</td><td>单位方盒 BLAS 复用；TLAS 从当前帧刚体变换重建（本机 33 实例）</td></tr>
+<tr><td>开关</td><td><kbd>F10</kbd> · <code>--rt-shadows on|off</code></td></tr>
+<tr><td>回退</td><td>mask 清 1，与纯光栅逐像素一致</td></tr>
+</tbody>
+</table>
+
+<p>报告字段刻意拆开：<code>probeAvailable</code>、<code>dxcAvailable</code>、<code>requested</code>、<code>enabled</code>、<code>rtpsoCreated</code>、<code>sbtCreated</code>、<code>effectImplemented</code>、<code>fallbackUsed</code>、<code>shadowTextureBytes</code>、<code>dispatchedFrames</code>、<code>fallbackFrames</code>、<code>dispatchFailures</code>、<code>gpuRtMs</code>、<code>tlasInstances</code>、<code>tlasRebuilds</code>。<strong>能力查询成功不等于效果完成</strong>，所以 <code>capabilities.implemented.raytracing</code> 只在本次运行真的派发过光线时才为 true。</p>
+
+<h2 id="mesh">Mesh Shader</h2>
+
+<p>AS + MS + PS 三阶段，stream PSO，单位方盒切成 6 个面 meshlet。顶点路径完整保留，<kbd>F11</kbd> 或 <code>--mesh-shaders on|off</code> 切换。</p>
+
+<table>
+<thead><tr><th>路径</th><th>GPU P95（1280×720，同机位，关阴影）</th></tr></thead>
+<tbody>
+<tr><td>Mesh Shader</td><td>0.388 ms</td></tr>
+<tr><td>顶点路径</td><td>0.466 ms</td></tr>
+</tbody>
+</table>
+
+<div class="callout callout--limit">
+<span class="callout-title">放大剔除当前禁用</span>
+<p>meshlet 的放大剔除（amplification）因为 payload 一致性要求暂时关闭，并在报告里如实写 <code>false</code>。关闭不等于失败——但把它说成"已实现"就是失败。</p>
+</div>
+
+<h2 id="bindless">纹理与槽位</h2>
+
+<p>材质表是 8 槽<strong>有界</strong>表：0 号为缺材质默认槽（品红棋盘），1–3 常驻，4–7 可分配，带代际计数与复用。越界或过期句柄返回诊断，不静默采样到错误纹理。</p>
+
+<p>SM 6.6 的 <code>ResourceDescriptorHeap[32..35]</code> 直接堆索引已经验证与描述符表<strong>逐位一致</strong>（maxDelta = 0），但材质主路径仍走有界表——报告里写 <code>bounded-table</code>，不写"已迁移"。</p>
+
+<h2 id="compute">Compute 队列</h2>
+
+<p>独立的 <code>COMPUTE</code> 队列，跨队列 fence 同步，<code>cs_6_6</code> 探针 240 帧派发 240 次、等待 240 次。当前<strong>计算结果尚未进入画面</strong>——它是管线能力的证据，不是效果。</p>
+
+<h2 id="switches">开关一览</h2>
+
+<table>
+<thead><tr><th>开关</th><th>作用</th><th>报告字段</th></tr></thead>
+<tbody>
+<tr><td><code>--rt-shadows on|off</code></td><td>DXR 静态阴影</td><td><code>probes.raytracingShadows</code></td></tr>
+<tr><td><code>--mesh-shaders on|off</code></td><td>Mesh Shader 路径</td><td><code>probes.meshShaders</code></td></tr>
+<tr><td><code>--compute on|off</code></td><td>compute 探针派发</td><td><code>compute</code></td></tr>
+<tr><td><code>--debug-view mask|key|base</code></td><td>合成调试视图</td><td>不影响确定性摘要</td></tr>
+<tr><td><code>--render-size WxH</code></td><td>渲染分辨率</td><td>不影响确定性摘要</td></tr>
+<tr><td><code>--validation</code></td><td>D3D12 调试层</td><td><code>validationLayer</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="limits">边界</h2>
+
+<ul>
+<li>只有一个后端；<code>Device</code> 不含资源/管线/多队列/绑定模型。</li>
+<li>TLAS 每帧按刚体变换重建，<strong>不含蒙皮角色</strong>（<code>dynamicBlas=false</code>）。</li>
+<li>阴影无软阴影、无降噪、无透明投影、无点光源投影。</li>
+<li>没有 HZB、没有 GPU 剔除、没有 visibility buffer、没有 TAA。</li>
+<li>没有运行时 glTF 导入；网格来自内置方盒与离线导入的角色。</li>
+</ul>

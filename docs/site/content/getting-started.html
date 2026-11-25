@@ -1,0 +1,112 @@
+<p class="lede">从零到第一帧大约需要一次工具链下载、一次构建和一条运行命令。构建过程不会修改系统环境：编译器、DXC 和着色器全部落在仓库内的 <code>.tools/</code> 与可执行文件里。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已验证</span>
+  <span class="meta">Windows 11 x64 · PowerShell 5.1 · Node.js ≥ 22</span>
+</div>
+
+<h2 id="requirements">前置条件</h2>
+
+<table>
+<thead><tr><th>项</th><th>要求</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>操作系统</td><td>Windows 11 x64</td><td>依赖 D3D12、DXR、Mesh Shader</td></tr>
+<tr><td>GPU</td><td>支持 D3D12</td><td>DXR 阴影需要 Tier 1.1+；缺失时自动回退纯光栅</td></tr>
+<tr><td>Node.js</td><td>≥ 22.12</td><td>场景工具、编辑器服务、MCP 服务都跑在 Node 上</td></tr>
+<tr><td>PowerShell</td><td>5.1+</td><td>所有构建与证据脚本的入口</td></tr>
+<tr><td>Git</td><td>任意近期版本</td><td>报告会记录 commit 与工作树脏状态</td></tr>
+</tbody>
+</table>
+
+<p>不需要 Visual Studio，也不需要 Windows SDK：D3D12 头文件与导入库来自项目内 LLVM-MinGW 自带的副本。</p>
+
+<h2 id="bootstrap">1. 引导工具链</h2>
+
+<pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File tools/bootstrap.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/bootstrap-dxc.ps1</code></pre>
+
+<p>第一步下载 LLVM-MinGW 20261006（clang 23.1.3，UCRT），第二步下载 DXC 1.9.2609。两者都会校验归档 SHA-256，校验失败直接中止，不会"带病继续"。产物落在 <code>.tools/</code>，该目录被 <code>.gitignore</code> 排除——仓库里只有下载地址与哈希。</p>
+
+<div class="callout callout--note">
+<span class="callout-title">为什么固定 DXC</span>
+<p>着色器编译结果的差异会直接改变像素。DXC 版本漂移会让图像回归基线失去意义，所以版本、归档哈希和 <code>dxcompiler.dll</code> 哈希都被写进 <code>.developmentAgent/core/TOOLCHAIN.md</code> 与运行报告。缺失时报告 <code>dxcUnavailable</code>，而不是静默用系统 PATH 上的另一个 DXC。</p>
+</div>
+
+<h2 id="build">2. 构建</h2>
+
+<pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1</code></pre>
+
+<p>构建会先用 DXC 编译 <code>shaders/</code> 下所有 HLSL，把 DXIL 内嵌进可执行文件，再编译 C++。着色器清单在 <code>shaders/manifest.json</code>，新增着色器必须登记，否则不会被编译。</p>
+
+<p>产物在 <code>build/</code>：<code>NativeGPU.exe</code>、若干测试可执行文件（<code>*_tests.exe</code>）、以及每次构建的日志。</p>
+
+<h2 id="run">3. 运行</h2>
+
+<pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File tools/run.ps1
+# 或者直接
+build/NativeGPU.exe --scene assets/courtyard.scene.json</code></pre>
+
+<p>默认场景是 <code>assets/courtyard.scene.json</code>（可玩小院）。交互按键：</p>
+
+<table>
+<thead><tr><th>按键</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></td><td>移动</td></tr>
+<tr><td><kbd>Shift</kbd> / <kbd>Space</kbd></td><td>跑 / 跳</td></tr>
+<tr><td><kbd>E</kbd></td><td>交互（拾取钥匙、开门）</td></tr>
+<tr><td><kbd>F</kbd> / <kbd>G</kbd></td><td>投掷重弹 / 在前方引爆</td></tr>
+<tr><td>右键拖动 · 方向键</td><td>转镜头</td></tr>
+<tr><td><kbd>F5</kbd> / <kbd>F6</kbd></td><td>重置玩法（恢复全部破坏） / 暂停</td></tr>
+<tr><td><kbd>F7</kbd> / <kbd>F12</kbd></td><td>快速存档 / 恢复存档</td></tr>
+<tr><td><kbd>F8</kbd></td><td>重建渲染器（验证生命周期）</td></tr>
+<tr><td><kbd>F9</kbd> / <kbd>F10</kbd> / <kbd>F11</kbd></td><td>热重载开关 / DXR 阴影开关 / Mesh Shader 路径</td></tr>
+</tbody>
+</table>
+
+<h2 id="verify">4. 验证</h2>
+
+<p>不同层次的验证入口刻意分开，避免"跑通一个就算全过"。</p>
+
+<table>
+<thead><tr><th>命令</th><th>覆盖范围</th><th>产物</th></tr></thead>
+<tbody>
+<tr><td><code>npm test</code></td><td>Node 事务 / 工具 / 查询 / lint 单测</td><td>终端输出</td></tr>
+<tr><td><code>npm run test:editor</code></td><td>编辑器服务与传输</td><td>终端输出</td></tr>
+<tr><td><code>npm run test:native</code></td><td>C++ 物理、数学、RHI 契约</td><td><code>*_tests.exe</code></td></tr>
+<tr><td><code>npm run animation</code></td><td>动作导入、蒙皮截图、严格回放</td><td><code>reports/latest/animation-evidence.json</code></td></tr>
+<tr><td><code>npm run physics</code></td><td>刚体 / 破坏前后截图、重复摘要、步预算</td><td><code>reports/physics-evidence.json</code></td></tr>
+<tr><td><code>npm run probe</code></td><td>设备能力与材质 / 灯光 / 加速结构探针</td><td><code>reports/probe.json</code></td></tr>
+<tr><td><code>npm run verify</code></td><td>构建 + Node + 原生 + 冒烟 + 探针 + 热重载 + MCP</td><td><code>reports/verify*.json</code></td></tr>
+<tr><td><code>npm run ci</code></td><td>干净状态完整重放（verify + 打包 + CI 报告）</td><td><code>reports/&lt;version&gt;/&lt;commit&gt;/&lt;ts&gt;/</code></td></tr>
+</tbody>
+</table>
+
+<p>第一次跑建议用 <code>npm run verify</code>。它会在隐藏窗口里做原生冒烟，因此需要可用的 D3D12 设备。</p>
+
+<h2 id="editor">5. 打开编辑器</h2>
+
+<pre><code>npm install
+npm run editor        # Electron 桌面版
+npm run editor:web    # 本机浏览器版</code></pre>
+
+<p>编辑器与 MCP 复用同一套场景事务；它不会绕过校验直接写 <code>assets/</code>。原生预览是独立进程的窗口，按需快照是一次隐藏的原生截图任务——两者都不是实时共享纹理，详见<a href="editor.html">编辑器</a>。</p>
+
+<h2 id="package">6. 打包</h2>
+
+<pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1</code></pre>
+
+<p>产物在 <code>outputs/</code>，包含可执行文件、默认场景、角色资产、着色器与清单，并生成 zip。打包产物<strong>没有</strong>代码签名、安装器、自动更新和崩溃上传。</p>
+
+<h2 id="troubleshooting">常见失败</h2>
+
+<dl class="kv">
+<dt>报告 <code>dxcUnavailable</code></dt><dd>没有跑 <code>bootstrap-dxc.ps1</code>，或 <code>.tools/dxc/1.9.2609/</code> 被清理。重跑脚本即可；引擎不会退回到系统 DXC。</dd>
+<dt>构建报着色器清单错误</dt><dd>新增了 HLSL 但没登记进 <code>shaders/manifest.json</code>。</dd>
+<dt>冒烟在远程 CI 退化</dt><dd>GitHub 托管 runner 没有 D3D12 GPU，显卡相关步骤会走 WARP 并允许失败。远程通过不等于本机显卡证据。</dd>
+<dt>场景校验失败但原生能跑</dt><dd>材质校验器与 Schema 的 <code>wetness</code> / <code>wear</code> 字段正在并行迁移，已知不一致；原生加载路径不受影响。</dd>
+</dl>
+
+<div class="callout callout--warn">
+<span class="callout-title">安全边界</span>
+<p>场景工具、编辑器服务和 MCP 服务都是<strong>受信本地工具</strong>：它们假定调用者已经拥有这台机器。浏览器入口只监听本机，不要暴露到不可信网络。加入网络服务、模型凭证或远程执行之前，必须先补权限、配额、审计和超时。</p>
+</div>

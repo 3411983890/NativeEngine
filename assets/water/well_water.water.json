@@ -1,0 +1,15 @@
+{
+  "schema": "nativegpu.water/1",
+  "id": "well_water",
+  "revision": 0,
+  "seed": 7,
+  "backend": "analytic",
+  "extentMetres": [2, 2],
+  "cellMetres": 0.05,
+  "stillHeightMetres": 0.8,
+  "bathymetry": { "type": "flat", "heightMetres": 0 },
+  "boundaries": { "type": "closed", "inflowCubicMetresPerSecond": 0, "outflowCubicMetresPerSecond": 0 },
+  "waves": { "amplitudeMetres": 0.004, "wavelengthMetres": 0.6, "speedMetresPerSecond": 0.4, "direction": [1, 0], "components": 2 },
+  "material": { "refractionIndex": 1.333, "absorptionPerMetre": 0.5, "foamThreshold": 0.8 },
+  "budget": { "maxCells": 262144, "maxSubsteps": 8 }
+}

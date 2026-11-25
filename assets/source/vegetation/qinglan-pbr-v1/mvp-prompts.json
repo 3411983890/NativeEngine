@@ -1,0 +1,229 @@
+{
+  "schema": "qinglan.mvp-prompt-plan/1",
+  "jobs": [
+    {
+      "id": "B03_leaf_mature",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 山茶 Camellia japonica single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact serrated camellia silhouette and all existing midrib and lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B03_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "B03_leaf_mature",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 山茶 Camellia japonica single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact serrated camellia silhouette and all existing midrib and lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range95–145, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B03_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "B03_leaf_mature",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 山茶 Camellia japonica single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact serrated camellia silhouette and all existing midrib and lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B03_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "B03_leaf_mature",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 山茶 Camellia japonica single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact serrated camellia silhouette and all existing midrib and lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B03_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "B04_leaf_mature",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 栀子 Gardenia jasminoides single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact entire gardenia margin, midrib and gently curved lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B04_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "B04_leaf_mature",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 栀子 Gardenia jasminoides single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact entire gardenia margin, midrib and gently curved lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range100–155, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B04_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "B04_leaf_mature",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 栀子 Gardenia jasminoides single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact entire gardenia margin, midrib and gently curved lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B04_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "B04_leaf_mature",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 栀子 Gardenia jasminoides single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the exact entire gardenia margin, midrib and gently curved lateral veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/B04_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G02_blade",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗尾草 Setaria viridis single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single very slender grass blade and exact parallel longitudinal veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G02_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G02_blade",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗尾草 Setaria viridis single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single very slender grass blade and exact parallel longitudinal veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range140–185, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G02_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G02_blade",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗尾草 Setaria viridis single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single very slender grass blade and exact parallel longitudinal veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G02_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G02_blade",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗尾草 Setaria viridis single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single very slender grass blade and exact parallel longitudinal veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G02_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G10_leaf_mature",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 艾草 Artemisia argyi single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and all the exact mugwort lobes, notches, short basal petiole and existing vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G10_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G10_leaf_mature",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 艾草 Artemisia argyi single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and all the exact mugwort lobes, notches, short basal petiole and existing vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range155–200, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G10_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G10_leaf_mature",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 艾草 Artemisia argyi single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and all the exact mugwort lobes, notches, short basal petiole and existing vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G10_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G10_leaf_mature",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 艾草 Artemisia argyi single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and all the exact mugwort lobes, notches, short basal petiole and existing vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G10_leaf_mature/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G01_blade",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗牙根 Cynodon dactylon single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single narrow bermudagrass blade and fine parallel veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G01_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G01_blade",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗牙根 Cynodon dactylon single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single narrow bermudagrass blade and fine parallel veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range145–190, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G01_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G01_blade",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗牙根 Cynodon dactylon single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single narrow bermudagrass blade and fine parallel veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G01_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G01_blade",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 狗牙根 Cynodon dactylon single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same single narrow bermudagrass blade and fine parallel veins. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G01_blade/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G08_leaflet",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 酢浆草 Oxalis corniculata single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same ONE heart-shaped oxalis leaflet, top notch, bottom petiolule and existing fanlike vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G08_leaflet/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G08_leaflet",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 酢浆草 Oxalis corniculata single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same ONE heart-shaped oxalis leaflet, top notch, bottom petiolule and existing fanlike vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range125–170, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G08_leaflet/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G08_leaflet",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 酢浆草 Oxalis corniculata single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same ONE heart-shaped oxalis leaflet, top notch, bottom petiolule and existing fanlike vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G08_leaflet/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "G08_leaflet",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 酢浆草 Oxalis corniculata single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same ONE heart-shaped oxalis leaflet, top notch, bottom petiolule and existing fanlike vein paths. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/G08_leaflet/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W03_sword_leaf",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 菖蒲 Acorus calamus single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same narrow sword leaf with exact tapering tip and parallel vein positions. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W03_sword_leaf/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W03_sword_leaf",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 菖蒲 Acorus calamus single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same narrow sword leaf with exact tapering tip and parallel vein positions. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range135–180, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W03_sword_leaf/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W03_sword_leaf",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 菖蒲 Acorus calamus single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same narrow sword leaf with exact tapering tip and parallel vein positions. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W03_sword_leaf/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W03_sword_leaf",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 菖蒲 Acorus calamus single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same narrow sword leaf with exact tapering tip and parallel vein positions. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W03_sword_leaf/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W07_leaf_green",
+      "map": "normal_dx",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 荷叶 Nelumbo nucifera single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same circular lotus outline and existing radial veins converging on the SAME internal socket; never move that socket. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: linear RGB TANGENT-SPACE DirectX -Y NORMAL MAP. Flat background and flat blade=(128,128,255). Veins are subtle raised microrelief, lamina almost flat; use normalized positive-Z normal vectors and correct signed XY encoding. Purple-blue data only, no green albedo, lighting, shadow, height grayscale or exaggerated silhouette bevel. Keep fine veins in the same pixel locations.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W07_leaf_green/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W07_leaf_green",
+      "map": "orm",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 荷叶 Nelumbo nucifera single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same circular lotus outline and existing radial veins converging on the SAME internal socket; never move that socket. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: packed LINEAR ORM data. R=ambient occlusion, mostly245–255 on this isolated leaf, only subtle vein crevice attenuation. G=roughness, in artist-directed range155–205, with subtle same-position natural surface variation. B=metallic EXACT zero on every pixel. Background R255 G200 B0. Result is ochre/yellow-orange data, no shaded green or grayscale leaf. No baked light gradient. Do not invent an AO halo around silhouette.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W07_leaf_green/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W07_leaf_green",
+      "map": "height",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 荷叶 Nelumbo nucifera single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same circular lotus outline and existing radial veins converging on the SAME internal socket; never move that socket. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE micro-surface HEIGHT data, not albedo luminance. Empty background pure black; blade medium gray around110, same existing main vein slightly brighter around165, small veins140, subtle microtexture. White=raised, black=recessed/empty. No global bowl/cylinder shading, cast shadow, emboss around outer silhouette, lighting or perspective. Preserve the exact vein positions. AI art estimate, not metres or a model bake.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W07_leaf_green/basecolor.png",
+      "transparent": false
+    },
+    {
+      "id": "W07_leaf_green",
+      "map": "thickness",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied 荷叶 Nelumbo nucifera single-leaf BASE COLOR texture. Output ONLY the requested technical PBR map. Preserve EXACT original pixel canvas dimensions, blank margins, silhouette, attachment, orientation, scale and the same circular lotus outline and existing radial veins converging on the SAME internal socket; never move that socket. Do not recenter, reframe, rotate, crop or redraw a different leaf. Do not add/remove veins or alter lobes. One map only, NOT a contact sheet, panel, collage, photo or shaded 3D render. No text, legend, border or checkerboard. Requested map: grayscale RELATIVE OPTICAL THICKNESS data. Empty background black0, thin blade approximately90, fine veins140, main rib/connection175–200. White=thicker, black=thinner/empty. No global lighting gradient, shadows, silhouette bevel or new vein structures. Same shape and attachment as source. AI inferred, not measured metres.",
+      "reference": "C:/Users/34119/Documents/AI-Native Game Engine/assets/source/vegetation/qinglan-pbr-v1/raw/W07_leaf_green/basecolor.png",
+      "transparent": false
+    }
+  ]
+}

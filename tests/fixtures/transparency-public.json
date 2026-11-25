@@ -1,0 +1,22 @@
+{
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "model": "AlphaBlendModeTest",
+  "entry": "AlphaBlendModeTest.glb",
+  "author": "Ed Mackey",
+  "copyright": "Copyright 2018 Analytical Graphics, Inc.",
+  "license": "CC-BY-4.0",
+  "files": [
+    {
+      "file": "AlphaBlendModeTest.glb",
+      "bytes": 2978812,
+      "sha256": "37c3577d143071b42dd46e9d942b157837eb25c6340112171d7faecaa987b14e",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/glTF-Binary/AlphaBlendModeTest.glb"
+    },
+    {
+      "file": "README.md",
+      "bytes": 5355,
+      "sha256": "46fc7fc9379cf043985b3555d4d06e8383bdf2195c421ce2c494988c8bfe4bdc",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/README.md"
+    }
+  ]
+}

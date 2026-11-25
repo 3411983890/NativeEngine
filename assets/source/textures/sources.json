@@ -1,0 +1,21 @@
+{
+  "schema": "nativegpu.texture-sources/1",
+  "size": 256,
+  "materials": [
+    "brick_red",
+    "brick_grey",
+    "plaster",
+    "roof_tile",
+    "wood",
+    "metal",
+    "cobble",
+    "stone",
+    "grass",
+    "water",
+    "window",
+    "foliage",
+    "lamp",
+    "awning"
+  ],
+  "rawBytes": 11796480
+}

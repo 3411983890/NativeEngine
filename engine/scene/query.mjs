@@ -108,6 +108,7 @@ function readField(entity, field) {
     case 'collider':
       return typeof entity.collider === 'boolean' ? entity.collider : null;
     case 'material':
+      if (typeof entity.material === 'string') return entity.material;
       return isObject(entity.material) && typeof entity.material.pattern === 'string'
         ? entity.material.pattern : null;
     case 'lightIntensity':
@@ -374,7 +375,7 @@ function aggregateRows(rows, aggregate, select) {
  * Runs a declarative query against a parsed scene document.
  *
  * @param {object} document Parsed scene JSON (`{ entities: [...] }`).
- * @param {object} [query] Query object; see `docs/SCENE-QUERY.md`.
+ * @param {object} [query] Query object; see `.developmentAgent/core/SCENE-QUERY.md`.
  * @returns {{ ok: true, rows: object[], count: number,
  *   aggregate: { value: number|null }|null, appliedQuery: object }}
  * @throws {QueryError} `NG-E-QUERY-FIELD`, `NG-E-QUERY-OP` or `NG-E-QUERY-SHAPE`.

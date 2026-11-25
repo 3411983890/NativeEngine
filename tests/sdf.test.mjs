@@ -17,7 +17,7 @@ after(async () => { await fs.rm(temporary, { recursive: true, force: true }); })
 const RESOLUTION = 32;
 const BAND = DEFAULT_BAND_VOXELS;
 const BAKE_OPTIONS = { resolution: RESOLUTION, bandVoxels: BAND };
-// Stated contract from docs/SDF-BAKE.md: <= 1.5 x voxel diagonal in metres.
+// Stated contract from .developmentAgent/rendering/SDF-BAKE.md: <= 1.5 x voxel diagonal in metres.
 const TOLERANCE_VOXELS = 1.5 * Math.sqrt(3);
 // Observed envelope of this implementation (measured max ~0.50 voxel for the
 // box at 32^3); kept looser so the test catches regressions, not rounding.

@@ -1,0 +1,181 @@
+<p class="lede">场景是引擎唯一的数据模型，也是 AI 与人类编辑器的唯一写入接口。它不是"运行时状态转储"，而是一份带 revision 的、可原子提交的文档——改一次，revision 加一，历史留痕。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已完成</span>
+  <span class="meta">Schema: assets/scene.schema.json · 实现: engine/scene/</span>
+</div>
+
+<h2 id="document">文档结构</h2>
+
+<pre><code>{
+  "schemaVersion": 2,
+  "projectId": "a1e00000-0000-4000-8000-000000000001",
+  "name": "courtyard",
+  "revision": 7,
+  "materials": { "stone": { ... } },
+  "lighting": { "quality": 1, "localShadows": true, "ibl": true },
+  "entities": [ { ... } ],
+  "settings": { "walkSpeed": 4.2, "runSpeed": 7.4, "jumpSpeed": 5.2, "gravity": 18 }
+}</code></pre>
+
+<table>
+<thead><tr><th>字段</th><th>作用</th><th>约束</th></tr></thead>
+<tbody>
+<tr><td><code>schemaVersion</code></td><td>文档版本</td><td>当前 2；v1 文档仍可读</td></tr>
+<tr><td><code>projectId</code></td><td>事务作用域</td><td>UUID；与事务不匹配直接拒绝</td></tr>
+<tr><td><code>revision</code></td><td>乐观并发控制</td><td>每次成功提交 +1；撤销也 +1</td></tr>
+<tr><td><code>materials</code></td><td>命名材质表</td><td>最多 256 条，键为材质名</td></tr>
+<tr><td><code>lighting</code></td><td>光照质量与开关</td><td><code>quality</code> 0–2，独立布尔开关</td></tr>
+<tr><td><code>entities</code></td><td>实体数组</td><td>上限 10,000；JSON ≤ 16 MiB</td></tr>
+<tr><td><code>settings</code></td><td>角色运动参数</td><td>四项必填，且 <code>runSpeed ≥ walkSpeed</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="entity">实体</h2>
+
+<p>实体没有旋转，只有位置与轴对齐缩放——这条限制让 AABB 成为精确的碰撞与剔除代理，也是"没有旋转"能一直成立的原因。九种 <code>kind</code>：<code>ground</code>、<code>wall</code>、<code>prop</code>、<code>player</code>、<code>key</code>、<code>door</code>、<code>goal</code>、<code>light</code>、<code>vehicle</code>。</p>
+
+<table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>UUID</td><td>持久身份；同一文档内唯一</td></tr>
+<tr><td><code>name</code></td><td>string</td><td>人类可读名，查询与日志使用</td></tr>
+<tr><td><code>kind</code></td><td>enum</td><td>决定运行时行为与默认外观</td></tr>
+<tr><td><code>position</code> / <code>scale</code></td><td>[x,y,z]</td><td>米；<code>scale</code> 为完整尺寸，不是半长</td></tr>
+<tr><td><code>color</code></td><td>[r,g,b]</td><td>0–1 线性</td></tr>
+<tr><td><code>collider</code></td><td>bool</td><td>是否参与碰撞；必填</td></tr>
+<tr><td><code>material</code> / <code>namedMaterial</code></td><td>string</td><td>内联材质或引用 <code>materials</code> 表</td></tr>
+<tr><td><code>light</code></td><td>object</td><td>仅 <code>kind: light</code>；见下</td></tr>
+<tr><td><code>physics</code></td><td>object</td><td><code>mode</code> + 质量 / 摩擦 / 恢复</td></tr>
+<tr><td><code>destructible</code></td><td>object</td><td>强度、碎片数、寿命、结构标记、种子</td></tr>
+<tr><td><code>components</code></td><td>object</td><td>玩法组件覆盖，见<a href="gameplay.html">玩法运行时</a></td></tr>
+</tbody>
+</table>
+
+<h3 id="physics-fields">physics 与 destructible</h3>
+
+<pre><code>"physics": {
+  "mode": "dynamic",        // static | dynamic
+  "mass": 4.0,              // 0.05 – 1000 kg
+  "friction": 0.66,         // 0 – 1.5
+  "restitution": 0.12       // 0 – 0.95
+},
+"destructible": {
+  "enabled": true,
+  "strength": 40,           // 1 – 1e6，累积冲量阈值
+  "fragments": 12,          // 4 – 28
+  "debrisLifetime": 20,     // 秒
+  "structural": true,       // 参与支撑图
+  "seed": 101               // 碎裂方向确定性
+}</code></pre>
+
+<h3 id="light-fields">light</h3>
+
+<pre><code>"light": {
+  "color": [1.0, 0.72, 0.42],
+  "intensity": 6.5,                 // (0, 100]
+  "range": 12,                      // (0, 1000] 米
+  "castSurfaceShadow": true,
+  "castVolumetricShadow": false,
+  "volumetricIntensity": 1.2        // 0 – 10
+}</code></pre>
+
+<h2 id="transaction">事务</h2>
+
+<p>唯一的写入格式。整批命令先应用到副本，全部校验通过后提交一次，revision 只增加一次。</p>
+
+<pre><code>{
+  "projectId": "a1e00000-0000-4000-8000-000000000001",
+  "expectedRevision": 0,
+  "commands": [
+    { "op": "set", "entityId": "a1e00000-0000-4000-8000-000000000030",
+      "changes": { "position": [-4, 0.6, 1] } },
+    { "op": "create", "entity": { ... } },
+    { "op": "remove", "entityId": "..." }
+  ]
+}</code></pre>
+
+<table>
+<thead><tr><th>拒绝原因</th><th>错误码</th></tr></thead>
+<tbody>
+<tr><td>项目 ID 不匹配</td><td><code>PROJECT_MISMATCH</code></td></tr>
+<tr><td>revision 已过期（他人先提交）</td><td><code>REVISION_CONFLICT</code></td></tr>
+<tr><td>未知字段 / 未知 kind / 非有限数值 / 违反不变量</td><td><code>INVALID_SCENE</code></td></tr>
+<tr><td>重复 UUID</td><td><code>DUPLICATE_ENTITY</code></td></tr>
+<tr><td>未知 <code>op</code> 或命令结构错误</td><td><code>INVALID_COMMAND</code></td></tr>
+<tr><td>文件被其他进程持有</td><td><code>PROJECT_BUSY</code></td></tr>
+<tr><td>存在未完成的提交，需要先恢复</td><td><code>RECOVERY_REQUIRED</code></td></tr>
+<tr><td>构建目标冲突</td><td><code>BUILD_CONFLICT</code></td></tr>
+</tbody>
+</table>
+
+<p>场景层使用裸大写错误码（不带 <code>NG-E-</code> 前缀），这是历史原因，也是公开契约的一部分：<code>SceneError.code</code> 稳定，<code>message</code> 不稳定。</p>
+
+<h2 id="recovery">保存与恢复</h2>
+
+<table>
+<thead><tr><th>文件</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>.history.json</code></td><td>最多 100 步线性撤销；撤销后 revision 继续增加</td></tr>
+<tr><td><code>.snapshot.json</code></td><td>上一有效场景，用于回滚</td></tr>
+<tr><td><code>.pending.json</code></td><td>记录中断的提交，供 <code>recover</code> 判定</td></tr>
+<tr><td><code>.lock</code></td><td>阻止并行写入；崩溃遗留需确认进程停止后手动移除</td></tr>
+</tbody>
+</table>
+
+<pre><code>node tools/scene.mjs recover assets/courtyard.scene.json</code></pre>
+
+<p><code>recover</code> 要么完成已提交的中断写入，要么恢复最后有效快照——它不会"猜"一个中间状态。</p>
+
+<h2 id="cli">场景 CLI</h2>
+
+<table>
+<thead><tr><th>命令</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>validate &lt;scene&gt;</code></td><td>Schema + 不变量校验，不写盘</td></tr>
+<tr><td><code>preview &lt;scene&gt; &lt;tx&gt;</code></td><td>在副本上应用事务，返回差异，不写盘</td></tr>
+<tr><td><code>apply &lt;scene&gt; &lt;tx&gt;</code></td><td>原子提交</td></tr>
+<tr><td><code>undo &lt;scene&gt;</code></td><td>回退一步（revision 仍 +1）</td></tr>
+<tr><td><code>recover &lt;scene&gt;</code></td><td>中断恢复</td></tr>
+<tr><td><code>build &lt;scene&gt;</code></td><td>内容寻址构建包</td></tr>
+<tr><td><code>query &lt;scene&gt; --query '&lt;json&gt;'</code></td><td>声明式查询</td></tr>
+<tr><td><code>lint &lt;scene&gt;</code></td><td>设计期规则检查 + 可达性 BFS</td></tr>
+</tbody>
+</table>
+
+<h2 id="query">查询 DSL</h2>
+
+<p>纯函数、零 I/O、不改输入。同一文档 + 同一查询永远得到逐字节相同的 JSON。这让 Agent 可以安全地"先问再改"。</p>
+
+<pre><code>node tools/scene.mjs query assets/courtyard.scene.json --query '{
+  "select": "entity",
+  "where": [
+    { "field": "kind", "op": "eq", "value": "prop" },
+    { "field": "position", "op": "within", "value": { "x": 0, "y": 0, "z": 6, "radius": 4 } }
+  ],
+  "orderBy": { "field": "z", "direction": "asc" },
+  "limit": 3
+}'</code></pre>
+
+<table>
+<thead><tr><th>部分</th><th>取值</th></tr></thead>
+<tbody>
+<tr><td><code>select</code></td><td><code>entity</code> · <code>material</code> · <code>light</code></td></tr>
+<tr><td><code>where[].op</code></td><td><code>eq</code> · <code>ne</code> · <code>lt</code> · <code>lte</code> · <code>gt</code> · <code>gte</code> · <code>within</code> · <code>in</code> · <code>contains</code></td></tr>
+<tr><td><code>orderBy</code></td><td><code>{ field, direction: asc|desc }</code>；平局按输入顺序</td></tr>
+<tr><td><code>aggregate</code></td><td><code>count</code> · <code>sum</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="lint">设计期 lint</h2>
+
+<p><code>lint</code> 检查的是"这张图能不能玩"，不是"文件合不合法"。12 条规则覆盖重叠实体、悬空引用、不可达道具、玩家出生点被堵、光照范围异常等；可达性用 BFS 在碰撞体上求解，并考虑跳跃高度。</p>
+
+<pre><code>npm run scene -- lint assets/courtyard.scene.json</code></pre>
+
+<p>小院基线为 0 findings。lint 是<strong>建议</strong>，不是事务闸门——它不会阻止提交，但会出现在 CI 报告里。</p>
+
+<div class="callout callout--limit">
+<span class="callout-title">已知不一致</span>
+<p><code>validate assets/courtyard.scene.json</code> 当前会失败：材质校验器与 Schema 的 <code>wetness</code> / <code>wear</code> 字段正在并行迁移。原生加载路径不受影响。这类"已知红"必须在文档里写明，而不是等用户踩到。</p>
+</div>

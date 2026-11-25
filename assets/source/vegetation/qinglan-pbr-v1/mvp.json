@@ -1,0 +1,94 @@
+{
+  "schema": "qinglan.vegetation-mvp/1",
+  "date": "2026-10-28",
+  "scope": "Four groups, two representative texture assets each, one base source per asset. Original full-library goal remains separate.",
+  "status": "in-progress",
+  "assets": [
+    {
+      "assetId": "B03_leaf_mature",
+      "group": "灌木",
+      "name": "山茶",
+      "type": "leaf",
+      "reference": "Camellia japonica",
+      "length": 0.08,
+      "width": 0.04
+    },
+    {
+      "assetId": "B04_leaf_mature",
+      "group": "灌木",
+      "name": "栀子",
+      "type": "leaf",
+      "reference": "Gardenia jasminoides",
+      "length": 0.1,
+      "width": 0.045
+    },
+    {
+      "assetId": "G02_blade",
+      "group": "草本",
+      "name": "狗尾草",
+      "type": "blade",
+      "reference": "Setaria viridis",
+      "length": 0.18,
+      "width": 0.015
+    },
+    {
+      "assetId": "G10_leaf_mature",
+      "group": "草本",
+      "name": "艾草",
+      "type": "leaf",
+      "reference": "Artemisia argyi",
+      "length": 0.09,
+      "width": 0.055
+    },
+    {
+      "assetId": "G01_blade",
+      "group": "地被",
+      "name": "狗牙根",
+      "type": "blade",
+      "reference": "Cynodon dactylon",
+      "length": 0.05,
+      "width": 0.003
+    },
+    {
+      "assetId": "G08_leaflet",
+      "group": "地被",
+      "name": "酢浆草",
+      "type": "leaf",
+      "reference": "Oxalis corniculata",
+      "length": 0.014,
+      "width": 0.018
+    },
+    {
+      "assetId": "W03_sword_leaf",
+      "group": "水生",
+      "name": "菖蒲",
+      "type": "blade",
+      "reference": "Acorus calamus",
+      "length": 0.6,
+      "width": 0.02
+    },
+    {
+      "assetId": "W07_leaf_green",
+      "group": "水生",
+      "name": "荷叶",
+      "type": "floatingLeaf",
+      "reference": "Nelumbo nucifera",
+      "length": 0.45,
+      "width": 0.45
+    }
+  ],
+  "checks": [
+    "source geometry",
+    "consistent dimensions",
+    "alpha/opacity match",
+    "attachment point",
+    "ORM metallic=0",
+    "normalized tangent normal",
+    "UV diagnosis",
+    "source PBR registration"
+  ],
+  "limits": [
+    "Art-directed approximate dimensions, not measured plant specimens.",
+    "Texture MVP, not eight completed plant models, map-brush implementation or native runtime acceptance."
+  ]
+}

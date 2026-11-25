@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 2,
+  "projectId": "b451c000-0000-4000-8000-000000000001",
+  "name": "第三人称基础场景",
+  "revision": 0,
+  "settings": {
+    "walkSpeed": 3.5,
+    "runSpeed": 6,
+    "jumpSpeed": 7,
+    "gravity": 20
+  },
+  "lighting": {
+    "ambient": [
+      0.12,
+      0.14,
+      0.18
+    ],
+    "skyColor": [
+      0.2,
+      0.28,
+      0.4
+    ],
+    "keyDirection": [
+      -0.45,
+      0.85,
+      -0.55
+    ],
+    "keyColor": [
+      1,
+      0.96,
+      0.9
+    ],
+    "keyIntensity": 0.75,
+    "toneMap": true,
+    "exposure": 0.8,
+    "fogDensity": 0,
+    "quality": 1
+  },
+  "materials": {
+    "m0": {
+      "albedo": "m0",
+      "normal": "m0",
+      "orm": "m0",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0
+    },
+    "m1": {
+      "albedo": "m1",
+      "normal": "m1",
+      "orm": "m1",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0,
+      "textureMappings": {
+        "albedo": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "normal": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "orm": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        }
+      }
+    },
+    "default": {
+      "albedo": "engine_grid",
+      "normal": "engine_grid",
+      "orm": "engine_grid",
+      "uvScale": 5,
+      "roughness": 0.88,
+      "metalness": 0
+    }
+  },
+  "entities": [
+    {
+      "id": "b451c000-0000-4000-8000-000000000010",
+      "name": "网格地面",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.25,
+        0
+      ],
+      "scale": [
+        40,
+        0.5,
+        40
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "friction": 0.8
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000011",
+      "name": "基础机器人",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        5
+      ],
+      "scale": [
+        0.6,
+        1.7999999999999998,
+        0.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "components": {
+        "camera": {
+          "mode": "thirdPerson",
+          "initialYaw": 0,
+          "initialPitch": 0.28
+        }
+      },
+      "character": {
+        "file": "builtin/robot/character.json",
+        "sha256": "3e4605f3f980f70cc7ae48e2c7b1d9bfee54e0750c2c01c305df5c5f58d1b809",
+        "binarySha256": "debc001615054fe0f477ee5a406f2c4e3354968c56266825c0fd4bc65b5e8ff2",
+        "anchor": "feet",
+        "rootMotion": "extract",
+        "scale": [
+          1.8406537157858247,
+          1.8406537157858247,
+          1.8406537157858247
+        ],
+        "offset": [
+          -3.4903583979581813e-8,
+          -6.523517498670227e-7,
+          -6.340045023515096e-8
+        ],
+        "controller": {
+          "stepHeight": 0.36,
+          "orbitDistance": 5,
+          "orbitHeight": 1.35,
+          "targetHeight": 1.05
+        }
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000012",
+      "name": "物理方块 A",
+      "kind": "prop",
+      "position": [
+        0,
+        0.5,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 4,
+        "friction": 0.65,
+        "restitution": 0.08
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000013",
+      "name": "物理方块 B",
+      "kind": "prop",
+      "position": [
+        2,
+        0.5,
+        -1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 6,
+        "friction": 0.65,
+        "restitution": 0.08
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000014",
+      "name": "落下的物理方块",
+      "kind": "prop",
+      "position": [
+        2,
+        2.5,
+        -1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 4,
+        "friction": 0.65,
+        "restitution": 0.08
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000015",
+      "name": "跳跃台 1",
+      "kind": "prop",
+      "position": [
+        -3,
+        0.25,
+        -1
+      ],
+      "scale": [
+        2,
+        0.5,
+        2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "friction": 0.8
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000016",
+      "name": "跳跃台 2",
+      "kind": "prop",
+      "position": [
+        -3,
+        0.6,
+        -3.5
+      ],
+      "scale": [
+        2,
+        1.2,
+        2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "friction": 0.8
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000017",
+      "name": "碰撞测试墙",
+      "kind": "wall",
+      "position": [
+        0,
+        1.5,
+        -7
+      ],
+      "scale": [
+        10,
+        3,
+        0.5
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "friction": 0.8
+      }
+    },
+    {
+      "id": "b451c000-0000-4000-8000-000000000018",
+      "name": "主光",
+      "kind": "light",
+      "position": [
+        4,
+        6,
+        4
+      ],
+      "scale": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "light": {
+        "color": [
+          1,
+          0.94,
+          0.85
+        ],
+        "intensity": 3,
+        "range": 18
+      }
+    }
+  ]
+}

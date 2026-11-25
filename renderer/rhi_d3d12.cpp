@@ -61,10 +61,28 @@ public:
     bool rtShadowsEnabled() const override { return renderer_.rtShadowsEnabled(); }
     void setMeshShaders(bool enabled) override { renderer_.setMeshShaders(enabled); }
     bool meshShadersEnabled() const override { return renderer_.meshShadersEnabled(); }
+    void setFrustumCulling(bool enabled) override { renderer_.setFrustumCulling(enabled); }
+    bool frustumCullingEnabled() const override { return renderer_.frustumCullingEnabled(); }
+    unsigned culledDrawsLastFrame() const override { return renderer_.culledDrawsLastFrame(); }
     void setCompositeDebugView(unsigned view) override { renderer_.setCompositeDebugView(view); }
+    void setLayerDebugView(unsigned mode, unsigned layer) override { renderer_.setLayerDebugView(mode, layer); }
     void setCompute(bool enabled, bool corrupt) override {
         renderer_.setComputeEnabled(enabled);
         renderer_.setComputeCorrupt(corrupt);
+    }
+    void setParticles(bool enabled) override { renderer_.setParticlesEnabled(enabled); }
+    void setFieldColliders(const std::vector<FieldCollider>& colliders) override {
+        renderer_.setFieldColliders(colliders);
+    }
+    void setFireEffect(bool firePreset, unsigned explodeAtFrame) override {
+        renderer_.setFirePreset(firePreset);
+        renderer_.setExplosionFrame(explodeAtFrame);
+    }
+    void setParticleTemporal(bool enabled) override {
+        renderer_.setParticleTemporal(enabled);
+    }
+    bool setEffectSprites(std::vector<EffectSprite> sprites, std::string& error) override {
+        return renderer_.setEffectSprites(std::move(sprites), error);
     }
 
     bool requestScreenshot(const std::string& path, std::string& error) override {

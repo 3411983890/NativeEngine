@@ -1,0 +1,49 @@
+[
+  {
+    "group": "入门",
+    "items": [
+      { "slug": "index", "title": "概览", "desc": "NativeGPU 是什么、能做什么、边界在哪里" },
+      { "slug": "getting-started", "title": "安装与构建", "desc": "工具链 bootstrap、构建、运行、验证" },
+      { "slug": "architecture", "title": "架构与项目结构", "desc": "六层结构、帧路径、目录职责" }
+    ]
+  },
+  {
+    "group": "核心系统",
+    "items": [
+      { "slug": "scene", "title": "场景模型与事务", "desc": "场景 JSON、原子事务、撤销恢复、lint 与查询" },
+      { "slug": "rendering", "title": "渲染管线", "desc": "RHI 边界、双目标光栅、DXR 阴影、Mesh Shader、compute" },
+      { "slug": "lighting", "title": "光照与大气", "desc": "局部灯投影、froxel 雾、DDGI、体积云" },
+      { "slug": "materials", "title": "材质与纹理", "desc": "PNG → .ngtex、预算求解、材质表与 bindless" },
+      { "slug": "geometry", "title": "几何、LOD 与烘焙", "desc": "几何包 v2、cluster DAG、glTF 子集、SDF 烘焙" },
+      { "slug": "landscape", "title": "地形系统", "desc": "高度场设计、UE5 对照、AI 生成管线（规划）" }
+    ]
+  },
+  {
+    "group": "仿真与玩法",
+    "items": [
+      { "slug": "physics", "title": "物理与破坏", "desc": "120 Hz 盒体刚体、冲量伤害、结构坍塌" },
+      { "slug": "animation", "title": "动画系统", "desc": "骨架导入、SoA 蒙皮、状态机、Montage、Notify" },
+      { "slug": "gameplay", "title": "玩法运行时", "desc": "组件、Lua 5.4.9 行为、调度、热重载、存档" },
+      { "slug": "particles", "title": "粒子与场", "desc": "GPU 粒子、整数 splat、欧拉求解器、体积渲染" }
+    ]
+  },
+  {
+    "group": "工具与流程",
+    "items": [
+      { "slug": "editor", "title": "编辑器", "desc": "Web/Electron 工作台、草稿与提交、原生预览" },
+      { "slug": "determinism", "title": "确定性与回放", "desc": "命名随机流、摘要、黑匣子、严格回放" },
+      { "slug": "performance", "title": "性能预算与证据", "desc": "帧预算阶梯、图像回归、CI 证据目录" },
+      { "slug": "ai", "title": "AI 与 MCP", "desc": "12 个工具、路径策略、Agent 接入" },
+      { "slug": "ai-level", "title": "AI 地编管线", "desc": "MapSpec、求解器、门禁与修复闭环" }
+    ]
+  },
+  {
+    "group": "参考与社区",
+    "items": [
+      { "slug": "reference", "title": "参考手册", "desc": "场景 Schema、命令行、文件格式、报告字段" },
+      { "slug": "errors", "title": "错误码", "desc": "稳定错误码与失败契约" },
+      { "slug": "contributing", "title": "贡献指南", "desc": "文档规范、证据纪律、评审清单" },
+      { "slug": "roadmap", "title": "路线图", "desc": "已完成、进行中、明确不做" }
+    ]
+  }
+]

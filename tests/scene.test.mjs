@@ -126,7 +126,7 @@ test('scene validation accepts the canonical scene and rejects contract violatio
   assert.equal(validateScene(badMaterial).valid, false);
   const tooManyLights = structuredClone(lit);
   const extraLight = structuredClone(lit.entities.at(-1));
-  for (let i = 0; i < 4; ++i) {
+  for (let i = 0; i < 64; ++i) {
     tooManyLights.entities.push({
       ...structuredClone(extraLight),
       id: randomUUID(),
@@ -394,5 +394,49 @@ test('schema file documents the same limits as the runtime validator', async () 
   assert.ok(schema.$defs.entity.properties.kind.enum.includes('light'));
   assert.equal(schema.$defs.material.properties.pattern.enum.join(','), 'checker,brick,metal');
   assert.equal(schema.$defs.light.properties.intensity.maximum, 100);
+  assert.equal(schema.$defs.physics.properties.mass.minimum, 0.05);
+  assert.equal(schema.$defs.physics.properties.restitution.maximum, 0.95);
+  assert.equal(schema.$defs.destructible.properties.fragments.maximum, 28);
+  assert.equal(schema.$defs.destructible.properties.seed.maximum, 4294967295);
+  assert.ok(schema.$defs.entity.properties.physics);
+  assert.ok(schema.$defs.entity.properties.destructible);
   assert.equal(schema.$defs.uuid.pattern, '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
+});
+
+test('physics and destructible authoring has explicit, conservative limits', () => {
+  const scene = makeScene();
+  scene.schemaVersion = 2;
+  scene.entities[2].physics = { mode: 'dynamic', mass: 4, friction: 0.7, restitution: 0.1 };
+  scene.entities[2].destructible = {
+    enabled: true, strength: 40, fragments: 12, debrisLifetime: 20,
+    structural: true, seed: 101,
+  };
+  assert.deepEqual(validateScene(scene), { valid: true, errors: [] });
+
+  const badMode = structuredClone(scene);
+  badMode.entities[2].physics.mode = 'kinematic';
+  assert.equal(validateScene(badMode).valid, false);
+  assert.match(validateScene(badMode).errors.join('\n'), /physics\.mode/);
+
+  const groundDynamic = structuredClone(scene);
+  groundDynamic.entities[1].physics = { mode: 'dynamic' };
+  assert.equal(validateScene(groundDynamic).valid, false);
+
+  const noCollider = structuredClone(scene);
+  noCollider.entities[2].collider = false;
+  assert.equal(validateScene(noCollider).valid, false);
+  assert.match(validateScene(noCollider).errors.join('\n'), /destructible requires collider/);
+
+  const badFragments = structuredClone(scene);
+  badFragments.entities[2].destructible.fragments = 3;
+  assert.equal(validateScene(badFragments).valid, false);
+
+  const badSeed = structuredClone(scene);
+  badSeed.entities[2].destructible.seed = 4294967296;
+  assert.equal(validateScene(badSeed).valid, false);
+
+  const badKind = structuredClone(scene);
+  badKind.entities[4].physics = { mode: 'static' };
+  assert.equal(validateScene(badKind).valid, false);
+  assert.match(validateScene(badKind).errors.join('\n'), /only supported on ground, wall and prop/);
 });

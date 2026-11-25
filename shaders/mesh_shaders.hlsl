@@ -10,6 +10,10 @@ struct MeshVertex
     float3 position;
     float3 normal;
     float2 uv;
+    float2 textureUvs[4];
+    float4 color;
+    float4 tangent;
+    float2 layerUvs[3];
 };
 
 struct Meshlet
@@ -31,7 +35,9 @@ struct InstanceConstants
     float roughness;
     float metalness;
     uint textureIndex;
-    float pad0;
+    uint normalIndex;
+    uint ormIndex;
+    float uvScale;
 };
 
 struct SceneConstants
@@ -41,6 +47,7 @@ struct SceneConstants
     float4 lightColorIntensity[4];
     uint lightCount;
     float3 scenePad;
+    float4 cameraPosition;
 };
 
 struct CameraConstants
@@ -110,6 +117,16 @@ struct MeshOutput
     float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
     float3 worldPosition : TEXCOORD1;
+    float3 materialPosition : TEXCOORD2;
+    float3 materialNormal : TEXCOORD3;
+    nointerpolation uint meshUv : TEXCOORD4;
+    float2 normalUv : TEXCOORD5;
+    float2 ormUv : TEXCOORD6;
+    float2 emissiveUv : TEXCOORD7;
+    float2 occlusionUv : TEXCOORD8;
+    float4 color:COLOR0;
+    float4 tangent:TEXCOORD9;
+    float2 coatUv:TEXCOORD10;float2 coatRoughnessUv:TEXCOORD11;float2 coatNormalUv:TEXCOORD12;
 };
 
 #endif // PASS_MESH || PASS_PIXEL
@@ -135,13 +152,27 @@ void MSMain(uint3 groupId : SV_GroupID, uint threadIndex : SV_GroupIndex,
         output.normal = mul((float3x3)gInstance.normalMatrix, vertex.normal);
         output.uv = vertex.uv;
         output.worldPosition = world.xyz;
+        float3 objectScale = float3(
+            length(float3(gInstance.model[0][0], gInstance.model[1][0], gInstance.model[2][0])),
+            length(float3(gInstance.model[0][1], gInstance.model[1][1], gInstance.model[2][1])),
+            length(float3(gInstance.model[0][2], gInstance.model[1][2], gInstance.model[2][2])));
+        output.materialPosition = vertex.position * objectScale;
+        output.materialNormal = vertex.normal;
+        output.meshUv = 0;
+        output.normalUv=0;output.ormUv=0;output.emissiveUv=0;output.occlusionUv=0;
+        output.color=vertex.color;
+        output.coatUv=vertex.layerUvs[0];output.coatRoughnessUv=vertex.layerUvs[1];output.coatNormalUv=vertex.layerUvs[2];
+        output.tangent=float4(mul((float3x3)gInstance.model,vertex.tangent.xyz),vertex.tangent.w*(determinant((float3x3)gInstance.model)<0?-1:1));
         vertices[threadIndex] = output;
     }
     if (threadIndex < desc.triangleCount)
     {
         uint index = desc.triangleOffset + threadIndex;
-        triangles[threadIndex] = uint3(gTriangles[index * 3 + 0], gTriangles[index * 3 + 1],
-                                       gTriangles[index * 3 + 2]);
+        // Mesh shader indices address the local vertex output array, not the global
+        // structured vertex buffer. The CPU stores global cube indices, so rebase them.
+        triangles[threadIndex] = uint3(gTriangles[index * 3 + 0] - desc.vertexOffset,
+                                       gTriangles[index * 3 + 1] - desc.vertexOffset,
+                                       gTriangles[index * 3 + 2] - desc.vertexOffset);
     }
 }
 

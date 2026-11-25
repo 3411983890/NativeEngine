@@ -1,0 +1,22 @@
+{
+  "schema": "nativegpu.effect/1", "id": "smoke_solver_reference", "revision": 0, "seed": 113,
+  "durationTicks": 240, "loop": false, "maxAlive": 64,
+  "bounds": { "min": [-2, -0.5, -2], "max": [2, 3.5, 2] },
+  "budget": { "maxSpawnPerTick": 8, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [{
+    "id": "source", "shape": { "type": "point" }, "position": [0, 0, 0],
+    "ratePerSecond": 24, "bursts": [{ "tick": 0, "count": 4 }],
+    "lifetimeTicks": [60, 90], "localSpace": false,
+    "modules": [{ "id": "initial", "type": "initialize", "params": {
+      "velocity": [0, 0.6, 0], "color": [2, 0.5, 0.1, 0.6], "size": [0.04, 0.04]
+    } }],
+    "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "additive", "lit": false }]
+  }],
+  "events": [],
+  "smoke": {
+    "dimensions": [16, 16, 16], "cellMetres": 0.25, "originOffset": [-2, -0.5, -2],
+    "channels": ["density", "temperatureKelvin", "fuel"], "tailTicks": 240,
+    "sources": [{ "emitter": "source", "densityMassRate": 0.005, "heatVolumeRate": 1, "fuelMassRate": 0.002 }],
+    "parameters": { "maxSpeed": 4, "pressureIterations": 32 }
+  }
+}

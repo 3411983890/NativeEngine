@@ -1,0 +1,101 @@
+<p class="lede">粒子与场不是"特效贴图"，而是一条完整的仿真链：GPU 粒子在 compute 队列上积分，用整数原子加把密度和热量写进 96³ 体积，再由欧拉求解器解出速度场，最后全屏 ray march 合成。</p>
+
+<div class="meta-row">
+  <span class="badge badge--partial">首条链路已实现</span>
+  <span class="badge badge--no">求解器不承诺确定性</span>
+  <span class="meta">shaders/particles.hlsl · shaders/fluid.hlsl · .developmentAgent/simulation-effects/FIELD-PLAN.md</span>
+</div>
+
+<h2 id="chain">链路</h2>
+
+<pre><code>65536 个结构化粒子（SoA，32 B/个）
+        │  CSSimulate：固定步长积分 + 场景 AABB 碰撞
+        ▼
+整数原子加 splat ──▶ 96³ R32_UINT 密度/热量体积
+        │              （整数加法满足结合律 → 与线程顺序无关）
+        ▼
+CSResolve：整数体素 → RGBA16F 浮点状态
+        ▼
+欧拉求解器：浮力 → 半拉格朗日平流 → 涡量约束
+            → 散度 → 20 次 Jacobi 压力投影 → 减压力梯度
+        ▼
+PSVolume：96³ 步进（自阴影、热辐射、深度裁剪、边界淡出）
+        ▼
+合成进 base colour</code></pre>
+
+<h2 id="determinism">确定性边界</h2>
+
+<div class="callout callout--note">
+<span class="callout-title">两部分要分开说</span>
+<p><strong>splat 源项是确定的</strong>：整数原子加满足结合律与交换律，线程调度顺序不影响结果。<strong>求解器不是确定的</strong>：单精度浮点 + 迭代顺序依赖，不承诺逐位一致。文档里必须分开写，否则"确定性"会变成一个不成立的宣传词。</p>
+</div>
+
+<h2 id="cli">命令行</h2>
+
+<pre><code>build/NativeGPU.exe --scene assets/campfire.scene.json --particles on --fire
+build/NativeGPU.exe --scene assets/campfire.scene.json --particles on --explode-at 90</code></pre>
+
+<table>
+<thead><tr><th>参数</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>--particles on|off</code></td><td>总开关；关闭时走原渲染路径</td></tr>
+<tr><td><code>--particle-colliders on|off</code></td><td>粒子与场景 AABB 求交</td></tr>
+<tr><td><code>--particle-emitter &lt;x,y,z&gt;</code></td><td>覆盖发射器位置</td></tr>
+<tr><td><code>--fire</code></td><td>篝火预设：更小发射半径、更高浮力、更强消光</td></tr>
+<tr><td><code>--explode-at N</code></td><td>第 N 个粒子帧起爆</td></tr>
+<tr><td><code>--particle-temporal on|off</code></td><td>时域重建</td></tr>
+</tbody>
+</table>
+
+<h3 id="fire">--fire 做了什么</h3>
+
+<p>它不只是"调几个参数"：把场的包围盒从 16 m 收缩到 6 m。同样 96³ 网格，体素从 <strong>16.7 cm 变成 6.25 cm</strong>——火焰第一次有形状。这是"域是效果的属性"的第一步：先让域跟着效果走，再谈域内的稀疏分配。</p>
+
+<h3 id="explode">--explode-at 做了什么</h3>
+
+<table>
+<thead><tr><th>项</th><th>倍数</th></tr></thead>
+<tbody>
+<tr><td>源半径</td><td>×9</td></tr>
+<tr><td>外抛速度</td><td>×7</td></tr>
+<tr><td>温度</td><td>×3.5</td></tr>
+</tbody>
+</table>
+
+<p>同时向<strong>速度场</strong>注入一次径向冲击（<code>CSBuoyancy</code> 里的 blast 项），把已经存在的烟整体推开。只放大发射而不动速度场，看起来像"喷了一下"，不像"炸了"。</p>
+
+<h2 id="collision">与场景碰撞</h2>
+
+<p>场景 AABB 从场景图上上传到 compute 着色器。粒子穿入后沿<strong>最浅轴</strong>推出并施加阻尼反弹。因为场景实体没有旋转，AABB 是精确的——这条限制在这里变成了优势。</p>
+
+<p>粒子<strong>不</strong>与刚体双向耦合：爆炸不会推开箱子，箱子也不会扰动烟。</p>
+
+<h2 id="lease">通道租约</h2>
+
+<p>六个场通道（density / heat / velocity / pressure / divergence / curl）以引用计数 + 一致性等级（<code>strong</code> / <code>eventual</code> / <code>stale</code>）出租。模拟在创建时持有全部六个；体积渲染每帧临时租用 density / heat，绘制后归还。</p>
+
+<p>求解器先检查租约完整性，缺任何一个通道就<strong>跳过该帧</strong>并把 <code>leaseStalls</code> 加一。租约是合同，不是记账——报告里逐通道输出 <code>refs</code> / <code>level</code> / <code>acquisitions</code>。</p>
+
+<h2 id="scorch">爆炸的场景后果</h2>
+
+<p>宿主每帧轮询 <code>Renderer::particleBurst()</code>，爆发强度超过 0.5 时，把火塘 4.5 m 内的实体按距离衰减<strong>焦化</strong>（<code>scorched=14</code>）。这是纯视觉后果：场景文件不被修改，重新加载即恢复。</p>
+
+<h2 id="evidence">证据</h2>
+
+<table>
+<thead><tr><th>脚本</th><th>检查项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td><code>tools/particles.ps1</code></td><td>21 / 21</td><td>开 / 关 / 关碰撞三遍，断言报告字段与图像差异</td></tr>
+<tr><td><code>tools/campfire.ps1</code></td><td>17 / 17</td><td>场景校验 + 稳态火 + 爆炸帧 + 焦化帧 + 租约断言</td></tr>
+</tbody>
+</table>
+
+<h2 id="limits">边界</h2>
+
+<ul>
+<li>求解器单精度，<strong>不承诺确定性</strong>；只有 splat 源项是确定的。</li>
+<li>碰撞只对轴对齐盒生效；不与刚体双向耦合。</li>
+<li>火的形态是浮力 + 涡量 + 投影 + 冲击的结果，<strong>不是</strong>燃烧化学模型。</li>
+<li>没有稀疏砖块、没有 LEF→WF 提升/降级；场固定 96³ 全域分配。</li>
+<li>体积渲染是单次散射近似，没有多次散射。</li>
+</ul>

@@ -1,0 +1,118 @@
+<p class="lede">这个仓库对"完成"的定义比多数项目严格：能跑不算完成，要能回退、有报告、能重放。贡献指南就是把这条标准写成人能执行的清单。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">现行规则</span>
+  <span class="meta">.developmentAgent/core/STATUS.md §维护约束 · .developmentAgent/core/DEV-TASKS.md</span>
+</div>
+
+<h2 id="docs">文档规范</h2>
+
+<p>每篇设计文档的开头必须有四行元信息，缺一行就会被评审打回：</p>
+
+<pre><code>- 版本：v0.1（设计稿 / 已实现 / 部分实现）
+- 日期：YYYY-MM-DD
+- 基线：NativeGPU x.y.z（当时的真实版本）
+- 状态：待评审 / 进行中 / 已冻结</code></pre>
+
+<table>
+<thead><tr><th>规则</th><th>原因</th></tr></thead>
+<tbody>
+<tr><td>设计稿必须写"未实现，不是能力声明"</td><td>防止方案文档被当成功能清单引用</td></tr>
+<tr><td>每个系统必须有"明确未实现"清单</td><td>含糊其辞比承认缺失更贵</td></tr>
+<tr><td>数字必须标注来源报告与机器</td><td>跨机引用会制造假基线</td></tr>
+<tr><td>不写"大概""应该""基本完成"</td><td>这些词无法被验证</td></tr>
+<tr><td>改契约要同步四处</td><td>见下节</td></tr>
+</tbody>
+</table>
+
+<h2 id="contract">契约同步：四处法则</h2>
+
+<p>任何场景字段的增删改，必须同时改四个地方，缺一不可：</p>
+
+<ol>
+<li><code>assets/scene.schema.json</code>——机器可读的唯一真相</li>
+<li><code>engine/scene/index.mjs</code>——Node 校验器</li>
+<li><code>host/scene_loader.cpp</code>——原生加载器</li>
+<li><code>docs/</code> 下对应文档 + 本份站点内容</li>
+</ol>
+
+<p>只改三处，第四个地方就会成为"文档说支持、代码不认"的分裂点。评审时第一个看的就是这四处是否一致。</p>
+
+<h2 id="evidence">证据纪律</h2>
+
+<table>
+<thead><tr><th>禁止</th><th>正确做法</th></tr></thead>
+<tbody>
+<tr><td>手写 <code>implemented: true</code></td><td>由运行报告写出，代码只读</td></tr>
+<tr><td>手写性能数字</td><td>跑脚本，引用 <code>reports/</code> 里的产物</td></tr>
+<tr><td>为了通过测试删除测试</td><td>修实现，或显式记录放宽原因</td></tr>
+<tr><td>放宽 schema 让脏数据通过</td><td>改数据，或走版本迁移</td></tr>
+<tr><td>用空场景/静默重置掩盖热重载失败</td><td>保留上一有效场景并报错</td></tr>
+</tbody>
+</table>
+
+<p>高级图形能力只有在<strong>可运行 + 可回退 + 有报告</strong>三条都满足后，才能把 <code>implemented</code> 改成 true。</p>
+
+<h2 id="workflow">新增一个系统</h2>
+
+<pre><code>1. 写设计文档（含边界与验收标准）
+2. 定数据契约（schema / 结构体 / 文件格式）
+3. 实现最小可运行切片 + 回退开关
+4. 写证据脚本（断言 + 固定机位截图 + 报告字段）
+5. 接入 verify.ps1 / ci.ps1
+6. 更新 README 能力表 + .developmentAgent/core/STATUS.md + 本站文档</code></pre>
+
+<p>第 3 步的"回退开关"不是可选项：没有回退，就无法证明"关掉它时行为和以前一致"，也就无法定位回归。</p>
+
+<h3 id="gameplay-ext">扩展玩法能力</h3>
+
+<ol>
+<li>登记组件字段及版本</li>
+<li>注册原生系统，或添加 Lua 行为</li>
+<li>通过命令 / 事件交互，不直接改别人的状态</li>
+<li>补恢复、确定性与字段校验测试</li>
+</ol>
+
+<p>原生系统用 <code>Runtime::registerSystem</code> 声明名称、Phase、<code>after</code> 和接收 <code>Runtime&amp;</code> 的回调。回调<strong>不得捕获临时 World 指针</strong>；持久数据必须进组件，不能藏在外部全局变量里。</p>
+
+<h2 id="review">评审清单</h2>
+
+<ul>
+<li>新增字段是否四处同步？</li>
+<li>新增开关关闭时，是否与改动前逐像素/逐字节一致？</li>
+<li>是否引入了未命名的随机或墙上时钟？</li>
+<li>失败路径是否返回稳定错误码，而不是抛裸异常？</li>
+<li>报告字段是否区分"能力可用"与"效果生效"？</li>
+<li>文档的"未实现"清单是否更新？</li>
+<li>是否能在干净树上用 <code>ci.ps1 -Clean</code> 重放？</li>
+</ul>
+
+<h2 id="style">代码风格</h2>
+
+<table>
+<thead><tr><th>层</th><th>约定</th></tr></thead>
+<tbody>
+<tr><td>C++</td><td>C++17、<code>nativegpu</code> 命名空间、RAII、错误码而非异常、无第三方依赖</td></tr>
+<tr><td>Node</td><td>ESM、零依赖（除 Electron）、纯函数优先、<code>node --test</code></td></tr>
+<tr><td>HLSL</td><td>SM 6.6 目标、登记进 <code>manifest.json</code>、常量缓冲按在途帧分配</td></tr>
+<tr><td>文档</td><td>中文为主，术语保留英文原文，代码块标注语言</td></tr>
+</tbody>
+</table>
+
+<h2 id="site">维护本份站点</h2>
+
+<p>本站点是生成的，不要直接改 <code>dist/</code>：</p>
+
+<pre><code>docs/site/nav.json            侧边栏结构
+docs/site/content/*.html      每页正文片段（不含 shell）
+docs/site/assets/             样式与脚本
+docs/site/build.mjs           生成器
+
+npm run docs                  # 重新生成 docs/site/dist/</code></pre>
+
+<p>新增页面只需两步：在 <code>nav.json</code> 里加一项，在 <code>content/</code> 下建同名 <code>.html</code>。目录、上一页/下一页、搜索索引会自动更新。</p>
+
+<div class="callout callout--note">
+<span class="callout-title">为什么用生成器而不是手写多页</span>
+<p>多页 HTML 在 <code>file://</code> 下能直接打开，不依赖本地服务器；但侧边栏、目录、搜索索引在每页重复。生成器把"重复"收敛到一处，同时保留多页的离线可用性。</p>
+</div>

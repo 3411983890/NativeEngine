@@ -40,7 +40,8 @@ async function fixture(t) {
 test('tool catalog is stable and includes the complete scene/runtime surface', () => {
   const names = listTools().map(tool => tool.name);
   assert.deepEqual(names, [
-    'scene_validate', 'scene_query', 'scene_preview', 'scene_apply',
+    'gameplay_catalog', 'gameplay_validate', 'gameplay_inspect',
+    'scene_validate', 'scene_query', 'scene_preview', 'scene_apply', 'material_patch',
     'scene_undo', 'scene_build', 'runtime_smoke', 'engine_probe',
   ]);
   for (const tool of listTools()) {
@@ -50,7 +51,7 @@ test('tool catalog is stable and includes the complete scene/runtime surface', (
   }
   const copy = listTools();
   copy[0].name = 'mutated';
-  assert.equal(listTools()[0].name, 'scene_validate');
+  assert.equal(listTools()[0].name, 'gameplay_catalog');
 });
 
 test('scene tools validate, preview, apply, undo and build without escaping the project', async t => {
@@ -121,10 +122,10 @@ test('scene tools validate, preview, apply, undo and build without escaping the 
   assert.equal(outsideOutput.ok, false);
   assert.equal(outsideOutput.error.code, 'INVALID_PATH');
 
-  const missing = await service.callTool('runtime_smoke', {});
+  const missing = await service.callTool('runtime_smoke', { scenePath: 'assets/courtyard.scene.json' });
   assert.equal(missing.ok, false);
   assert.equal(missing.error.code, 'NATIVE_BINARY_MISSING');
-  const missingProbe = await service.callTool('engine_probe', {});
+  const missingProbe = await service.callTool('engine_probe', { scenePath: 'assets/courtyard.scene.json' });
   assert.equal(missingProbe.ok, false);
   assert.equal(missingProbe.error.code, 'NATIVE_BINARY_MISSING');
   const unknown = await service.callTool('scene_delete_everything', {});
@@ -162,7 +163,7 @@ test('MCP protocol maps initialize, tools and failures without leaking stdout', 
   assert.deepEqual(ping, { jsonrpc: '2.0', id: 'p', result: {} });
 
   const listed = await handle({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-  assert.equal(listed.result.tools.length, 8);
+  assert.equal(listed.result.tools.length, 12);
 
   const called = await handle({
     jsonrpc: '2.0', id: 3, method: 'tools/call',

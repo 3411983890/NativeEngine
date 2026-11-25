@@ -1,0 +1,15 @@
+{
+  "schema": "nativegpu.water/1",
+  "id": "pond_still",
+  "revision": 0,
+  "seed": 3,
+  "backend": "analytic",
+  "extentMetres": [12, 12],
+  "cellMetres": 0.125,
+  "stillHeightMetres": 0.6,
+  "bathymetry": { "type": "flat", "heightMetres": 0 },
+  "boundaries": { "type": "closed", "inflowCubicMetresPerSecond": 0, "outflowCubicMetresPerSecond": 0 },
+  "waves": { "amplitudeMetres": 0.015, "wavelengthMetres": 2.4, "speedMetresPerSecond": 1.1, "direction": [1, 0.2], "components": 3 },
+  "material": { "refractionIndex": 1.333, "absorptionPerMetre": 0.35, "foamThreshold": 0.55 },
+  "budget": { "maxCells": 262144, "maxSubsteps": 8 }
+}

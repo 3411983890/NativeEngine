@@ -1,0 +1,38 @@
+{
+  "model": "MultiUVTest",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "license": "CC-BY-4.0 AND LicenseRef-LegalMark-Khronos",
+  "attribution": [
+    {
+      "author": "Hilo 3D",
+      "copyright": "Copyright 2017 Hilo 3D",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "author": "Khronos Group",
+      "copyright": "Copyright 2017 Khronos Group",
+      "contribution": "Non-copyrightable glTF logo",
+      "license": "LicenseRef-LegalMark-Khronos"
+    }
+  ],
+  "files": [
+    {
+      "file": "MultiUVTest.glb",
+      "bytes": 43004,
+      "sha256": "f5352cced402b595ab7f1e4971852fbf33cef8d22351e45caafb072e31d5008a",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/MultiUVTest/glTF-Binary/MultiUVTest.glb"
+    },
+    {
+      "file": "README.md",
+      "bytes": 1356,
+      "sha256": "03235c77d51562beb381ba460979193b1fe2bfb50a3da62bd788b7136fe35402",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/MultiUVTest/README.md"
+    },
+    {
+      "file": "KHRONOS-LOGO-LICENSE.txt",
+      "bytes": 589,
+      "sha256": "2ea9821de870cf8d3faaa115ffc47f56632bf9f98d54d2ac1ce61592040b765c",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/LICENSES/LicenseRef-LegalMark-Khronos.txt"
+    }
+  ]
+}

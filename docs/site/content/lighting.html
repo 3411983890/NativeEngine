@@ -1,0 +1,96 @@
+<p class="lede">光照系统走的是"可回退的近似"路线：不追求 Lumen 级的全局光照，而是把每一分预算花在肉眼能看见的地方——局部灯投影、froxel 雾与光轴、一次反弹 DDGI、会自阴影的体积云。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已实现</span>
+  <span class="meta">renderer/lighting_quality.cpp · shaders/lighting_quality.hlsl</span>
+</div>
+
+<h2 id="deliverables">五项交付</h2>
+
+<h3 id="correctness">1. 光照正确性</h3>
+
+<p>cooked 材质的 key 光只写入独立直射通道，合成时阴影只乘一次。DXR 从 <code>Environment.keyDirection</code> 取太阳/月亮方向，表面与体积共用同一参数；场景拒绝零方向。帧常量按在途帧独立分配，避免 CPU 覆盖仍在使用的光照数据。</p>
+
+<h3 id="local-shadows">2. 局部灯投影</h3>
+
+<p>点光与聚光分别查询自己的世界空间可见性，阴影只作用于该灯的漫反射与高光。按亮度、范围和距离选重点灯，保留稳定 ID、<strong>25% 选择滞后</strong>与八帧进出淡化——没有滞后的灯选择会以帧为单位闪烁。</p>
+
+<table>
+<thead><tr><th>档位</th><th>表面阴影灯上限</th><th>静态阴影缓存</th></tr></thead>
+<tbody>
+<tr><td>平衡</td><td>2</td><td>最多 4 盏，六面 128² 径向深度图</td></tr>
+<tr><td>高档</td><td>4</td><td>同上；静态几何或灯的位置/范围变化时重建</td></tr>
+</tbody>
+</table>
+
+<p>车辆与门通过当前 TLAS 查询动态遮挡，不触发静态缓存重建。PCF 按接收面在各采样射线上的真实距离比较，控制自阴影条纹。</p>
+
+<h3 id="fog">3. Froxel 雾与光轴</h3>
+
+<p>对数深度网格，范围到 <strong>96 m</strong>；高度雾与最多八个带软边界的局部密度盒相加。太阳/月亮通过 froxel 世界坐标查询 DXR 可见性；每格按实际散射贡献选四盏局部灯，其中前两盏可查询体积阴影。HG 相位 + Beer–Lambert 积分，在 HDR 空间按 <code>scene × T + L</code> 合成。</p>
+
+<pre><code>"lighting": {
+  "fogVolumes": [
+    { "center": [0, 2, 8], "extent": [20, 6, 8], "density": 0.03 }
+  ]
+}</code></pre>
+
+<p><code>extent</code> 是完整尺寸，不是半长；<code>density</code> 按距离倒数计量。稳定光照重投影并裁剪历史，移动车灯每帧重算——否则车灯光柱会被写进长期历史，拖出一条尾巴。</p>
+
+<h3 id="ddgi">4. 天空 IBL 与 DDGI</h3>
+
+<p>同一份程序化天空同时生成漫反射 SH、GGX 预过滤立方体和 split-sum BRDF LUT。DDGI 用 <strong>16×8×16</strong> 探针、4 m 间距、每探针 64 条射线；命中读取实例变换、纹理、材质颜色、表面状态、自发光和带遮挡的直接光。</p>
+
+<p>八面体图集存辐照度与距离一、二阶矩，配合探针迁移、无效探针排除、可见性加权插值和变化自适应历史累积。天空可见比例单独保存——否则天空补光会被算两次。</p>
+
+<h3 id="clouds">5. 体积云</h3>
+
+<p>持久 64³ 三维噪声 + 天气纹理，世界空间风场平移。沿光方向次级积分提供自阴影，128² Beer 透射图向表面和雾投影，三档衰减项近似多次散射。云在半分辨率积分，按不透明深度截断，用首个云样本距离、风运动与前帧矩阵重投影，最后深度感知重建。切镜、场景参数变化和资源重建都会让历史失效。</p>
+
+<h2 id="quality">质量档与回退</h2>
+
+<table>
+<thead><tr><th><code>lighting.quality</code></th><th>雾网格</th><th>阴影灯</th><th>每帧探针更新</th><th>云步数（视线/光线）</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>兼容全屏雾/云</td><td>仅 key 阴影</td><td>无</td><td>既有 14 步</td></tr>
+<tr><td>1（默认）</td><td>80×45×48</td><td>2</td><td>64（4096 主射线）</td><td>24 / 4</td></tr>
+<tr><td>2</td><td>160×90×64</td><td>4</td><td>256（16384 主射线）</td><td>64 / 12</td></tr>
+</tbody>
+</table>
+
+<p>新路径需要 cooked 材质、SM 6.6、支持 inline ray query 的 DXR 1.1 和 TLAS。创建失败时保留兼容渲染，原因写入 <code>probes.lightingQuality.error</code>；能力与实际执行状态分开报告。改变质量档、尺寸或设备时重建资源。</p>
+
+<h2 id="switches">场景开关</h2>
+
+<pre><code>"lighting": {
+  "quality": 1,
+  "localShadows": true,
+  "ibl": true,
+  "ddgi": true,
+  "cloudShadows": true,
+  "temporal": true,
+  "maxShadowLights": 2
+}</code></pre>
+
+<table>
+<thead><tr><th>字段</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>localShadows</code></td><td>局部灯投影总开关</td></tr>
+<tr><td><code>ibl</code></td><td>天空 IBL（SH + 预过滤立方体）</td></tr>
+<tr><td><code>ddgi</code></td><td>探针全局光照</td></tr>
+<tr><td><code>cloudShadows</code></td><td>同时控制云自阴影与向地面投影</td></tr>
+<tr><td><code>temporal</code></td><td>雾与云的视图历史；DDGI 仍用自己的探针历史</td></tr>
+<tr><td><code>maxShadowLights</code></td><td>0–4，且仍受质量档上限约束</td></tr>
+</tbody>
+</table>
+
+<h2 id="verify">验证</h2>
+
+<pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File tools/lighting-quality.ps1</code></pre>
+
+<p>验证入口会跑固定机位与固定分辨率，对比开关前后图像、检查报告字段与回退路径。阈值来自实测，不是拍脑袋定的。</p>
+
+<div class="callout callout--limit">
+<span class="callout-title">明确不是</span>
+<p>不是 Lumen：没有表面缓存、没有软件光追 GI、没有无限反弹。DDGI 只有<strong>一次反弹</strong>，覆盖相机附近约 60×28×60 m。没有体积雾的多次散射解，云的三档衰减项是近似。10k 光源的 cluster / light tree / ReSTIR 设计仍在研究文档里，<strong>没有实现</strong>。</p>
+</div>

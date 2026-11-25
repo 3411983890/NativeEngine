@@ -1,0 +1,143 @@
+{
+  "schema": "nativegpu.vegetation-texture-roles/1",
+  "comment": "Authoring texture set for oak, from assets/source/vegetation/oak-imagegen-v1/complete (1254x1254, AI-inferred prototype, not measured PBR). Every role declares its machine-readable semantic, colour space and filter so the cook never has to guess from a file name. Roles are named after what they are, not after the slot they happen to fill: `bark_orm` is an ORM map with R=AO, G=roughness, B=metallic=0, and the shader unpacks it. The previous table mapped a height map to `bark_roughness`, an ORM map to `bark_albedo_moss`, an ORM map to `leaf_atlas_autumn` and a thickness map to `leaf_mask`; those roles are gone rather than renamed, because renaming a wrong-purpose image keeps the wrong data. `filter` is explicit: colour averages in linear light, normal renormalises, coverage preserves alpha-test coverage, data is a plain box filter. `coverageCutoff` must equal the runtime alpha cutoff the shader discards at.",
+  "roles": {
+    "bark_basecolor": {
+      "source": "oak_bark_basecolor.png",
+      "semantic": "baseColor",
+      "colorSpace": "srgb",
+      "srgb": true,
+      "size": 1024,
+      "filter": "color",
+      "tileMetres": 1.6
+    },
+    "bark_normal": {
+      "source": "oak_bark_normal_dx.png",
+      "semantic": "normal",
+      "colorSpace": "linear",
+      "normalConvention": "directX-",
+      "srgb": false,
+      "size": 1024,
+      "filter": "normal",
+      "tileMetres": 1.6
+    },
+    "bark_orm": {
+      "source": "oak_bark_orm.png",
+      "semantic": "orm",
+      "colorSpace": "linear",
+      "channels": { "R": "occlusion", "G": "roughness", "B": "metallic" },
+      "srgb": false,
+      "size": 512,
+      "filter": "data",
+      "tileMetres": 1.6
+    },
+    "bark_height": {
+      "source": "oak_bark_height.png",
+      "semantic": "height",
+      "colorSpace": "linear",
+      "encoding": "white = raised, black = recessed, not calibrated metres",
+      "srgb": false,
+      "size": 512,
+      "filter": "data",
+      "tileMetres": 1.6
+    },
+    "leaf_basecolor": {
+      "source": "oak_leaves_basecolor_alpha.png",
+      "semantic": "baseColor",
+      "colorSpace": "srgb",
+      "srgb": true,
+      "size": 1024,
+      "filter": "color",
+      "mask": "oak_leaves_opacity.png",
+      "atlas": { "columns": 3, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "leaf_normal": {
+      "source": "oak_leaves_normal_dx.png",
+      "semantic": "normal",
+      "colorSpace": "linear",
+      "normalConvention": "directX-",
+      "srgb": false,
+      "size": 1024,
+      "filter": "normal",
+      "atlas": { "columns": 3, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "leaf_orm": {
+      "source": "oak_leaves_orm.png",
+      "semantic": "orm",
+      "colorSpace": "linear",
+      "channels": { "R": "occlusion", "G": "roughness", "B": "metallic" },
+      "srgb": false,
+      "size": 512,
+      "filter": "data",
+      "atlas": { "columns": 3, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "leaf_thickness": {
+      "source": "oak_leaves_thickness.png",
+      "semantic": "thickness",
+      "colorSpace": "linear",
+      "encoding": "white = relatively thick, black = thin; not metres",
+      "srgb": false,
+      "size": 512,
+      "filter": "data",
+      "atlas": { "columns": 3, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "leaf_opacity": {
+      "source": "oak_leaves_opacity.png",
+      "semantic": "opacity",
+      "colorSpace": "linear",
+      "encoding": "exact source alpha, white = covered",
+      "srgb": false,
+      "size": 512,
+      "filter": "coverage",
+      "coverageCutoff": 0.35,
+      "atlas": { "columns": 3, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "needle_basecolor": {
+      "directory": "generated",
+      "source": "needle_atlas.png",
+      "semantic": "baseColor",
+      "colorSpace": "srgb",
+      "encoding": "procedurally drawn by tools/vegetation-needle-atlas.mjs, not a photographed asset",
+      "srgb": true,
+      "size": 512,
+      "filter": "color",
+      "mask": "needle_atlas_opacity.png",
+      "atlas": { "columns": 4, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "needle_opacity": {
+      "directory": "generated",
+      "source": "needle_atlas_opacity.png",
+      "semantic": "opacity",
+      "colorSpace": "linear",
+      "encoding": "alpha of the generated needle sheet, white = needle",
+      "srgb": false,
+      "size": 512,
+      "filter": "coverage",
+      "coverageCutoff": 0.35,
+      "atlas": { "columns": 4, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "diag_basecolor": {
+      "directory": "generated",
+      "source": "atlas_diagnostics.png",
+      "semantic": "baseColor",
+      "colorSpace": "srgb",
+      "encoding": "numbered 3x4 atlas drawn by tools/vegetation-atlas-diagnostics.mjs for orientation checks",
+      "srgb": true,
+      "size": 512,
+      "filter": "color",
+      "atlas": { "columns": 3, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    },
+    "diag_opacity": {
+      "directory": "generated",
+      "source": "atlas_diagnostics_opacity.png",
+      "semantic": "opacity",
+      "colorSpace": "linear",
+      "encoding": "full coverage; the diagnostic cards are solid so the digits stay readable",
+      "srgb": false,
+      "size": 512,
+      "filter": "coverage",
+      "coverageCutoff": 0.35,
+      "atlas": { "columns": 3, "rows": 4, "pivot": [0.5, 0.0], "padding": 0.02 }
+    }
+  }
+}

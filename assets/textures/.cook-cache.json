@@ -1,0 +1,4907 @@
+{
+  "schema": "nativegpu.texture-cache/2",
+  "fingerprint": "02628140d9f6ca589bbc2a9e0fafd69a466a1d92f96f8125e368628e362705a0",
+  "manifest": {
+    "schema": "nativegpu.textures/1",
+    "size": 512,
+    "preserveAspect": false,
+    "budgetBytes": null,
+    "totalBytes": 15385112,
+    "overBudget": false,
+    "decisions": [],
+    "textures": [
+      {
+        "name": "awning",
+        "semantic": "albedo",
+        "file": "awning.albedo.ngtex",
+        "source": "awning.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.54
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "e9fabf61a7029e9fa081026de8a620a5b729e39c6f0c464e592f4219db281450"
+      },
+      {
+        "name": "awning",
+        "semantic": "normal",
+        "file": "awning.normal.ngtex",
+        "source": "awning.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 55.02,
+          "mean": 0.24094088664247862,
+          "p95": 0.6345455293203762,
+          "p99": 0.6354815670758006,
+          "max": 1.2703381247006043
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "2bba10a6d617e29da4f96c4b3062d17da051b550a83ffbfb81832101aa1f6997"
+      },
+      {
+        "name": "awning",
+        "semantic": "orm",
+        "file": "awning.orm.ngtex",
+        "source": "awning.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.01
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "2df4fc3f7730487fea89b4e21d28d26c93923e15bc99c9132b317ea053fe0e3f"
+      },
+      {
+        "name": "brick_grey",
+        "semantic": "albedo",
+        "file": "brick_grey.albedo.ngtex",
+        "source": "brick_grey.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 41.67
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "c51a6611ac183f557ae0fbd9385cd1694c0b02d362e0e160a5118d9fdc008d6f"
+      },
+      {
+        "name": "brick_grey",
+        "semantic": "normal",
+        "file": "brick_grey.normal.ngtex",
+        "source": "brick_grey.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 1398212,
+        "format": "rgba8",
+        "formatCode": 0,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 100,
+          "mean": 2.315224395829758e-7,
+          "p95": 0.0000012074182697257333,
+          "p99": 0.0000017075472925031877,
+          "max": 0.000002091309789151873
+        },
+        "fallback": true,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "0912a51cd6f15a7050f627b29493796b090d480c995f3ceb834b75b2c928d30d"
+      },
+      {
+        "name": "brick_grey",
+        "semantic": "orm",
+        "file": "brick_grey.orm.ngtex",
+        "source": "brick_grey.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 37.79
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "c04fc6f259646011b63f198165f2a91c5ce0e564c62d36a2904709c2b1fa6d3c"
+      },
+      {
+        "name": "brick_red",
+        "semantic": "albedo",
+        "file": "brick_red.albedo.ngtex",
+        "source": "brick_red.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc7",
+        "formatCode": 4,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 47.76
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "f052c9d23fadd5a6787ce58d76a3e58f579316bfb74b5df42bd8c2aa5908f22e"
+      },
+      {
+        "name": "brick_red",
+        "semantic": "normal",
+        "file": "brick_red.normal.ngtex",
+        "source": "brick_red.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 1398212,
+        "format": "rgba8",
+        "formatCode": 0,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 100,
+          "mean": 2.348507704715006e-7,
+          "p95": 0.0000012074182697257333,
+          "p99": 0.0000017075472925031877,
+          "max": 0.000002091309789151873
+        },
+        "fallback": true,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "6367e5da89929a64fb91562e86021b8cf5bc558c6e942e3842f8fa25609c1a4b"
+      },
+      {
+        "name": "brick_red",
+        "semantic": "orm",
+        "file": "brick_red.orm.ngtex",
+        "source": "brick_red.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 37.83
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "90cbf3333976e3271c2d289cc3d03e339479cf5fd70b0f185cc0f8e662072b63"
+      },
+      {
+        "name": "cobble",
+        "semantic": "albedo",
+        "file": "cobble.albedo.ngtex",
+        "source": "cobble.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.25
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "12867228d547e046857f060707b6c85fa78f83dd9ffc969e785d2e667085c3eb"
+      },
+      {
+        "name": "cobble",
+        "semantic": "normal",
+        "file": "cobble.normal.ngtex",
+        "source": "cobble.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 57.23,
+          "mean": 0.11018068012937574,
+          "p95": 0.5141374903233714,
+          "p99": 0.9852084225435929,
+          "max": 2.27506674416348
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "068af275b9235e3c41fe6c823168b72eb3b1e3f9ac10b0f072362898e022c78e"
+      },
+      {
+        "name": "cobble",
+        "semantic": "orm",
+        "file": "cobble.orm.ngtex",
+        "source": "cobble.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.32
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "cd93cf046cd74f1598b25bfc8ddc387ddcd0cb1d87880c73009197400f85fc19"
+      },
+      {
+        "name": "flat",
+        "semantic": "albedo",
+        "file": "flat.albedo.ngtex",
+        "source": "flat.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 100
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "c02f0a7495314d540281fda046485cc5953ac2a54d53a33f02fb1c972a083516"
+      },
+      {
+        "name": "flat",
+        "semantic": "normal",
+        "file": "flat.normal.ngtex",
+        "source": "flat.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 100,
+          "mean": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "0b4e4f7121fce297f939f2f45039b1ab1e66d1f3f513fcacfc5f211d31ab7aa4"
+      },
+      {
+        "name": "flat",
+        "semantic": "orm",
+        "file": "flat.orm.ngtex",
+        "source": "flat.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 100
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "dbbbc6600eeb5535409950d6695d2877a6512c9ab8eb19b37191c025be213d02"
+      },
+      {
+        "name": "foliage",
+        "semantic": "albedo",
+        "file": "foliage.albedo.ngtex",
+        "source": "foliage.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 42.99
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "bbaf7d729738ce194176e4ee93cbfbe241218d18675b47392adc5d06767dfdce"
+      },
+      {
+        "name": "foliage",
+        "semantic": "normal",
+        "file": "foliage.normal.ngtex",
+        "source": "foliage.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 53.76,
+          "mean": 0.29004203737867335,
+          "p95": 0.635393636616465,
+          "p99": 0.9964953514377682,
+          "max": 1.6653920113586027
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "9f003c70fa83219b68d1a698280856b4607574f029779678cfbd7b4721ac95b7"
+      },
+      {
+        "name": "foliage",
+        "semantic": "orm",
+        "file": "foliage.orm.ngtex",
+        "source": "foliage.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 48.51
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "94a0b01447ad3072e8417a0d178ed10d484ab55d5cb0755d7919b8dd24691463"
+      },
+      {
+        "name": "grass",
+        "semantic": "albedo",
+        "file": "grass.albedo.ngtex",
+        "source": "grass.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 42.8
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "0d820d3f63199f0bd8fd768aac6d93a14e7cba25f3997266ad29362921a1b9dc"
+      },
+      {
+        "name": "grass",
+        "semantic": "normal",
+        "file": "grass.normal.ngtex",
+        "source": "grass.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 45.02,
+          "mean": 0.9520378091182146,
+          "p95": 1.905445084353679,
+          "p99": 2.329187807603133,
+          "max": 3.9745416995408904
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "3c0de64ff72987b51d6c9cf5916724e135c0645acb8bd497fe712e54808fdfba"
+      },
+      {
+        "name": "grass",
+        "semantic": "orm",
+        "file": "grass.orm.ngtex",
+        "source": "grass.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 46.99
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "9cfd514a814c410e0590d4cde8902e433d71b9f154ab4c390029fc196532a502"
+      },
+      {
+        "name": "lamp",
+        "semantic": "albedo",
+        "file": "lamp.albedo.ngtex",
+        "source": "lamp.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 45.5
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "a3c5913b2177039f1d730260bb9a312e39268d8f78e84df30ba37288fd7312af"
+      },
+      {
+        "name": "lamp",
+        "semantic": "normal",
+        "file": "lamp.normal.ngtex",
+        "source": "lamp.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 100,
+          "mean": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "0b4e4f7121fce297f939f2f45039b1ab1e66d1f3f513fcacfc5f211d31ab7aa4"
+      },
+      {
+        "name": "lamp",
+        "semantic": "orm",
+        "file": "lamp.orm.ngtex",
+        "source": "lamp.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 48.13
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "dd0bade1066de1abca7a039a10c8278d02317fc90afb6909d743cc6af2358d59"
+      },
+      {
+        "name": "metal",
+        "semantic": "albedo",
+        "file": "metal.albedo.ngtex",
+        "source": "metal.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 41.96
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "f2c9a72582f2d141b34913e7fcf1fc179c423593c11e51988c168022e61eb48f"
+      },
+      {
+        "name": "metal",
+        "semantic": "normal",
+        "file": "metal.normal.ngtex",
+        "source": "metal.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 50.4,
+          "mean": 0.20959298427647396,
+          "p95": 1.4146837675380994,
+          "p99": 2.455362664530973,
+          "max": 5.435268005467949
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "9b00e7e86cbd8627af774863395ba1bdd5ab4b62208f575f0d61777530d7ab8e"
+      },
+      {
+        "name": "metal",
+        "semantic": "orm",
+        "file": "metal.orm.ngtex",
+        "source": "metal.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 35.27
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "5b41034dc45205f1c0f7a8f57054db3d05b31413645d5e42ef0860bfcd02c6e5"
+      },
+      {
+        "name": "plaster",
+        "semantic": "albedo",
+        "file": "plaster.albedo.ngtex",
+        "source": "plaster.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 42.61
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "79ff429b4bad2af4c4e2feb393e5336dc5dd19f1ee305a5b9bc5958118e7a3e3"
+      },
+      {
+        "name": "plaster",
+        "semantic": "normal",
+        "file": "plaster.normal.ngtex",
+        "source": "plaster.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 53.57,
+          "mean": 0.2115294453490102,
+          "p95": 0.987048171460423,
+          "p99": 1.4171048066012972,
+          "max": 3.9406461123330576
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "8c970ae43557589c2d5e853fcaf5c5a4f0cdac4c8750ca8e909c27b61e4cc684"
+      },
+      {
+        "name": "plaster",
+        "semantic": "orm",
+        "file": "plaster.orm.ngtex",
+        "source": "plaster.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.02
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "7a07834f2ba7d93d6dd861889e030f4796f8028fd3189c0cf78a7a4575ca279f"
+      },
+      {
+        "name": "roof_tile",
+        "semantic": "albedo",
+        "file": "roof_tile.albedo.ngtex",
+        "source": "roof_tile.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.16
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "17cd3c037db9cb51b39ce7c8c9e4c083e2eea7e1a37e2eb55fe156842e6e5d1a"
+      },
+      {
+        "name": "roof_tile",
+        "semantic": "normal",
+        "file": "roof_tile.normal.ngtex",
+        "source": "roof_tile.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 50.09,
+          "mean": 0.23232175190434556,
+          "p95": 1.1015901523953502,
+          "p99": 2.8705356404938516,
+          "max": 6.374744963108989
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "ca82e69c3fb335a056cfde47e97a0f259b1cc851bcfe23aede761f6ee03e26cd"
+      },
+      {
+        "name": "roof_tile",
+        "semantic": "orm",
+        "file": "roof_tile.orm.ngtex",
+        "source": "roof_tile.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 47.39
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "80d3f9d94ef8cb6f5ce203b37ebd074fadb6b8c4f47a43e75af49dd879508f3f"
+      },
+      {
+        "name": "stone",
+        "semantic": "albedo",
+        "file": "stone.albedo.ngtex",
+        "source": "stone.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 42.05
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "9bbac92b21623502e6707a1dd822d332beb9751e97c1ce767c203d41ea5fa462"
+      },
+      {
+        "name": "stone",
+        "semantic": "normal",
+        "file": "stone.normal.ngtex",
+        "source": "stone.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 49.97,
+          "mean": 0.18758159523769985,
+          "p95": 1.4164197527889726,
+          "p99": 3.175795426346876,
+          "max": 8.663516738009896
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "03e4a918056e6759c0469e5327f7c7beb4c2788fd7e886dcc4f74ba656c4f4d8"
+      },
+      {
+        "name": "stone",
+        "semantic": "orm",
+        "file": "stone.orm.ngtex",
+        "source": "stone.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 40.98
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "16b99c1ef30451127b28b24c7f45a8a2f7f09d4e7ee0a7d9467a3f808257d8de"
+      },
+      {
+        "name": "water",
+        "semantic": "albedo",
+        "file": "water.albedo.ngtex",
+        "source": "water.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 40.88
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "88fa370e3b1110f83054797f82073d77e7acd25c0f8671b9693f792734f18576"
+      },
+      {
+        "name": "water",
+        "semantic": "normal",
+        "file": "water.normal.ngtex",
+        "source": "water.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 100,
+          "mean": 1.9713402536110613e-8,
+          "p95": 0,
+          "p99": 0.0000012074182697257333,
+          "max": 0.0000012074182697257333
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "a674ba811a52eaea62c2d62e27f188b410f8d55836654f30d1b815ba2f1bd807"
+      },
+      {
+        "name": "water",
+        "semantic": "orm",
+        "file": "water.orm.ngtex",
+        "source": "water.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 52.58
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "ce53d2c297bd83f64d2ecdf5c9393aed5b039e08d8ed3545c737e2d21c9a02cb"
+      },
+      {
+        "name": "window",
+        "semantic": "albedo",
+        "file": "window.albedo.ngtex",
+        "source": "window.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.6
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "4e6f5cd0c458d4b492b27eca91f95ba4bc7c42f3138f580156fdd917e826878f"
+      },
+      {
+        "name": "window",
+        "semantic": "normal",
+        "file": "window.normal.ngtex",
+        "source": "window.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 55.86,
+          "mean": 0.06466552069912047,
+          "p95": 0,
+          "p99": 1.8321081621926114,
+          "max": 2.4167687566201876
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "82c6470633b3901ce75657816f85903acc7c59fee85ea0caf541a8c10e77e37d"
+      },
+      {
+        "name": "window",
+        "semantic": "orm",
+        "file": "window.orm.ngtex",
+        "source": "window.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 41.79
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "49b94aef1b3d4db013e0f07c435a35e6e985e13b175055572d0eadd9688568ae"
+      },
+      {
+        "name": "wood",
+        "semantic": "albedo",
+        "file": "wood.albedo.ngtex",
+        "source": "wood.albedo.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 174888,
+        "format": "bc1",
+        "formatCode": 1,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 44.7
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "c3355e60404ea9596e322de266aff7e6f79c622b54111fbdaebdcea948f3bfe0"
+      },
+      {
+        "name": "wood",
+        "semantic": "normal",
+        "file": "wood.normal.ngtex",
+        "source": "wood.normal.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc5",
+        "formatCode": 3,
+        "srgb": false,
+        "quality": {
+          "metric": "normal-angle",
+          "psnr": 50.06,
+          "mean": 0.3997420004461282,
+          "p95": 1.093092574517994,
+          "p99": 2.0080104257726643,
+          "max": 5.4851125316533995
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "2be76c0a62962d8a612c4475132c60faaa3379c3faede2a17318214db8c55ba9"
+      },
+      {
+        "name": "wood",
+        "semantic": "orm",
+        "file": "wood.orm.ngtex",
+        "source": "wood.orm.png",
+        "width": 512,
+        "height": 512,
+        "sourceWidth": 256,
+        "sourceHeight": 256,
+        "mips": 10,
+        "bytes": 349664,
+        "format": "bc3",
+        "formatCode": 2,
+        "srgb": false,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 43.31
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "ab1fcbab455aaa04cfcce3565a0850c299f77b4aea69d1a82fec3c96c02edb43"
+      }
+    ]
+  },
+  "textures": [
+    {
+      "name": "awning",
+      "semantic": "albedo",
+      "file": "awning.albedo.ngtex",
+      "source": "awning.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.54
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.54
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 33.48
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 29.04
+          }
+        }
+      ],
+      "sha256": "e9fabf61a7029e9fa081026de8a620a5b729e39c6f0c464e592f4219db281450",
+      "stats": {
+        "min": [
+          143,
+          28,
+          23,
+          255
+        ],
+        "max": [
+          236,
+          226,
+          200,
+          255
+        ],
+        "mean": [
+          0.7401,
+          0.4837,
+          0.4257,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "awning",
+      "semantic": "normal",
+      "file": "awning.normal.ngtex",
+      "source": "awning.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 55.02,
+        "mean": 0.24094088664247862,
+        "p95": 0.6345455293203762,
+        "p99": 0.6354815670758006,
+        "max": 1.2703381247006043
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 55.02,
+            "mean": 0.24094088664247862,
+            "p95": 0.6345455293203762,
+            "p99": 0.6354815670758006,
+            "max": 1.2703381247006043
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 45.21,
+            "mean": 0.968783724435539,
+            "p95": 1.8477812727705758,
+            "p99": 2.237783880565333,
+            "max": 2.762030161797201
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 38.41,
+            "mean": 2.122769725408595,
+            "p95": 4.060615925042379,
+            "p99": 4.952001949033692,
+            "max": 7.124839344893773
+          }
+        }
+      ],
+      "sha256": "2bba10a6d617e29da4f96c4b3062d17da051b550a83ffbfb81832101aa1f6997",
+      "stats": {
+        "min": [
+          113,
+          112,
+          253,
+          255
+        ],
+        "max": [
+          143,
+          146,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5,
+          0.9998,
+          1
+        ],
+        "normalMeanLength": 1.001
+      }
+    },
+    {
+      "name": "awning",
+      "semantic": "orm",
+      "file": "awning.orm.ngtex",
+      "source": "awning.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.01
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.01
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.01
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.01
+          }
+        }
+      ],
+      "sha256": "2df4fc3f7730487fea89b4e21d28d26c93923e15bc99c9132b317ea053fe0e3f",
+      "stats": {
+        "min": [
+          242,
+          209,
+          0,
+          0
+        ],
+        "max": [
+          242,
+          209,
+          0,
+          0
+        ],
+        "mean": [
+          0.949,
+          0.8196,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "brick_grey",
+      "semantic": "albedo",
+      "file": "brick_grey.albedo.ngtex",
+      "source": "brick_grey.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 41.67
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 41.67
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 38.09
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc7",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 31.41
+          }
+        }
+      ],
+      "sha256": "c51a6611ac183f557ae0fbd9385cd1694c0b02d362e0e160a5118d9fdc008d6f",
+      "stats": {
+        "min": [
+          96,
+          92,
+          86,
+          255
+        ],
+        "max": [
+          168,
+          161,
+          145,
+          255
+        ],
+        "mean": [
+          0.4742,
+          0.4537,
+          0.4208,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "brick_grey",
+      "semantic": "normal",
+      "file": "brick_grey.normal.ngtex",
+      "source": "brick_grey.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 1398212,
+      "format": "rgba8",
+      "formatCode": 0,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 100,
+        "mean": 2.315224395829758e-7,
+        "p95": 0.0000012074182697257333,
+        "p99": 0.0000017075472925031877,
+        "max": 0.000002091309789151873
+      },
+      "fallback": true,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "rgba8",
+          "bytes": 1398212,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 2.315224395829758e-7,
+            "p95": 0.0000012074182697257333,
+            "p99": 0.0000017075472925031877,
+            "max": 0.000002091309789151873
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "rgba8",
+          "bytes": 349628,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 34.18,
+            "mean": 2.3200727512749144,
+            "p95": 9.571046874193573,
+            "p99": 10.88563682912798,
+            "max": 14.700572349169851
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "rgba8",
+          "bytes": 87476,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 23.58,
+            "mean": 7.613645062813447,
+            "p95": 35.28042906375481,
+            "p99": 42.53600579975194,
+            "max": 62.26823489232187
+          }
+        }
+      ],
+      "sha256": "0912a51cd6f15a7050f627b29493796b090d480c995f3ceb834b75b2c928d30d",
+      "stats": {
+        "min": [
+          10,
+          10,
+          174,
+          255
+        ],
+        "max": [
+          240,
+          244,
+          255,
+          255
+        ],
+        "mean": [
+          0.5091,
+          0.5031,
+          0.9492,
+          1
+        ],
+        "normalMeanLength": 1.0004
+      }
+    },
+    {
+      "name": "brick_grey",
+      "semantic": "orm",
+      "file": "brick_grey.orm.ngtex",
+      "source": "brick_grey.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 37.79
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 37.79
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.64
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 30.21
+          }
+        }
+      ],
+      "sha256": "c04fc6f259646011b63f198165f2a91c5ce0e564c62d36a2904709c2b1fa6d3c",
+      "stats": {
+        "min": [
+          140,
+          220,
+          0,
+          0
+        ],
+        "max": [
+          255,
+          250,
+          0,
+          0
+        ],
+        "mean": [
+          0.9443,
+          0.9079,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "brick_red",
+      "semantic": "albedo",
+      "file": "brick_red.albedo.ngtex",
+      "source": "brick_red.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc7",
+      "formatCode": 4,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 47.76
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc7",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 47.76
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc7",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.13
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc7",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 26.04
+          }
+        }
+      ],
+      "sha256": "f052c9d23fadd5a6787ce58d76a3e58f579316bfb74b5df42bd8c2aa5908f22e",
+      "stats": {
+        "min": [
+          121,
+          47,
+          31,
+          255
+        ],
+        "max": [
+          202,
+          163,
+          143,
+          255
+        ],
+        "mean": [
+          0.6313,
+          0.284,
+          0.2044,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "brick_red",
+      "semantic": "normal",
+      "file": "brick_red.normal.ngtex",
+      "source": "brick_red.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 1398212,
+      "format": "rgba8",
+      "formatCode": 0,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 100,
+        "mean": 2.348507704715006e-7,
+        "p95": 0.0000012074182697257333,
+        "p99": 0.0000017075472925031877,
+        "max": 0.000002091309789151873
+      },
+      "fallback": true,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "rgba8",
+          "bytes": 1398212,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 2.348507704715006e-7,
+            "p95": 0.0000012074182697257333,
+            "p99": 0.0000017075472925031877,
+            "max": 0.000002091309789151873
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "rgba8",
+          "bytes": 349628,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 34.18,
+            "mean": 2.3218406903373956,
+            "p95": 9.571046874193573,
+            "p99": 10.885270937967295,
+            "max": 14.577062198018833
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "rgba8",
+          "bytes": 87476,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 23.58,
+            "mean": 7.612515660054172,
+            "p95": 35.314629538486244,
+            "p99": 42.53600579975194,
+            "max": 61.23136497897197
+          }
+        }
+      ],
+      "sha256": "6367e5da89929a64fb91562e86021b8cf5bc558c6e942e3842f8fa25609c1a4b",
+      "stats": {
+        "min": [
+          10,
+          10,
+          174,
+          255
+        ],
+        "max": [
+          240,
+          244,
+          255,
+          255
+        ],
+        "mean": [
+          0.5091,
+          0.5031,
+          0.9492,
+          1
+        ],
+        "normalMeanLength": 1.0004
+      }
+    },
+    {
+      "name": "brick_red",
+      "semantic": "orm",
+      "file": "brick_red.orm.ngtex",
+      "source": "brick_red.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 37.83
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 37.83
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.64
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 30.2
+          }
+        }
+      ],
+      "sha256": "90cbf3333976e3271c2d289cc3d03e339479cf5fd70b0f185cc0f8e662072b63",
+      "stats": {
+        "min": [
+          140,
+          220,
+          0,
+          0
+        ],
+        "max": [
+          255,
+          250,
+          0,
+          0
+        ],
+        "mean": [
+          0.9443,
+          0.907,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "cobble",
+      "semantic": "albedo",
+      "file": "cobble.albedo.ngtex",
+      "source": "cobble.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.25
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.25
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 44.08
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 41.12
+          }
+        }
+      ],
+      "sha256": "12867228d547e046857f060707b6c85fa78f83dd9ffc969e785d2e667085c3eb",
+      "stats": {
+        "min": [
+          74,
+          74,
+          71,
+          255
+        ],
+        "max": [
+          126,
+          126,
+          121,
+          255
+        ],
+        "mean": [
+          0.3785,
+          0.3785,
+          0.3635,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "cobble",
+      "semantic": "normal",
+      "file": "cobble.normal.ngtex",
+      "source": "cobble.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 57.23,
+        "mean": 0.11018068012937574,
+        "p95": 0.5141374903233714,
+        "p99": 0.9852084225435929,
+        "max": 2.27506674416348
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 57.23,
+            "mean": 0.11018068012937574,
+            "p95": 0.5141374903233714,
+            "p99": 0.9852084225435929,
+            "max": 2.27506674416348
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 51.3,
+            "mean": 0.365530265734394,
+            "p95": 1.0007386001813414,
+            "p99": 1.8388864042897366,
+            "max": 3.7395243697581813
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 42.91,
+            "mean": 0.9837095763892292,
+            "p95": 3.1999935408246922,
+            "p99": 5.191468192051553,
+            "max": 9.692524265841433
+          }
+        }
+      ],
+      "sha256": "068af275b9235e3c41fe6c823168b72eb3b1e3f9ac10b0f072362898e022c78e",
+      "stats": {
+        "min": [
+          83,
+          84,
+          247,
+          255
+        ],
+        "max": [
+          172,
+          171,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5,
+          0.9936,
+          1
+        ],
+        "normalMeanLength": 1.0002
+      }
+    },
+    {
+      "name": "cobble",
+      "semantic": "orm",
+      "file": "cobble.orm.ngtex",
+      "source": "cobble.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.32
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.32
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.68
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 37.38
+          }
+        }
+      ],
+      "sha256": "cd93cf046cd74f1598b25bfc8ddc387ddcd0cb1d87880c73009197400f85fc19",
+      "stats": {
+        "min": [
+          115,
+          230,
+          0,
+          0
+        ],
+        "max": [
+          242,
+          244,
+          0,
+          0
+        ],
+        "mean": [
+          0.8454,
+          0.9302,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "flat",
+      "semantic": "albedo",
+      "file": "flat.albedo.ngtex",
+      "source": "flat.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 100
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 100
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 100
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 100
+          }
+        }
+      ],
+      "sha256": "c02f0a7495314d540281fda046485cc5953ac2a54d53a33f02fb1c972a083516",
+      "stats": {
+        "min": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "max": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "mean": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "flat",
+      "semantic": "normal",
+      "file": "flat.normal.ngtex",
+      "source": "flat.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 100,
+        "mean": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          }
+        }
+      ],
+      "sha256": "0b4e4f7121fce297f939f2f45039b1ab1e66d1f3f513fcacfc5f211d31ab7aa4",
+      "stats": {
+        "min": [
+          128,
+          128,
+          255,
+          255
+        ],
+        "max": [
+          128,
+          128,
+          255,
+          255
+        ],
+        "mean": [
+          0.502,
+          0.502,
+          1,
+          1
+        ],
+        "normalMeanLength": 1
+      }
+    },
+    {
+      "name": "flat",
+      "semantic": "orm",
+      "file": "flat.orm.ngtex",
+      "source": "flat.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 100
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 100
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 100
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 100
+          }
+        }
+      ],
+      "sha256": "dbbbc6600eeb5535409950d6695d2877a6512c9ab8eb19b37191c025be213d02",
+      "stats": {
+        "min": [
+          255,
+          255,
+          255,
+          0
+        ],
+        "max": [
+          255,
+          255,
+          255,
+          0
+        ],
+        "mean": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "foliage",
+      "semantic": "albedo",
+      "file": "foliage.albedo.ngtex",
+      "source": "foliage.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 42.99
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.99
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.95
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 41.24
+          }
+        }
+      ],
+      "sha256": "bbaf7d729738ce194176e4ee93cbfbe241218d18675b47392adc5d06767dfdce",
+      "stats": {
+        "min": [
+          48,
+          87,
+          33,
+          255
+        ],
+        "max": [
+          94,
+          170,
+          65,
+          255
+        ],
+        "mean": [
+          0.2515,
+          0.456,
+          0.1729,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "foliage",
+      "semantic": "normal",
+      "file": "foliage.normal.ngtex",
+      "source": "foliage.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 53.76,
+        "mean": 0.29004203737867335,
+        "p95": 0.635393636616465,
+        "p99": 0.9964953514377682,
+        "max": 1.6653920113586027
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 53.76,
+            "mean": 0.29004203737867335,
+            "p95": 0.635393636616465,
+            "p99": 0.9964953514377682,
+            "max": 1.6653920113586027
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 44.97,
+            "mean": 0.9792257256305612,
+            "p95": 1.8923730546861444,
+            "p99": 2.3219985224211923,
+            "max": 3.721438381428266
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 37.25,
+            "mean": 2.4145698215936555,
+            "p95": 4.652183200951362,
+            "p99": 5.773349078696793,
+            "max": 8.652716730445048
+          }
+        }
+      ],
+      "sha256": "9f003c70fa83219b68d1a698280856b4607574f029779678cfbd7b4721ac95b7",
+      "stats": {
+        "min": [
+          98,
+          94,
+          250,
+          255
+        ],
+        "max": [
+          158,
+          158,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5,
+          0.9983,
+          1
+        ],
+        "normalMeanLength": 1.0006
+      }
+    },
+    {
+      "name": "foliage",
+      "semantic": "orm",
+      "file": "foliage.orm.ngtex",
+      "source": "foliage.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 48.51
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 48.51
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 50.23
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 49.8
+          }
+        }
+      ],
+      "sha256": "94a0b01447ad3072e8417a0d178ed10d484ab55d5cb0755d7919b8dd24691463",
+      "stats": {
+        "min": [
+          162,
+          230,
+          0,
+          0
+        ],
+        "max": [
+          231,
+          230,
+          0,
+          0
+        ],
+        "mean": [
+          0.7692,
+          0.902,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "grass",
+      "semantic": "albedo",
+      "file": "grass.albedo.ngtex",
+      "source": "grass.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 42.8
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.8
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.16
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 38.87
+          }
+        }
+      ],
+      "sha256": "0d820d3f63199f0bd8fd768aac6d93a14e7cba25f3997266ad29362921a1b9dc",
+      "stats": {
+        "min": [
+          56,
+          113,
+          38,
+          255
+        ],
+        "max": [
+          111,
+          159,
+          48,
+          255
+        ],
+        "mean": [
+          0.2933,
+          0.5304,
+          0.1668,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "grass",
+      "semantic": "normal",
+      "file": "grass.normal.ngtex",
+      "source": "grass.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 45.02,
+        "mean": 0.9520378091182146,
+        "p95": 1.905445084353679,
+        "p99": 2.329187807603133,
+        "max": 3.9745416995408904
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 45.02,
+            "mean": 0.9520378091182146,
+            "p95": 1.905445084353679,
+            "p99": 2.329187807603133,
+            "max": 3.9745416995408904
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 33.77,
+            "mean": 3.639577000918993,
+            "p95": 6.887608537969461,
+            "p99": 8.302312382525308,
+            "max": 12.323723375060611
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 27.03,
+            "mean": 7.9045759200851995,
+            "p95": 15.083278474480334,
+            "p99": 18.28504602598551,
+            "max": 35.520477987246956
+          }
+        }
+      ],
+      "sha256": "3c0de64ff72987b51d6c9cf5916724e135c0645acb8bd497fe712e54808fdfba",
+      "stats": {
+        "min": [
+          73,
+          78,
+          234,
+          255
+        ],
+        "max": [
+          189,
+          183,
+          255,
+          255
+        ],
+        "mean": [
+          0.4999,
+          0.5,
+          0.9915,
+          1
+        ],
+        "normalMeanLength": 1.0001
+      }
+    },
+    {
+      "name": "grass",
+      "semantic": "orm",
+      "file": "grass.orm.ngtex",
+      "source": "grass.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 46.99
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 46.99
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 48.99
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 49.8
+          }
+        }
+      ],
+      "sha256": "9cfd514a814c410e0590d4cde8902e433d71b9f154ab4c390029fc196532a502",
+      "stats": {
+        "min": [
+          208,
+          242,
+          0,
+          0
+        ],
+        "max": [
+          248,
+          242,
+          0,
+          0
+        ],
+        "mean": [
+          0.8971,
+          0.949,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "lamp",
+      "semantic": "albedo",
+      "file": "lamp.albedo.ngtex",
+      "source": "lamp.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 45.5
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 45.5
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 46.85
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 47.46
+          }
+        }
+      ],
+      "sha256": "a3c5913b2177039f1d730260bb9a312e39268d8f78e84df30ba37288fd7312af",
+      "stats": {
+        "min": [
+          255,
+          209,
+          122,
+          255
+        ],
+        "max": [
+          255,
+          240,
+          173,
+          255
+        ],
+        "mean": [
+          1,
+          0.8522,
+          0.5335,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "lamp",
+      "semantic": "normal",
+      "file": "lamp.normal.ngtex",
+      "source": "lamp.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 100,
+        "mean": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          }
+        }
+      ],
+      "sha256": "0b4e4f7121fce297f939f2f45039b1ab1e66d1f3f513fcacfc5f211d31ab7aa4",
+      "stats": {
+        "min": [
+          128,
+          128,
+          255,
+          255
+        ],
+        "max": [
+          128,
+          128,
+          255,
+          255
+        ],
+        "mean": [
+          0.502,
+          0.502,
+          1,
+          1
+        ],
+        "normalMeanLength": 1
+      }
+    },
+    {
+      "name": "lamp",
+      "semantic": "orm",
+      "file": "lamp.orm.ngtex",
+      "source": "lamp.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 48.13
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 48.13
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 48.12
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 47.89
+          }
+        }
+      ],
+      "sha256": "dd0bade1066de1abca7a039a10c8278d02317fc90afb6909d743cc6af2358d59",
+      "stats": {
+        "min": [
+          255,
+          46,
+          0,
+          153
+        ],
+        "max": [
+          255,
+          46,
+          0,
+          255
+        ],
+        "mean": [
+          1,
+          0.1804,
+          0,
+          0.7079
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "metal",
+      "semantic": "albedo",
+      "file": "metal.albedo.ngtex",
+      "source": "metal.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 41.96
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 41.96
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 40.07
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.95
+          }
+        }
+      ],
+      "sha256": "f2c9a72582f2d141b34913e7fcf1fc179c423593c11e51988c168022e61eb48f",
+      "stats": {
+        "min": [
+          68,
+          74,
+          81,
+          255
+        ],
+        "max": [
+          119,
+          130,
+          143,
+          255
+        ],
+        "mean": [
+          0.4067,
+          0.442,
+          0.4863,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "metal",
+      "semantic": "normal",
+      "file": "metal.normal.ngtex",
+      "source": "metal.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 50.4,
+        "mean": 0.20959298427647396,
+        "p95": 1.4146837675380994,
+        "p99": 2.455362664530973,
+        "max": 5.435268005467949
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 50.4,
+            "mean": 0.20959298427647396,
+            "p95": 1.4146837675380994,
+            "p99": 2.455362664530973,
+            "max": 5.435268005467949
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 40.96,
+            "mean": 1.1109958947384884,
+            "p95": 4.233571096394592,
+            "p99": 6.6975761646826655,
+            "max": 12.919409513266636
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 31.05,
+            "mean": 3.1002060092249772,
+            "p95": 13.96781206587276,
+            "p99": 19.21595358654386,
+            "max": 36.152832447732266
+          }
+        }
+      ],
+      "sha256": "9b00e7e86cbd8627af774863395ba1bdd5ab4b62208f575f0d61777530d7ab8e",
+      "stats": {
+        "min": [
+          53,
+          51,
+          223,
+          255
+        ],
+        "max": [
+          203,
+          204,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5,
+          0.9926,
+          1
+        ],
+        "normalMeanLength": 1.0002
+      }
+    },
+    {
+      "name": "metal",
+      "semantic": "orm",
+      "file": "metal.orm.ngtex",
+      "source": "metal.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 35.27
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 35.27
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 31.56
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 28.6
+          }
+        }
+      ],
+      "sha256": "5b41034dc45205f1c0f7a8f57054db3d05b31413645d5e42ef0860bfcd02c6e5",
+      "stats": {
+        "min": [
+          153,
+          88,
+          255,
+          0
+        ],
+        "max": [
+          242,
+          178,
+          255,
+          0
+        ],
+        "mean": [
+          0.9288,
+          0.4311,
+          1,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "plaster",
+      "semantic": "albedo",
+      "file": "plaster.albedo.ngtex",
+      "source": "plaster.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 42.61
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.61
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.42
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 44.16
+          }
+        }
+      ],
+      "sha256": "79ff429b4bad2af4c4e2feb393e5336dc5dd19f1ee305a5b9bc5958118e7a3e3",
+      "stats": {
+        "min": [
+          196,
+          177,
+          145,
+          255
+        ],
+        "max": [
+          213,
+          193,
+          159,
+          255
+        ],
+        "mean": [
+          0.8195,
+          0.7431,
+          0.6098,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "plaster",
+      "semantic": "normal",
+      "file": "plaster.normal.ngtex",
+      "source": "plaster.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 53.57,
+        "mean": 0.2115294453490102,
+        "p95": 0.987048171460423,
+        "p99": 1.4171048066012972,
+        "max": 3.9406461123330576
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 53.57,
+            "mean": 0.2115294453490102,
+            "p95": 0.987048171460423,
+            "p99": 1.4171048066012972,
+            "max": 3.9406461123330576
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 46.74,
+            "mean": 0.6703154495295734,
+            "p95": 1.9025350789903896,
+            "p99": 2.9830402466957264,
+            "max": 7.697458481035549
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 37.78,
+            "mean": 1.8127873588619623,
+            "p95": 5.561711868157625,
+            "p99": 9.139860029738179,
+            "max": 19.717500844233466
+          }
+        }
+      ],
+      "sha256": "8c970ae43557589c2d5e853fcaf5c5a4f0cdac4c8750ca8e909c27b61e4cc684",
+      "stats": {
+        "min": [
+          62,
+          62,
+          234,
+          255
+        ],
+        "max": [
+          192,
+          190,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5001,
+          0.9955,
+          1
+        ],
+        "normalMeanLength": 1.0007
+      }
+    },
+    {
+      "name": "plaster",
+      "semantic": "orm",
+      "file": "plaster.orm.ngtex",
+      "source": "plaster.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.02
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.02
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.94
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 40.67
+          }
+        }
+      ],
+      "sha256": "7a07834f2ba7d93d6dd861889e030f4796f8028fd3189c0cf78a7a4575ca279f",
+      "stats": {
+        "min": [
+          171,
+          235,
+          0,
+          0
+        ],
+        "max": [
+          235,
+          247,
+          0,
+          0
+        ],
+        "mean": [
+          0.8653,
+          0.9453,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "roof_tile",
+      "semantic": "albedo",
+      "file": "roof_tile.albedo.ngtex",
+      "source": "roof_tile.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.16
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.16
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.94
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 38.38
+          }
+        }
+      ],
+      "sha256": "17cd3c037db9cb51b39ce7c8c9e4c083e2eea7e1a37e2eb55fe156842e6e5d1a",
+      "stats": {
+        "min": [
+          54,
+          18,
+          13,
+          255
+        ],
+        "max": [
+          162,
+          54,
+          40,
+          255
+        ],
+        "mean": [
+          0.4814,
+          0.1606,
+          0.1204,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "roof_tile",
+      "semantic": "normal",
+      "file": "roof_tile.normal.ngtex",
+      "source": "roof_tile.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 50.09,
+        "mean": 0.23232175190434556,
+        "p95": 1.1015901523953502,
+        "p99": 2.8705356404938516,
+        "max": 6.374744963108989
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 50.09,
+            "mean": 0.23232175190434556,
+            "p95": 1.1015901523953502,
+            "p99": 2.8705356404938516,
+            "max": 6.374744963108989
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 42.51,
+            "mean": 0.7839120925014077,
+            "p95": 3.699031284046902,
+            "p99": 5.902340113426206,
+            "max": 9.26026864501599
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 32.58,
+            "mean": 2.4984931658250686,
+            "p95": 11.031074782831322,
+            "p99": 20.160746804983468,
+            "max": 34.84389696849058
+          }
+        }
+      ],
+      "sha256": "ca82e69c3fb335a056cfde47e97a0f259b1cc851bcfe23aede761f6ee03e26cd",
+      "stats": {
+        "min": [
+          97,
+          24,
+          202,
+          255
+        ],
+        "max": [
+          158,
+          231,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5011,
+          0.9811,
+          1
+        ],
+        "normalMeanLength": 1.0003
+      }
+    },
+    {
+      "name": "roof_tile",
+      "semantic": "orm",
+      "file": "roof_tile.orm.ngtex",
+      "source": "roof_tile.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 47.39
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 47.39
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 44.99
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 39.51
+          }
+        }
+      ],
+      "sha256": "80d3f9d94ef8cb6f5ce203b37ebd074fadb6b8c4f47a43e75af49dd879508f3f",
+      "stats": {
+        "min": [
+          162,
+          200,
+          0,
+          0
+        ],
+        "max": [
+          255,
+          229,
+          0,
+          0
+        ],
+        "mean": [
+          0.8809,
+          0.8406,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "stone",
+      "semantic": "albedo",
+      "file": "stone.albedo.ngtex",
+      "source": "stone.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 42.05
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.05
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 40.39
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.11
+          }
+        }
+      ],
+      "sha256": "9bbac92b21623502e6707a1dd822d332beb9751e97c1ce767c203d41ea5fa462",
+      "stats": {
+        "min": [
+          107,
+          107,
+          107,
+          255
+        ],
+        "max": [
+          190,
+          185,
+          167,
+          255
+        ],
+        "mean": [
+          0.6385,
+          0.6195,
+          0.5627,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "stone",
+      "semantic": "normal",
+      "file": "stone.normal.ngtex",
+      "source": "stone.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 49.97,
+        "mean": 0.18758159523769985,
+        "p95": 1.4164197527889726,
+        "p99": 3.175795426346876,
+        "max": 8.663516738009896
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 49.97,
+            "mean": 0.18758159523769985,
+            "p95": 1.4164197527889726,
+            "p99": 3.175795426346876,
+            "max": 8.663516738009896
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 36.63,
+            "mean": 1.3043274727041607,
+            "p95": 8.965182591460959,
+            "p99": 10.88563682912798,
+            "max": 18.479418934050063
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 27.16,
+            "mean": 3.9123328804881266,
+            "p95": 24.40351917737991,
+            "p99": 35.25819020973751,
+            "max": 57.48222217659149
+          }
+        }
+      ],
+      "sha256": "03e4a918056e6759c0469e5327f7c7beb4c2788fd7e886dcc4f74ba656c4f4d8",
+      "stats": {
+        "min": [
+          28,
+          18,
+          180,
+          255
+        ],
+        "max": [
+          238,
+          239,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5,
+          0.988,
+          1
+        ],
+        "normalMeanLength": 1.0004
+      }
+    },
+    {
+      "name": "stone",
+      "semantic": "orm",
+      "file": "stone.orm.ngtex",
+      "source": "stone.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 40.98
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 40.98
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 38.48
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.03
+          }
+        }
+      ],
+      "sha256": "16b99c1ef30451127b28b24c7f45a8a2f7f09d4e7ee0a7d9467a3f808257d8de",
+      "stats": {
+        "min": [
+          140,
+          225,
+          0,
+          0
+        ],
+        "max": [
+          235,
+          242,
+          0,
+          0
+        ],
+        "mean": [
+          0.9072,
+          0.9113,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "water",
+      "semantic": "albedo",
+      "file": "water.albedo.ngtex",
+      "source": "water.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 40.88
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 40.88
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 41.34
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 38.84
+          }
+        }
+      ],
+      "sha256": "88fa370e3b1110f83054797f82073d77e7acd25c0f8671b9693f792734f18576",
+      "stats": {
+        "min": [
+          17,
+          55,
+          79,
+          255
+        ],
+        "max": [
+          60,
+          116,
+          146,
+          255
+        ],
+        "mean": [
+          0.0813,
+          0.2555,
+          0.3535,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "water",
+      "semantic": "normal",
+      "file": "water.normal.ngtex",
+      "source": "water.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 100,
+        "mean": 1.9713402536110613e-8,
+        "p95": 0,
+        "p99": 0.0000012074182697257333,
+        "max": 0.0000012074182697257333
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 100,
+            "mean": 1.9713402536110613e-8,
+            "p95": 0,
+            "p99": 0.0000012074182697257333,
+            "max": 0.0000012074182697257333
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 90.37,
+            "mean": 0.00008057927238204035,
+            "p95": 0,
+            "p99": 0.0000012074182697257333,
+            "max": 0.44937290391245893
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 59.31,
+            "mean": 0.09890195311576117,
+            "p95": 0.44934526408628395,
+            "p99": 0.6353252570711053,
+            "max": 0.6355108841399407
+          }
+        }
+      ],
+      "sha256": "a674ba811a52eaea62c2d62e27f188b410f8d55836654f30d1b815ba2f1bd807",
+      "stats": {
+        "min": [
+          122,
+          122,
+          255,
+          255
+        ],
+        "max": [
+          133,
+          133,
+          255,
+          255
+        ],
+        "mean": [
+          0.5,
+          0.5,
+          1,
+          1
+        ],
+        "normalMeanLength": 1.0001
+      }
+    },
+    {
+      "name": "water",
+      "semantic": "orm",
+      "file": "water.orm.ngtex",
+      "source": "water.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 52.58
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 52.58
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 53.42
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 54.24
+          }
+        }
+      ],
+      "sha256": "ce53d2c297bd83f64d2ecdf5c9393aed5b039e08d8ed3545c737e2d21c9a02cb",
+      "stats": {
+        "min": [
+          255,
+          22,
+          0,
+          0
+        ],
+        "max": [
+          255,
+          32,
+          0,
+          0
+        ],
+        "mean": [
+          1,
+          0.1041,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "window",
+      "semantic": "albedo",
+      "file": "window.albedo.ngtex",
+      "source": "window.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.6
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.6
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.64
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc7",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 32.26
+          }
+        }
+      ],
+      "sha256": "4e6f5cd0c458d4b492b27eca91f95ba4bc7c42f3138f580156fdd917e826878f",
+      "stats": {
+        "min": [
+          41,
+          36,
+          31,
+          255
+        ],
+        "max": [
+          254,
+          188,
+          91,
+          255
+        ],
+        "mean": [
+          0.5443,
+          0.4122,
+          0.2233,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "window",
+      "semantic": "normal",
+      "file": "window.normal.ngtex",
+      "source": "window.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 55.86,
+        "mean": 0.06466552069912047,
+        "p95": 0,
+        "p99": 1.8321081621926114,
+        "max": 2.4167687566201876
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 55.86,
+            "mean": 0.06466552069912047,
+            "p95": 0,
+            "p99": 1.8321081621926114,
+            "max": 2.4167687566201876
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 47.09,
+            "mean": 0.27568456396876045,
+            "p95": 2.289817071002686,
+            "p99": 3.619302256622542,
+            "max": 6.304585192650066
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc5",
+          "bytes": 21968,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 35.62,
+            "mean": 1.078621477218748,
+            "p95": 8.08077631840139,
+            "p99": 15.71004751510827,
+            "max": 19.273165917727184
+          }
+        }
+      ],
+      "sha256": "82c6470633b3901ce75657816f85903acc7c59fee85ea0caf541a8c10e77e37d",
+      "stats": {
+        "min": [
+          62,
+          62,
+          233,
+          255
+        ],
+        "max": [
+          193,
+          193,
+          255,
+          255
+        ],
+        "mean": [
+          0.5019,
+          0.5019,
+          0.9973,
+          1
+        ],
+        "normalMeanLength": 1.0001
+      }
+    },
+    {
+      "name": "window",
+      "semantic": "orm",
+      "file": "window.orm.ngtex",
+      "source": "window.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 41.79
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 41.79
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 31.46
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 27.54
+          }
+        }
+      ],
+      "sha256": "49b94aef1b3d4db013e0f07c435a35e6e985e13b175055572d0eadd9688568ae",
+      "stats": {
+        "min": [
+          204,
+          31,
+          0,
+          0
+        ],
+        "max": [
+          255,
+          153,
+          0,
+          217
+        ],
+        "mean": [
+          0.9125,
+          0.3309,
+          0,
+          0.4787
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "wood",
+      "semantic": "albedo",
+      "file": "wood.albedo.ngtex",
+      "source": "wood.albedo.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 174888,
+      "format": "bc1",
+      "formatCode": 1,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 44.7
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc1",
+          "bytes": 174888,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 44.7
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc1",
+          "bytes": 43808,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 45.09
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc1",
+          "bytes": 11032,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.14
+          }
+        }
+      ],
+      "sha256": "c3355e60404ea9596e322de266aff7e6f79c622b54111fbdaebdcea948f3bfe0",
+      "stats": {
+        "min": [
+          51,
+          33,
+          18,
+          255
+        ],
+        "max": [
+          123,
+          78,
+          43,
+          255
+        ],
+        "mean": [
+          0.4094,
+          0.2582,
+          0.1425,
+          1
+        ],
+        "normalMeanLength": null
+      }
+    },
+    {
+      "name": "wood",
+      "semantic": "normal",
+      "file": "wood.normal.ngtex",
+      "source": "wood.normal.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc5",
+      "formatCode": 3,
+      "srgb": false,
+      "quality": {
+        "metric": "normal-angle",
+        "psnr": 50.06,
+        "mean": 0.3997420004461282,
+        "p95": 1.093092574517994,
+        "p99": 2.0080104257726643,
+        "max": 5.4851125316533995
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc5",
+          "bytes": 349664,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 50.06,
+            "mean": 0.3997420004461282,
+            "p95": 1.093092574517994,
+            "p99": 2.0080104257726643,
+            "max": 5.4851125316533995
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc5",
+          "bytes": 87512,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 39.27,
+            "mean": 1.4171057125890514,
+            "p95": 5.43349074203538,
+            "p99": 7.120353555895978,
+            "max": 13.537700774949922
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "rgba8",
+          "bytes": 87476,
+          "quality": {
+            "metric": "normal-angle",
+            "psnr": 29.48,
+            "mean": 4.085239609474934,
+            "p95": 15.411231609184293,
+            "p99": 28.380747570531042,
+            "max": 36.71427773479712
+          }
+        }
+      ],
+      "sha256": "2be76c0a62962d8a612c4475132c60faaa3379c3faede2a17318214db8c55ba9",
+      "stats": {
+        "min": [
+          17,
+          73,
+          190,
+          255
+        ],
+        "max": [
+          238,
+          182,
+          255,
+          255
+        ],
+        "mean": [
+          0.5002,
+          0.5001,
+          0.9766,
+          1
+        ],
+        "normalMeanLength": 1.0002
+      }
+    },
+    {
+      "name": "wood",
+      "semantic": "orm",
+      "file": "wood.orm.ngtex",
+      "source": "wood.orm.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 256,
+      "sourceHeight": 256,
+      "mips": 10,
+      "bytes": 349664,
+      "format": "bc3",
+      "formatCode": 2,
+      "srgb": false,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 43.31
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 512,
+          "width": 512,
+          "height": 512,
+          "format": "bc3",
+          "bytes": 349664,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 43.31
+          }
+        },
+        {
+          "size": 256,
+          "width": 256,
+          "height": 256,
+          "format": "bc3",
+          "bytes": 87512,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 42.36
+          }
+        },
+        {
+          "size": 128,
+          "width": 128,
+          "height": 128,
+          "format": "bc3",
+          "bytes": 21968,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 34.4
+          }
+        }
+      ],
+      "sha256": "ab1fcbab455aaa04cfcce3565a0850c299f77b4aea69d1a82fec3c96c02edb43",
+      "stats": {
+        "min": [
+          140,
+          172,
+          0,
+          0
+        ],
+        "max": [
+          242,
+          197,
+          0,
+          0
+        ],
+        "mean": [
+          0.924,
+          0.7201,
+          0,
+          0
+        ],
+        "normalMeanLength": null
+      }
+    }
+  ]
+}

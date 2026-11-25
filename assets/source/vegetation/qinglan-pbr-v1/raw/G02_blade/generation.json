@@ -1,0 +1,14 @@
+{
+  "assetId": "G02_blade",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Use case: photorealistic-natural. Game vegetation single-leaf BASE COLOR source, preferred square1024x1024. ONE isolated healthy intact leaf, orthographic flat front view, true transparent RGBA. De-lit diffuse natural botanical color, fine veins, NO directional lighting, highlights, shadows, backdrop, checkerboard, border, labels, watermark, collage, branches or other leaves. Keep the COMPLETE silhouette within a large transparent safety margin: top/bottom/left/right at least10%. Center the basal attachment at x50%, y90% of canvas, tip points vertically UP at y10% or below. Preserve natural aspect ratio; narrow blades stay NARROW. For short petiole include it completely, attachment at its basal end. Source will later be canonicalized to UV(0.5,0.0625). Species Setaria viridis 狗尾草: one SINGLE long slender grass blade, flat strap-like leaf tapering gradually to a fine point, parallel vein structure with faint pale midrib and healthy natural green. No seed head, no stem, no clump, no extra blades, no soil. Realistic width:length ratio about1:12.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-0e04dbfc-d299-490f-9487-7f777ea97568.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null,
+      "retry": "previous connection failure, no earlier output"
+    }
+  ]
+}

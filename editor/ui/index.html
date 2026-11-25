@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>NativeEngine</title>
+  <link rel="icon" href="/media/NativeEngine.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="global-bar">
+      <div class="brand-zone">
+        <img class="brand-icon" src="/media/NativeEngine.svg" alt="">
+        <strong>NativeEngine</strong>
+        <nav class="menus" aria-label="主菜单"><button id="menu-file">文件</button><button id="menu-edit">编辑</button><button id="menu-view">视图</button><button id="menu-create">创建</button><button id="menu-build">构建</button></nav>
+      </div>
+      <div class="global-tools" role="toolbar" aria-label="编辑器工具">
+        <button class="tool active" data-tool="select" title="选择">↖</button><button class="tool" data-tool="move" title="移动">✥</button><button class="tool" data-tool="rotate" title="旋转">⟳</button><button class="tool" data-tool="scale" title="缩放">⤢</button><button class="tool" data-tool="grid" title="网格">▦</button>
+      </div>
+      <div class="global-actions"><select id="context-select" aria-label="当前资源类型"><option>关卡</option></select><span class="save-state" id="save-state">正在连接</span><button id="preview-button">预览</button><button id="simulate-button" title="仅推进物理，不接管角色输入；停止后恢复编辑位置">物理模拟</button><button id="run-button" title="启动第三人称运行窗口：WASD 行走，Shift 奔跑，空格跳跃，右键拖动视角">运行</button><button id="world-button" title="打开世界生成工作区：画区域、画河流与道路、预览并应用">世界生成</button><button id="build-button" class="white-button">构建</button></div>
+    </header>
+
+    <main class="editor-grid">
+      <aside class="left-column">
+        <section class="left-primary panel-section">
+          <div class="section-heading"><h1 id="left-title">大纲</h1><div><button class="icon-button" title="筛选">≡</button><button class="icon-button" id="left-add" title="添加">＋</button></div></div>
+          <div class="search-box"><span>⌕</span><input id="left-search" type="search" placeholder="搜索实体或组件" aria-label="搜索当前资源"></div>
+          <div id="left-content" class="left-content scroll"></div>
+        </section>
+        <section class="left-secondary panel-section" id="left-secondary" hidden>
+          <div class="section-heading"><h2 id="secondary-title">资产库</h2><span id="secondary-count" class="muted"></span></div>
+          <div id="secondary-tabs" class="small-tabs"></div>
+          <div id="secondary-content" class="scroll"></div>
+        </section>
+      </aside>
+
+      <section class="center-column">
+        <div class="resource-tabstrip"><div id="resource-tabs" class="resource-tabs" role="tablist" aria-label="打开的资产"></div><button id="open-manager" class="tab-add" title="打开资产管理器">＋</button><div class="tab-history"><button class="icon-button" title="后退">‹</button><button class="icon-button" title="前进">›</button></div></div>
+        <div class="view-strip"><div id="view-modes" class="view-modes"></div><div id="view-meta" class="view-meta"></div></div>
+        <div class="viewport" id="viewport">
+          <div id="native-slot" class="native-slot" aria-label="NativeEngine 原生渲染视口"></div>
+          <div class="native-loading" id="native-loading"><span class="loading-cube">◇</span><strong>NativeEngine 原生视口</strong><span id="native-status">正在连接 D3D12 宿主…</span></div>
+          <div class="viewport-selection" id="viewport-selection" hidden></div>
+          <div class="focus-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="viewport-camera" id="viewport-camera" hidden></div>
+        </div>
+
+        <section class="context-bottom" id="context-bottom">
+          <div id="bottom-content" class="bottom-content"></div>
+          <div class="bottom-tabs" id="bottom-tabs">
+            <button class="active" data-bottom="scene">场景</button><button data-bottom="assets">资产</button><button data-bottom="console">控制台</button><button data-bottom="issues">问题 <span id="issue-count">0</span></button><button data-bottom="performance">性能</button><button data-bottom="replay">回放 ⌃</button>
+          </div>
+        </section>
+      </section>
+
+      <aside class="inspector-column">
+        <div class="inspector-tabs" id="inspector-tabs"></div>
+        <div class="inspector-content scroll" id="inspector-content"></div>
+      </aside>
+    </main>
+
+    <footer class="status-bar"><div id="status-selection">正在读取工程</div><div id="status-metrics">D3D12 · 原生视口</div></footer>
+  </div>
+
+  <dialog id="asset-manager" class="asset-manager" aria-labelledby="asset-manager-title">
+    <div class="manager-header"><div><h2 id="asset-manager-title">资产管理器</h2><span id="manager-total">本地库</span></div><button class="icon-button" id="manager-close" aria-label="关闭">×</button></div>
+    <div class="manager-body">
+      <aside class="manager-categories"><span class="manager-label">资产来源</span><div class="source-tabs"><button class="active">本地资产</button><button disabled title="未配置在线资产服务">在线资产</button></div><span class="manager-label">分类</span><div id="manager-categories"></div><div class="storage-info"><span>本地存储</span><span id="storage-count">—</span><div><i></i></div></div></aside>
+      <section class="manager-assets"><div class="manager-filter"><div class="search-box"><span>⌕</span><input id="manager-search" type="search" placeholder="搜索资产名称、标签或 GUID"></div><select id="manager-type"><option value="all">类型 · 全部</option></select><span class="manager-sort">最近修改</span></div><div class="manager-list-heading"><span id="manager-list-title">全部资产</span><span>▦ ☰</span></div><div id="manager-grid" class="manager-grid scroll"></div><div class="manager-pagination" id="manager-pagination"></div></section>
+      <aside class="manager-details"><div class="section-heading"><h3>资产详情</h3><button class="icon-button" id="details-close">×</button></div><div id="manager-details"></div></aside>
+    </div>
+    <div class="manager-footer"><span>索引已就绪 · 本地资产</span><span id="manager-selection">未选择资产</span></div>
+  </dialog>
+
+  <dialog id="new-project-dialog" class="new-project-dialog" aria-labelledby="new-project-title">
+    <form id="new-project-form" class="project-modal">
+      <header class="project-modal-header">
+        <h2 id="new-project-title">新建项目</h2>
+        <button type="button" class="icon-button" id="new-project-close" aria-label="关闭">×</button>
+      </header>
+      <div class="project-modal-body">
+        <div class="project-tabs" role="tablist" aria-label="项目类型">
+            <button type="button" class="active" role="tab" aria-selected="true">基础项目</button>
+            <button type="button" role="tab" disabled title="当前提供第三人称基础场景">更多模板</button>
+        </div>
+        <label class="project-field" for="project-name"><span>项目名称</span><input id="project-name" name="name" maxlength="80" placeholder="Untitled_Project" autocomplete="off" required></label>
+        <label class="project-field" for="project-location"><span>保存位置</span><span class="project-path-row"><input id="project-location" readonly><button type="button" id="project-browse" disabled title="项目统一保存在系统文档目录的 nativeEngineProject 中">浏览…</button></span></label>
+        <fieldset class="project-group">
+          <legend>起始模板</legend>
+          <div class="project-template-grid">
+             <button type="button" class="project-template selected" data-template="blank" aria-pressed="true"><span class="project-card-icon" data-project-icon="folder"></span><strong>第三人称基础场景</strong><small>机器人角色、网格地面与物理方块</small></button>
+            <button type="button" class="project-template" disabled data-template="character" aria-pressed="false"><span class="project-card-icon" data-project-icon="user"></span><strong>自定义角色模板</strong><small>即将支持</small></button>
+            <button type="button" class="project-template" disabled data-template="material" aria-pressed="false"><span class="project-card-icon" data-project-icon="circle"></span><strong>材质展示</strong><small>即将支持</small></button>
+            <button type="button" class="project-template" disabled data-template="effect" aria-pressed="false"><span class="project-card-icon" data-project-icon="sparkles"></span><strong>粒子特效</strong><small>即将支持</small></button>
+          </div>
+        </fieldset>
+        <fieldset class="project-group">
+          <legend>渲染管线</legend>
+          <div class="project-pipelines">
+            <button type="button" class="project-pipeline active" data-pipeline="standard" aria-pressed="true">标准管线</button>
+            <button type="button" class="project-pipeline" disabled data-pipeline="mobile" aria-pressed="false" title="当前引擎不支持移动端管线">移动端</button>
+            <button type="button" class="project-pipeline" disabled data-pipeline="raytracing" aria-pressed="false" title="当前引擎仅提供 DXR 阴影，不提供独立光追管线">光线追踪</button>
+          </div>
+        </fieldset>
+        <p id="project-create-status" class="project-status" role="status"></p>
+      </div>
+      <footer class="project-modal-footer">
+        <span>按 Enter 立即创建 · Esc 取消</span>
+        <div class="dialog-actions"><button type="button" id="new-project-cancel">取消</button><button type="submit" class="white-button" id="new-project-submit">创建项目</button></div>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="project-manager" class="project-manager-dialog" aria-labelledby="project-manager-title">
+    <header class="project-modal-header"><h2 id="project-manager-title">项目管理</h2><button type="button" class="icon-button" id="project-manager-close" aria-label="关闭">×</button></header>
+    <div class="project-manager-body">
+      <div class="project-current"><span class="project-current-label">当前项目</span><strong id="project-current-name">未打开项目</strong><small id="project-current-path"></small></div>
+      <div class="project-list-heading"><span>本地项目</span><span id="project-list-count">0</span></div>
+      <div id="project-list" class="project-list scroll"></div>
+    </div>
+    <footer class="project-manager-footer"><button type="button" id="project-create-new" class="white-button">新建项目</button><button type="button" id="project-manager-close-footer">关闭</button></footer>
+  </dialog>
+
+  <dialog id="import-dialog" class="import-dialog" aria-labelledby="import-title">
+    <form id="import-form"><div class="section-heading"><h2 id="import-title">导入本地资产</h2><button type="button" class="icon-button" id="import-close">×</button></div><p>输入模型、角色、动作、贴图、音频或环境文件的完整路径。模型支持 glTF / GLB / FBX / OBJ 等格式，导入成功后资产会出现在资源管理器中。</p><label for="import-source">资源文件路径</label><input id="import-source" required placeholder="C:\\资源\\角色.glb"><label for="import-texture-size">贴图分辨率</label><select id="import-texture-size"><option value="auto" selected>保留源分辨率（推荐，上限 4096）</option><option value="4096">4096</option><option value="2048">2048</option><option value="1024">1024</option><option value="512">512</option><option value="256">256</option></select><label for="import-semantic">贴图用途</label><select id="import-semantic"><option value="albedo">基础颜色</option><option value="normal">法线</option><option value="orm">AO / 粗糙度 / 金属度</option><option value="emissive">自发光</option></select><div class="dialog-actions"><button type="button" id="import-cancel">取消</button><button class="white-button" id="import-submit">导入并打开</button></div><p id="import-status" role="status"></p></form>
+  </dialog>
+
+  <div class="toast" id="toast" role="alert" hidden></div>
+  <script type="module" src="/app.mjs"></script>
+  <script type="module">
+    // The world workspace is a separate module so its canvas, draft and undo stack are not
+    // part of the scene editor's state. Importing it here only registers the overlay; the
+    // first click builds the DOM.
+    import('/world.mjs').then(() => {
+      document.getElementById('world-button')?.addEventListener('click', () => window.worldWorkspace?.toggle());
+    });
+  </script>
+</body>
+</html>

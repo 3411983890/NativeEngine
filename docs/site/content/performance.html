@@ -1,0 +1,117 @@
+<p class="lede">性能在这个项目里不是"感觉快了"，而是三件可执行的事：帧预算管理器决定何时降档，图像契约决定"变了多少算坏"，证据目录决定"这次数字能不能被引用"。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已实现</span>
+  <span class="badge badge--partial">预算阶梯仅两档</span>
+  <span class="meta">host/budget.* · tests/image-contracts.json · tools/ci.ps1</span>
+</div>
+
+<h2 id="budget">帧预算管理器</h2>
+
+<p>它只决定<strong>何时</strong>降档，具体降什么由宿主执行。决策指标是滚动窗口的<strong>中位数</strong>，不是 P95——短窗口的 P95 只要一帧毛刺就拉满，会在单帧卡顿时误降档。</p>
+
+<table>
+<thead><tr><th>规则</th><th>取值</th></tr></thead>
+<tbody>
+<tr><td>决策指标</td><td>GPU 与 CPU submit 的滚动中位数</td></tr>
+<tr><td>触发条件</td><td>中位数连续 <code>sustainFrames</code> 帧超目标，且窗口样本足够</td></tr>
+<tr><td>阶梯</td><td>单调、每档只应用一次、<strong>不可回退</strong>（回退会抖动）</td></tr>
+<tr><td>耗尽</td><td>走完阶梯仍超目标 → <code>status=exhausted</code>，只记录不再动作</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead><tr><th>档位</th><th>名称</th><th>宿主动作</th></tr></thead>
+<tbody>
+<tr><td>0</td><td><code>rt-shadows-off</code></td><td>关闭 DXR 阴影，回到纯光栅 + 全 1 可见性</td></tr>
+<tr><td>1</td><td><code>mesh-path-off</code></td><td>关闭 Mesh Shader，回到顶点路径</td></tr>
+</tbody>
+</table>
+
+<p>阶梯只包含本次运行里真正可用的档：<code>--rt-shadows off</code> 时对应档不会进入阶梯。</p>
+
+<pre><code>build/NativeGPU.exe --smoke --no-watch --frames 240 --budget auto \
+  --budget-target-ms 16.6 --budget-window 120 --budget-sustain 30</code></pre>
+
+<table>
+<thead><tr><th>参数</th><th>默认</th><th>含义</th></tr></thead>
+<tbody>
+<tr><td><code>--budget auto|off</code></td><td>off</td><td>是否启用（默认关闭，避免改变既有证据）</td></tr>
+<tr><td><code>--budget-target-ms</code></td><td>16.6</td><td>GPU 中位数目标</td></tr>
+<tr><td><code>--budget-cpu-ms</code></td><td>0</td><td>CPU submit 中位数目标，0 = 不启用</td></tr>
+<tr><td><code>--budget-vram-mb</code></td><td>0</td><td>显存峰值上限，0 = 不启用</td></tr>
+<tr><td><code>--budget-window</code></td><td>120</td><td>滚动窗口帧数</td></tr>
+<tr><td><code>--budget-sustain</code></td><td>30</td><td>连续超目标帧数</td></tr>
+</tbody>
+</table>
+
+<p>报告 <code>budget</code> 段：<code>enabled</code>、<code>status</code>、<code>level</code>、<code>targetGpuMs</code>、<code>windowFrames</code>、<code>sustainFrames</code>、<code>samples</code>、<code>gpuSamples</code>、<code>overBudgetFrames</code>、<code>gpuP95Ms</code>、<code>cpuP95Ms</code>、<code>vramPeakBytes</code>、<code>ladder[]</code>、<code>steps[]</code>（每步含 <code>name</code>、<code>frame</code>、<code>reason</code>、<code>gpuMedianBeforeMs</code>、<code>cpuMedianBeforeMs</code>）。</p>
+
+<h2 id="contracts">图像误差契约</h2>
+
+<p><code>tests/image-contracts.json</code> 定义了 5 条契约：每条指定两次运行的产物、比较指标与阈值。<strong>阈值来自实测</strong>，不是先写一个"看起来合理"的数。</p>
+
+<table>
+<thead><tr><th>指标</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td>平均绝对误差（MAE）</td><td>整体亮度/颜色偏移</td></tr>
+<tr><td>变化像素比例</td><td>"有多少像素被改动"</td></tr>
+<tr><td>最大单通道差</td><td>抓局部炸点</td></tr>
+</tbody>
+</table>
+
+<pre><code>powershell -File tools/error-contract.ps1
+powershell -File tools/error-contract.ps1 -Contract shadow-off-fallback</code></pre>
+
+<p>典型契约："关闭 DXR 阴影后与纯光栅逐像素一致"（maxDelta = 0）；"开启阴影与关闭阴影的差异在 11.73% 左右"——差异<strong>必须存在</strong>，否则说明阴影根本没生效。这两条互为对照，防止"两边都黑"式的假通过。</p>
+
+<h2 id="evidence">证据目录</h2>
+
+<pre><code>reports/
+  &lt;version&gt;/&lt;commit12&gt;/&lt;UTC 时间戳&gt;/
+    run.json                     环境、DXC、适配器、场景哈希、产物 SHA-256
+    verify.json                  各步骤结果
+    rt-shadows-evidence.json     开关两遍、时序、逐像素对比、23 项检查
+    physics-evidence.json        破坏前后、重复摘要、步预算
+    animation-evidence.json      阶段哈希、蒙皮 draw、严格回放
+    artifacts/                   固定机位截图
+  latest/                        最新一次的别名（不覆盖历史）</code></pre>
+
+<p><code>run.json</code> 里的 <code>worktreeDirty</code> 与 <code>staleBuild</code> 两个字段是"这份证据能不能引用"的开关：脏树或过期构建跑出来的数字，必须在引用时注明。</p>
+
+<h2 id="ci">CI</h2>
+
+<pre><code>powershell -File tools/ci.ps1 -Clean       # 删 build/ outputs/，保留 reports/ 历史
+powershell -File tools/ci.ps1 -CleanAll    # 连 reports/ 一起删，从零重放</code></pre>
+
+<p><code>tools/ci.ps1</code> 是唯一入口，本地与 <code>.github/workflows/windows.yml</code> 调用同一脚本。失败保留 <code>logs/</code> 与 <code>ci-failure-&lt;commit&gt;-*.log</code>。</p>
+
+<div class="callout callout--limit">
+<span class="callout-title">远程 CI 不等于显卡证据</span>
+<p>GitHub 托管 runner 没有 D3D12 GPU，显卡相关步骤会退化为 WARP 并允许失败。远程绿灯只能证明"代码能编译、逻辑测试通过"，不能替代本机显卡证据。</p>
+</div>
+
+<h2 id="toolchain">工具链冻结</h2>
+
+<table>
+<thead><tr><th>组件</th><th>版本</th><th>校验</th></tr></thead>
+<tbody>
+<tr><td>C++ 工具链</td><td>LLVM-MinGW 20261006（clang 23.1.3，UCRT）</td><td>归档 SHA-256</td></tr>
+<tr><td>着色器编译器</td><td>DXC 1.9.2609</td><td>归档 SHA-256 + <code>dxcompiler.dll</code> / <code>dxil.dll</code> 哈希</td></tr>
+<tr><td>Node.js</td><td>≥ 22（证据机 v24.18.0）</td><td>报告 <code>node</code> 字段</td></tr>
+<tr><td>Windows SDK</td><td>不使用</td><td>头文件来自 LLVM-MinGW 副本</td></tr>
+</tbody>
+</table>
+
+<h2 id="numbers">参考数字（仅供对照，不可跨机引用）</h2>
+
+<table>
+<thead><tr><th>场景</th><th>机器</th><th>指标</th></tr></thead>
+<tbody>
+<tr><td>1280×720，33 实例，阴影开 / 关</td><td>Radeon 890M</td><td>GPU P95 0.490 ms / 0.387 ms</td></tr>
+<tr><td>预算运行，120 帧窗口</td><td>RTX 5060 Laptop</td><td>GPU P95 0.117 ms，CPU submit P95 1.58 ms</td></tr>
+<tr><td>Mesh vs 顶点（关阴影）</td><td>同机</td><td>0.388 ms vs 0.466 ms</td></tr>
+</tbody>
+</table>
+
+<p>这些数字的作用是"量级参考"，不是验收标准。验收标准写在各自脚本的断言里，且必须在本机重跑。</p>

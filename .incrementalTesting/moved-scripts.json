@@ -1,0 +1,525 @@
+{
+  "generatedAt": "2026-10-27T04:13:46.354Z",
+  "moves": [
+    {
+      "from": ".incrementalTesting/assets/asset-import-check.ps1",
+      "to": ".incrementalTesting/assets/asset-import-check.ps1",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-audio-check.mjs",
+      "to": ".incrementalTesting/assets/asset-audio-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-clearcoat-check.mjs",
+      "to": ".incrementalTesting/assets/asset-clearcoat-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-clearcoat-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-clearcoat-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-coordinates-check.mjs",
+      "to": ".incrementalTesting/assets/asset-coordinates-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-emissive-check.mjs",
+      "to": ".incrementalTesting/assets/asset-emissive-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-environment-check.mjs",
+      "to": ".incrementalTesting/assets/asset-environment-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-environment-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-environment-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-ior-check.mjs",
+      "to": ".incrementalTesting/assets/asset-ior-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-ior-hot-check.mjs",
+      "to": ".incrementalTesting/assets/asset-ior-hot-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-mapping-check.mjs",
+      "to": ".incrementalTesting/assets/asset-mapping-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-mapping-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-mapping-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-mikktspace-check.mjs",
+      "to": ".incrementalTesting/assets/asset-mikktspace-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-mikktspace-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-mikktspace-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-occlusion-check.mjs",
+      "to": ".incrementalTesting/assets/asset-occlusion-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-occlusion-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-occlusion-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-reimport-check.mjs",
+      "to": ".incrementalTesting/assets/asset-reimport-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-scene-check.mjs",
+      "to": ".incrementalTesting/assets/asset-scene-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-tangent-check.mjs",
+      "to": ".incrementalTesting/assets/asset-tangent-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-tangent-morph-check.mjs",
+      "to": ".incrementalTesting/assets/asset-tangent-morph-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-tangent-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-tangent-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-texture-check.mjs",
+      "to": ".incrementalTesting/assets/asset-texture-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-texture-coordinates-check.mjs",
+      "to": ".incrementalTesting/assets/asset-texture-coordinates-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-texture-coordinates-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-texture-coordinates-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-transparency-check.mjs",
+      "to": ".incrementalTesting/assets/asset-transparency-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-transparency-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-transparency-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-vertex-color-check.mjs",
+      "to": ".incrementalTesting/assets/asset-vertex-color-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/asset-vertex-color-public-check.mjs",
+      "to": ".incrementalTesting/assets/asset-vertex-color-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/assets-public-check.mjs",
+      "to": ".incrementalTesting/assets/assets-public-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/character-controller-check.mjs",
+      "to": ".incrementalTesting/assets/character-controller-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/character-instances-check.mjs",
+      "to": ".incrementalTesting/assets/character-instances-check.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/assets/generate-texture-fixtures.mjs",
+      "to": ".incrementalTesting/assets/generate-texture-fixtures.mjs",
+      "category": "assets"
+    },
+    {
+      "from": ".incrementalTesting/rendering/budget.ps1",
+      "to": ".incrementalTesting/rendering/budget.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/capture.ps1",
+      "to": ".incrementalTesting/rendering/capture.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/compute.ps1",
+      "to": ".incrementalTesting/rendering/compute.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/error-contract.ps1",
+      "to": ".incrementalTesting/rendering/error-contract.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/image-regression.ps1",
+      "to": ".incrementalTesting/rendering/image-regression.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/lighting-quality.ps1",
+      "to": ".incrementalTesting/rendering/lighting-quality.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/mesh-bindless.ps1",
+      "to": ".incrementalTesting/rendering/mesh-bindless.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/probe.ps1",
+      "to": ".incrementalTesting/rendering/probe.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/rt-shadows.ps1",
+      "to": ".incrementalTesting/rendering/rt-shadows.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/smoke-host.ps1",
+      "to": ".incrementalTesting/rendering/smoke-host.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/smoke-host-snapshot.mjs",
+      "to": ".incrementalTesting/rendering/smoke-host-snapshot.mjs",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/smoke-render-audit.mjs",
+      "to": ".incrementalTesting/rendering/smoke-render-audit.mjs",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/night.ps1",
+      "to": ".incrementalTesting/rendering/night.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/campfire.ps1",
+      "to": ".incrementalTesting/rendering/campfire.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/rendering/campfire-night.ps1",
+      "to": ".incrementalTesting/rendering/campfire-night.ps1",
+      "category": "rendering"
+    },
+    {
+      "from": ".incrementalTesting/simulation/cloth-batch.ps1",
+      "to": ".incrementalTesting/simulation/cloth-batch.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/cloth-draw.ps1",
+      "to": ".incrementalTesting/simulation/cloth-draw.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/cloth-gpu.ps1",
+      "to": ".incrementalTesting/simulation/cloth-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/cloth-grouped.ps1",
+      "to": ".incrementalTesting/simulation/cloth-grouped.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/cloth-host.ps1",
+      "to": ".incrementalTesting/simulation/cloth-host.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-cpu.ps1",
+      "to": ".incrementalTesting/simulation/effects-cpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-deposit-host.ps1",
+      "to": ".incrementalTesting/simulation/effects-deposit-host.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-deposit-service.ps1",
+      "to": ".incrementalTesting/simulation/effects-deposit-service.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-deposits.ps1",
+      "to": ".incrementalTesting/simulation/effects-deposits.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-fields.ps1",
+      "to": ".incrementalTesting/simulation/effects-fields.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-gpu.ps1",
+      "to": ".incrementalTesting/simulation/effects-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-gpu-draw.ps1",
+      "to": ".incrementalTesting/simulation/effects-gpu-draw.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/effects-runtime.ps1",
+      "to": ".incrementalTesting/simulation/effects-runtime.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/field-adapters.ps1",
+      "to": ".incrementalTesting/simulation/field-adapters.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/field-coordinator-gpu.ps1",
+      "to": ".incrementalTesting/simulation/field-coordinator-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/field-host.ps1",
+      "to": ".incrementalTesting/simulation/field-host.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/fields.ps1",
+      "to": ".incrementalTesting/simulation/fields.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/fields-gpu.ps1",
+      "to": ".incrementalTesting/simulation/fields-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/fields-joint-gpu.ps1",
+      "to": ".incrementalTesting/simulation/fields-joint-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/fields-local-gpu.ps1",
+      "to": ".incrementalTesting/simulation/fields-local-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/fields-services-gpu.ps1",
+      "to": ".incrementalTesting/simulation/fields-services-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/fields-world-gpu.ps1",
+      "to": ".incrementalTesting/simulation/fields-world-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/particles.ps1",
+      "to": ".incrementalTesting/simulation/particles.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/physics.ps1",
+      "to": ".incrementalTesting/simulation/physics.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/shared-wind.ps1",
+      "to": ".incrementalTesting/simulation/shared-wind.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/simulation-fields.ps1",
+      "to": ".incrementalTesting/simulation/simulation-fields.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/simulation-suite.ps1",
+      "to": ".incrementalTesting/simulation/simulation-suite.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/smoke-fields.ps1",
+      "to": ".incrementalTesting/simulation/smoke-fields.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/smoke-gpu.ps1",
+      "to": ".incrementalTesting/simulation/smoke-gpu.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/smoke-particles.ps1",
+      "to": ".incrementalTesting/simulation/smoke-particles.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/smoke-service.ps1",
+      "to": ".incrementalTesting/simulation/smoke-service.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/smoke-sharing.ps1",
+      "to": ".incrementalTesting/simulation/smoke-sharing.ps1",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/field-service-phase-audit.mjs",
+      "to": ".incrementalTesting/simulation/field-service-phase-audit.mjs",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/field-services-audit.mjs",
+      "to": ".incrementalTesting/simulation/field-services-audit.mjs",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/fields-joint-audit.mjs",
+      "to": ".incrementalTesting/simulation/fields-joint-audit.mjs",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/smoke-fields-audit.mjs",
+      "to": ".incrementalTesting/simulation/smoke-fields-audit.mjs",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/smoke-sharing-audit.mjs",
+      "to": ".incrementalTesting/simulation/smoke-sharing-audit.mjs",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/check-effect-deposit-admission.mjs",
+      "to": ".incrementalTesting/simulation/check-effect-deposit-admission.mjs",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/simulation/simulation-baseline.mjs",
+      "to": ".incrementalTesting/simulation/simulation-baseline.mjs",
+      "category": "simulation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-hair-verify.ps1",
+      "to": ".incrementalTesting/vegetation/vegetation-hair-verify.ps1",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-atlas-diagnostics.mjs",
+      "to": ".incrementalTesting/vegetation/vegetation-atlas-diagnostics.mjs",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-browser-check.mjs",
+      "to": ".incrementalTesting/vegetation/vegetation-browser-check.mjs",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-evidence-check.mjs",
+      "to": ".incrementalTesting/vegetation/vegetation-evidence-check.mjs",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-morphology.mjs",
+      "to": ".incrementalTesting/vegetation/vegetation-morphology.mjs",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-production-report.mjs",
+      "to": ".incrementalTesting/vegetation/vegetation-production-report.mjs",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-silhouette.mjs",
+      "to": ".incrementalTesting/vegetation/vegetation-silhouette.mjs",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/vegetation/vegetation-sync-check.mjs",
+      "to": ".incrementalTesting/vegetation/vegetation-sync-check.mjs",
+      "category": "vegetation"
+    },
+    {
+      "from": ".incrementalTesting/core/test-native.ps1",
+      "to": ".incrementalTesting/core/test-native.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/verify.ps1",
+      "to": ".incrementalTesting/core/verify.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/ci.ps1",
+      "to": ".incrementalTesting/core/ci.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/g1.ps1",
+      "to": ".incrementalTesting/core/g1.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/g1-reliability.ps1",
+      "to": ".incrementalTesting/core/g1-reliability.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/animation.ps1",
+      "to": ".incrementalTesting/core/animation.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/audio.ps1",
+      "to": ".incrementalTesting/core/audio.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/determinism.ps1",
+      "to": ".incrementalTesting/core/determinism.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/replay.ps1",
+      "to": ".incrementalTesting/core/replay.ps1",
+      "category": "core"
+    },
+    {
+      "from": ".incrementalTesting/core/gameplay.ps1",
+      "to": ".incrementalTesting/core/gameplay.ps1",
+      "category": "core"
+    }
+  ]
+}

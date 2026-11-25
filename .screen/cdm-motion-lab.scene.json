@@ -1,0 +1,3114 @@
+{
+  "schemaVersion": 2,
+  "projectId": "59549f6a-1ae2-46d6-9a71-d8b467fe3db3",
+  "name": "CDM Motion Lab - Built-in Robot",
+  "revision": 1,
+  "settings": {
+    "walkSpeed": 3,
+    "runSpeed": 6,
+    "jumpSpeed": 7,
+    "gravity": 20
+  },
+  "materials": {
+    "default": {
+      "albedo": "engine_grid",
+      "normal": "engine_grid",
+      "orm": "engine_grid",
+      "uvScale": 5,
+      "roughness": 0.88,
+      "metalness": 0
+    },
+    "m0": {
+      "albedo": "m0",
+      "normal": "m0",
+      "orm": "m0",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0
+    },
+    "m1": {
+      "albedo": "m1",
+      "normal": "m1",
+      "orm": "m1",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0,
+      "textureMappings": {
+        "albedo": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "normal": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "orm": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        }
+      }
+    }
+  },
+  "entities": [
+    {
+      "id": "0f373cc8-ff8d-4626-9068-2d2690a404d2",
+      "name": "CDM Player - Built-in Robot",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        6
+      ],
+      "scale": [
+        0.6,
+        1.7999999999999998,
+        0.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "character": {
+        "file": "builtin/robot/character.json",
+        "sha256": "3e4605f3f980f70cc7ae48e2c7b1d9bfee54e0750c2c01c305df5c5f58d1b809",
+        "binarySha256": "debc001615054fe0f477ee5a406f2c4e3354968c56266825c0fd4bc65b5e8ff2",
+        "anchor": "feet",
+        "rootMotion": "extract",
+        "scale": [
+          1.8406537157858247,
+          1.8406537157858247,
+          1.8406537157858247
+        ],
+        "offset": [
+          -3.4903583979581813e-8,
+          -6.523517498670227e-7,
+          -6.340045023515096e-8
+        ],
+        "controller": {
+          "stepHeight": 0.36,
+          "orbitDistance": 4,
+          "orbitHeight": 1.15,
+          "targetHeight": 0.9
+        },
+        "rig": {
+          "turnCooldown": 0.15,
+          "maxSlopeCosine": 0.7071068,
+          "soleRoll": 0.5,
+          "maxPelvisShift": 0.08,
+          "enabled": true,
+          "footLock": true,
+          "turnInPlace": true
+        }
+      }
+    },
+    {
+      "id": "f4a71fdc-84a5-4b59-aea8-acf3af84f813",
+      "name": "CDM grid floor",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.2,
+        -2
+      ],
+      "scale": [
+        32,
+        0.4,
+        32
+      ],
+      "color": [
+        0.28,
+        0.3,
+        0.33
+      ],
+      "material": {
+        "albedo": [
+          0.28,
+          0.3,
+          0.33
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "59015938-5c36-477c-b8ce-6dafc7727ff5",
+      "name": "Grid X -15",
+      "kind": "prop",
+      "position": [
+        -15,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "6e338801-653e-4170-a2e5-b8482f5c1c54",
+      "name": "Grid Z -15",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -17
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "fbc25165-e88c-4b98-882d-5bb1e988c232",
+      "name": "Grid X -14",
+      "kind": "prop",
+      "position": [
+        -14,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "3b3b84d8-226e-48c1-9ae8-99352dff39cd",
+      "name": "Grid Z -14",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -16
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "1b8867d0-491d-4614-95ed-a05984192edc",
+      "name": "Grid X -13",
+      "kind": "prop",
+      "position": [
+        -13,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "8870245f-053e-49d1-92fe-cf5a052a8ce6",
+      "name": "Grid Z -13",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -15
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "7a17cbc8-5472-4421-b3cb-40b84b06f9d6",
+      "name": "Grid X -12",
+      "kind": "prop",
+      "position": [
+        -12,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "63168a06-e1d9-4b4b-b4e8-b31925dfb9f6",
+      "name": "Grid Z -12",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -14
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "ba133b5d-06d1-4354-84f0-228fb8ad3fe4",
+      "name": "Grid X -11",
+      "kind": "prop",
+      "position": [
+        -11,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "9b8a3a73-79fa-4154-910f-10f0a1992580",
+      "name": "Grid Z -11",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -13
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "8252d36b-54cf-4b68-a6f4-b31ebde5cd2f",
+      "name": "Grid X -10",
+      "kind": "prop",
+      "position": [
+        -10,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "a7af4ad2-9691-470e-9e71-84c2a4e83841",
+      "name": "Grid Z -10",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -12
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "29f7e519-99eb-4fb8-903d-ac925696114a",
+      "name": "Grid X -9",
+      "kind": "prop",
+      "position": [
+        -9,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "4a928fd3-cc08-48fd-b2f6-d05145d6fd31",
+      "name": "Grid Z -9",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -11
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "36279c17-f1c4-4ceb-bf4b-6acee3af24cf",
+      "name": "Grid X -8",
+      "kind": "prop",
+      "position": [
+        -8,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "18d1feb7-e077-4d09-8df3-152a09d62255",
+      "name": "Grid Z -8",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -10
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "8fa0d5ec-c425-443a-b049-d9dfdae22403",
+      "name": "Grid X -7",
+      "kind": "prop",
+      "position": [
+        -7,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "e1a90674-b3e3-4472-aad8-a1358b4a08f1",
+      "name": "Grid Z -7",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -9
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "4c8882b0-d7c0-4bb1-a820-7ac61be05163",
+      "name": "Grid X -6",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "62b7bbd8-5a38-45a1-b36f-345e9638036f",
+      "name": "Grid Z -6",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -8
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "b0a200cf-cf87-41ea-9046-080e2e4dd91a",
+      "name": "Grid X -5",
+      "kind": "prop",
+      "position": [
+        -5,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "22a8a914-2eb6-42bb-af9c-13f787c812f7",
+      "name": "Grid Z -5",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -7
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "e1303642-d1f5-4f70-8412-7992ba655ccd",
+      "name": "Grid X -4",
+      "kind": "prop",
+      "position": [
+        -4,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "eeba498d-8f23-4a3d-af2e-8a5134bfd91d",
+      "name": "Grid Z -4",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -6
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "9ccb2766-1421-4194-abb7-157656e0d334",
+      "name": "Grid X -3",
+      "kind": "prop",
+      "position": [
+        -3,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "48dc0344-bf45-49f6-bea8-6fad120dc54e",
+      "name": "Grid Z -3",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -5
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "ce9b2fc9-0561-419b-a40a-56cb94b25425",
+      "name": "Grid X -2",
+      "kind": "prop",
+      "position": [
+        -2,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "58c9ec41-7c6b-4f59-bfd0-77cce2cb6e22",
+      "name": "Grid Z -2",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -4
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "6dda4012-05d4-4bc4-b8a1-8f983fa69cbc",
+      "name": "Grid X -1",
+      "kind": "prop",
+      "position": [
+        -1,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "78a66c13-9666-49a8-b84c-b297f786f5ab",
+      "name": "Grid Z -1",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -3
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "4ff02c39-cf04-4801-8c82-72bb6d05d50a",
+      "name": "Grid X 0",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "8b65fe2d-144b-4af6-8bf1-ce6ce725aed0",
+      "name": "Grid Z 0",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -2
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "a04587e8-3328-4a1b-bc5d-7cd4ec6b7e84",
+      "name": "Grid X 1",
+      "kind": "prop",
+      "position": [
+        1,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "9decbe10-6130-4a4b-8d98-25cfef76db3a",
+      "name": "Grid Z 1",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        -1
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "507b7faa-ab2c-4080-b09d-41cc5ef437e8",
+      "name": "Grid X 2",
+      "kind": "prop",
+      "position": [
+        2,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "ac965558-5951-49ca-b489-de8852ebfa8b",
+      "name": "Grid Z 2",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        0
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "c5332180-0cde-4e0f-a142-fc755db3e88a",
+      "name": "Grid X 3",
+      "kind": "prop",
+      "position": [
+        3,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "6f55de8d-41c2-4515-8398-6c687d79be21",
+      "name": "Grid Z 3",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        1
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "9fb6394b-287f-4f3b-8cb4-8edd1d89e682",
+      "name": "Grid X 4",
+      "kind": "prop",
+      "position": [
+        4,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "4d480e62-2b10-4019-8449-cb1e6e34fe3f",
+      "name": "Grid Z 4",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        2
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "55fdb6c2-9578-42c4-af89-6edc968bfeff",
+      "name": "Grid X 5",
+      "kind": "prop",
+      "position": [
+        5,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "ff2a2139-860a-4db0-971a-9b877441a776",
+      "name": "Grid Z 5",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        3
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "df9d7dc3-c1a6-45d2-822d-5a4ba284f375",
+      "name": "Grid X 6",
+      "kind": "prop",
+      "position": [
+        6,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "681751b5-ebd2-49e7-98b3-5d1cac5eebc4",
+      "name": "Grid Z 6",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        4
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "49c5a5e7-53a6-44f9-bd22-154b57e60bb8",
+      "name": "Grid X 7",
+      "kind": "prop",
+      "position": [
+        7,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "7726f579-8981-4ce3-951e-3f565c926df7",
+      "name": "Grid Z 7",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        5
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "134d18c6-3097-448a-bbb0-92d1d19c31da",
+      "name": "Grid X 8",
+      "kind": "prop",
+      "position": [
+        8,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "14bedb47-42e9-4db9-81b9-f4ed6929d995",
+      "name": "Grid Z 8",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        6
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "e5bdae96-ee98-4421-add8-c213f87ea50d",
+      "name": "Grid X 9",
+      "kind": "prop",
+      "position": [
+        9,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "30a27347-e074-4f0d-a185-5bafb194b211",
+      "name": "Grid Z 9",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        7
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "b655419a-fa9d-4dfc-a6aa-9cd8bbf68364",
+      "name": "Grid X 10",
+      "kind": "prop",
+      "position": [
+        10,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "ae99bf1d-7993-445c-a285-a1d61b41edfa",
+      "name": "Grid Z 10",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        8
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "7c1dcf6f-cd6e-49ec-90fc-0931a1e95826",
+      "name": "Grid X 11",
+      "kind": "prop",
+      "position": [
+        11,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "92890c7d-bfb4-4b2d-8256-b451cc2ba76a",
+      "name": "Grid Z 11",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        9
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "d5cb5c1a-b557-4073-b619-581de652e77a",
+      "name": "Grid X 12",
+      "kind": "prop",
+      "position": [
+        12,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "6657c105-af81-462b-8f88-bc7ffef6523f",
+      "name": "Grid Z 12",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        10
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "461b6d0e-45ca-4c0a-888c-6598747fa088",
+      "name": "Grid X 13",
+      "kind": "prop",
+      "position": [
+        13,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "30032f52-bf06-4673-a33e-22ae2fd9358f",
+      "name": "Grid Z 13",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        11
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "c705bb70-5539-4a12-9def-d93fe35351e6",
+      "name": "Grid X 14",
+      "kind": "prop",
+      "position": [
+        14,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "7b9f1cc3-b710-4459-9fc6-42e467e1e10b",
+      "name": "Grid Z 14",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        12
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "8a922933-f750-47c9-9c8c-5540e9b2f40e",
+      "name": "Grid X 15",
+      "kind": "prop",
+      "position": [
+        15,
+        0.003,
+        -2
+      ],
+      "scale": [
+        0.018,
+        0.006,
+        30
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "84d76e5f-1f1f-44cb-a84c-4c822a26d000",
+      "name": "Grid Z 15",
+      "kind": "prop",
+      "position": [
+        0,
+        0.003,
+        13
+      ],
+      "scale": [
+        30,
+        0.006,
+        0.018
+      ],
+      "color": [
+        0.43,
+        0.45,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.45,
+          0.48
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "aebcc492-62a2-4e72-ad9f-67621cb1619e",
+      "name": "Turn pad edge",
+      "kind": "prop",
+      "position": [
+        -2.5,
+        0.008,
+        4
+      ],
+      "scale": [
+        0.045,
+        0.012,
+        5
+      ],
+      "color": [
+        0.95,
+        0.47,
+        0.12
+      ],
+      "material": {
+        "albedo": [
+          0.95,
+          0.47,
+          0.12
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "0a1c30fb-1510-4673-a651-af4e9fe58afd",
+      "name": "Turn pad edge",
+      "kind": "prop",
+      "position": [
+        2.5,
+        0.008,
+        4
+      ],
+      "scale": [
+        0.045,
+        0.012,
+        5
+      ],
+      "color": [
+        0.95,
+        0.47,
+        0.12
+      ],
+      "material": {
+        "albedo": [
+          0.95,
+          0.47,
+          0.12
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "b2980f94-9abb-4a65-b79f-5014f2c65955",
+      "name": "Turn pad edge",
+      "kind": "prop",
+      "position": [
+        0,
+        0.008,
+        1.5
+      ],
+      "scale": [
+        5,
+        0.012,
+        0.045
+      ],
+      "color": [
+        0.95,
+        0.47,
+        0.12
+      ],
+      "material": {
+        "albedo": [
+          0.95,
+          0.47,
+          0.12
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "155744b7-0422-484b-9fec-cb8a9d0ed75c",
+      "name": "Turn pad edge",
+      "kind": "prop",
+      "position": [
+        0,
+        0.008,
+        6.5
+      ],
+      "scale": [
+        5,
+        0.012,
+        0.045
+      ],
+      "color": [
+        0.95,
+        0.47,
+        0.12
+      ],
+      "material": {
+        "albedo": [
+          0.95,
+          0.47,
+          0.12
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "5cfe20be-987f-4d72-84fb-147022611973",
+      "name": "Turn pad center X",
+      "kind": "prop",
+      "position": [
+        0,
+        0.009,
+        4
+      ],
+      "scale": [
+        0.7,
+        0.014,
+        0.045
+      ],
+      "color": [
+        0.95,
+        0.47,
+        0.12
+      ],
+      "material": {
+        "albedo": [
+          0.95,
+          0.47,
+          0.12
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "1e404943-3f2e-4f27-8e47-443cda7165c4",
+      "name": "Turn pad center Z",
+      "kind": "prop",
+      "position": [
+        0,
+        0.009,
+        4
+      ],
+      "scale": [
+        0.045,
+        0.014,
+        0.7
+      ],
+      "color": [
+        0.95,
+        0.47,
+        0.12
+      ],
+      "material": {
+        "albedo": [
+          0.95,
+          0.47,
+          0.12
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "8293975a-af9d-40a0-81bd-7448cbf6e0de",
+      "name": "Walk-run lane edge",
+      "kind": "prop",
+      "position": [
+        -8,
+        0.008,
+        -2
+      ],
+      "scale": [
+        0.055,
+        0.012,
+        23
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "c0782670-7970-4396-88d4-63f6c87f4607",
+      "name": "Walk-run lane edge",
+      "kind": "prop",
+      "position": [
+        -4,
+        0.008,
+        -2
+      ],
+      "scale": [
+        0.055,
+        0.012,
+        23
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "2674029a-9671-40ff-928f-2fc6386dcda0",
+      "name": "Lane distance marker -12",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        -12
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "341b6298-a5ab-4bb3-961f-f2ed65e059d4",
+      "name": "Lane distance marker -10",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        -10
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "a5609099-f867-4cf9-9d47-a9436c4430d1",
+      "name": "Lane distance marker -8",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        -8
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "73f1d839-1ff5-43fb-9624-05f37b9b0b42",
+      "name": "Lane distance marker -6",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        -6
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "ddd6a905-9ee8-47ca-85f3-19a9c4aeb303",
+      "name": "Lane distance marker -4",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        -4
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "921397f9-1cd1-4b61-bc00-42546d31b517",
+      "name": "Lane distance marker -2",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        -2
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "401fc3fa-30b6-47a4-9450-e3543da8d137",
+      "name": "Lane distance marker 0",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "a490309f-c713-48ba-b8be-5627616019cd",
+      "name": "Lane distance marker 2",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        2
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "a63a7561-9f53-4de9-846b-21567ddff4f3",
+      "name": "Lane distance marker 4",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        4
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "905fd4bd-c3e3-4251-a49f-6933799f338d",
+      "name": "Lane distance marker 6",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        6
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "33a798a8-40b8-4762-8022-0f63ab34e404",
+      "name": "Lane distance marker 8",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.009,
+        8
+      ],
+      "scale": [
+        0.6,
+        0.014,
+        0.06
+      ],
+      "color": [
+        0.08,
+        0.7,
+        0.85
+      ],
+      "material": {
+        "albedo": [
+          0.08,
+          0.7,
+          0.85
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": false
+    },
+    {
+      "id": "cf214ade-d6da-48bc-a34e-b38585f45933",
+      "name": "Step 1 - top 0.2m",
+      "kind": "prop",
+      "position": [
+        6,
+        0.1,
+        -2
+      ],
+      "scale": [
+        3,
+        0.2,
+        1.3
+      ],
+      "color": [
+        0.27,
+        0.65,
+        0.38
+      ],
+      "material": {
+        "albedo": [
+          0.27,
+          0.65,
+          0.38
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "f309b9d8-43cc-4148-8b8d-ce05e8d3b493",
+      "name": "Step 2 - top 0.4m",
+      "kind": "prop",
+      "position": [
+        6,
+        0.2,
+        -3.3
+      ],
+      "scale": [
+        3,
+        0.4,
+        1.3
+      ],
+      "color": [
+        0.27,
+        0.65,
+        0.38
+      ],
+      "material": {
+        "albedo": [
+          0.27,
+          0.65,
+          0.38
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "7321d041-4621-423b-817f-5e1a4d9aea38",
+      "name": "Step 3 - top 0.6m",
+      "kind": "prop",
+      "position": [
+        6,
+        0.30000000000000004,
+        -4.6
+      ],
+      "scale": [
+        3,
+        0.6000000000000001,
+        1.3
+      ],
+      "color": [
+        0.27,
+        0.65,
+        0.38
+      ],
+      "material": {
+        "albedo": [
+          0.27,
+          0.65,
+          0.38
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "f90524cb-972b-4ed0-ad64-4d1955284a71",
+      "name": "Step 4 - top 0.8m",
+      "kind": "prop",
+      "position": [
+        6,
+        0.4,
+        -5.9
+      ],
+      "scale": [
+        3,
+        0.8,
+        1.3
+      ],
+      "color": [
+        0.27,
+        0.65,
+        0.38
+      ],
+      "material": {
+        "albedo": [
+          0.27,
+          0.65,
+          0.38
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "14b2742a-d743-4653-a587-ca8f304c5560",
+      "name": "Stair landing",
+      "kind": "prop",
+      "position": [
+        6,
+        0.4,
+        -7.5
+      ],
+      "scale": [
+        3,
+        0.8,
+        2.6
+      ],
+      "color": [
+        0.27,
+        0.65,
+        0.38
+      ],
+      "material": {
+        "albedo": [
+          0.27,
+          0.65,
+          0.38
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "6119094b-7fd6-4281-8ac3-da71b5d556dc",
+      "name": "Collision stop wall",
+      "kind": "prop",
+      "position": [
+        0,
+        1,
+        -11
+      ],
+      "scale": [
+        5,
+        2,
+        0.5
+      ],
+      "color": [
+        0.65,
+        0.28,
+        0.23
+      ],
+      "material": {
+        "albedo": [
+          0.65,
+          0.28,
+          0.23
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "3c521f82-1ae5-4eec-8df3-8a45abc241a5",
+      "name": "Low landing platform",
+      "kind": "prop",
+      "position": [
+        -10,
+        0.1,
+        -6
+      ],
+      "scale": [
+        2.5,
+        0.2,
+        3
+      ],
+      "color": [
+        0.52,
+        0.48,
+        0.68
+      ],
+      "material": {
+        "albedo": [
+          0.52,
+          0.48,
+          0.68
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "bae93a6f-3b25-4dad-9ed7-9e10d0522334",
+      "name": "Boundary",
+      "kind": "prop",
+      "position": [
+        -15.5,
+        0.35,
+        -2
+      ],
+      "scale": [
+        0.3,
+        0.7,
+        31
+      ],
+      "color": [
+        0.22,
+        0.24,
+        0.27
+      ],
+      "material": {
+        "albedo": [
+          0.22,
+          0.24,
+          0.27
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "8f3e7718-7a95-4a26-a958-aab74a30c3f3",
+      "name": "Boundary",
+      "kind": "prop",
+      "position": [
+        15.5,
+        0.35,
+        -2
+      ],
+      "scale": [
+        0.3,
+        0.7,
+        31
+      ],
+      "color": [
+        0.22,
+        0.24,
+        0.27
+      ],
+      "material": {
+        "albedo": [
+          0.22,
+          0.24,
+          0.27
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "844c0449-fa49-4725-b663-7bd9f4172c03",
+      "name": "Boundary",
+      "kind": "prop",
+      "position": [
+        0,
+        0.35,
+        -17.5
+      ],
+      "scale": [
+        31,
+        0.7,
+        0.3
+      ],
+      "color": [
+        0.22,
+        0.24,
+        0.27
+      ],
+      "material": {
+        "albedo": [
+          0.22,
+          0.24,
+          0.27
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "c2fae919-82d1-4ebf-a58d-54516b9f2db8",
+      "name": "Boundary",
+      "kind": "prop",
+      "position": [
+        0,
+        0.35,
+        13.5
+      ],
+      "scale": [
+        31,
+        0.7,
+        0.3
+      ],
+      "color": [
+        0.22,
+        0.24,
+        0.27
+      ],
+      "material": {
+        "albedo": [
+          0.22,
+          0.24,
+          0.27
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "6612f380-f51b-484c-b862-52ec2a3e71b3",
+      "name": "Character fill light",
+      "kind": "light",
+      "position": [
+        3,
+        5,
+        7
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        0.94,
+        0.86
+      ],
+      "collider": false,
+      "light": {
+        "color": [
+          1,
+          0.94,
+          0.86
+        ],
+        "intensity": 4,
+        "range": 22
+      }
+    },
+    {
+      "id": "4efaab2c-a4cc-4ba3-a282-8917d7bfb5e6",
+      "name": "Character fill light",
+      "kind": "light",
+      "position": [
+        -5,
+        4,
+        -4
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "color": [
+        0.65,
+        0.8,
+        1
+      ],
+      "collider": false,
+      "light": {
+        "color": [
+          0.65,
+          0.8,
+          1
+        ],
+        "intensity": 4,
+        "range": 22
+      }
+    }
+  ],
+  "lighting": {
+    "ambient": [
+      0.25,
+      0.28,
+      0.33
+    ],
+    "skyColor": [
+      0.24,
+      0.3,
+      0.4
+    ],
+    "keyDirection": [
+      -0.4,
+      0.85,
+      0.55
+    ],
+    "keyColor": [
+      1,
+      0.96,
+      0.9
+    ],
+    "keyIntensity": 1.2,
+    "toneMap": true,
+    "exposure": 1.05,
+    "fogDensity": 0,
+    "quality": 1
+  }
+}

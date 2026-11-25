@@ -1,0 +1,15 @@
+{
+  "schema": "nativegpu.water/1",
+  "id": "river_shallow",
+  "revision": 0,
+  "seed": 19,
+  "backend": "shallow",
+  "extentMetres": [24, 8],
+  "cellMetres": 0.1,
+  "stillHeightMetres": 0.35,
+  "bathymetry": { "type": "slope", "heightMetres": 0, "slopeX": 0.004, "slopeZ": 0 },
+  "boundaries": { "type": "open", "inflowCubicMetresPerSecond": 0.6, "outflowCubicMetresPerSecond": 0.6 },
+  "waves": { "amplitudeMetres": 0, "wavelengthMetres": 1, "speedMetresPerSecond": 0, "direction": [1, 0], "components": 1 },
+  "material": { "refractionIndex": 1.333, "absorptionPerMetre": 0.6, "foamThreshold": 0.4 },
+  "budget": { "maxCells": 262144, "maxSubsteps": 8 }
+}

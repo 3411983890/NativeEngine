@@ -1,0 +1,27 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "wind_drift",
+  "revision": 0,
+  "seed": 113,
+  "durationTicks": 600,
+  "loop": true,
+  "maxAlive": 1024,
+  "bounds": {"min": [-4,-2,-4], "max": [4,6,4]},
+  "budget": {"maxSpawnPerTick": 32, "maxEventsPerTick": 0, "maxDepth": 0},
+  "field": {"level": "worldVisible", "channels": ["windVelocity"], "dimensions": [16,16,16], "voxelMetres": 1},
+  "emitters": [{
+    "id": "drift",
+    "shape": {"type": "sphere", "radius": 0.25},
+    "position": [0,0,0],
+    "ratePerSecond": 120,
+    "bursts": [{"tick": 0, "count": 8}],
+    "lifetimeTicks": [120,240],
+    "localSpace": false,
+    "modules": [
+      {"id": "initial", "type": "initialize", "params": {"velocity": [0,0,0], "color": [0.2,0.7,1.5,0.8], "size": [0.08,0.12]}},
+      {"id": "wind", "type": "velocityField", "after": ["initial"], "params": {"channel": "windVelocity", "response": 3}}
+    ],
+    "renderers": [{"type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "premultiplied", "lit": false}]
+  }],
+  "events": []
+}

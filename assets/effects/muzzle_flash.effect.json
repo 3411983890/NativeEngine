@@ -1,0 +1,29 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "muzzle_flash",
+  "revision": 0,
+  "seed": 307,
+  "durationTicks": 24,
+  "loop": false,
+  "maxAlive": 96,
+  "bounds": { "min": [-2, -1, -2], "max": [2, 2, 2] },
+  "budget": { "maxSpawnPerTick": 48, "maxEventsPerTick": 2, "maxDepth": 2 },
+  "emitters": [{
+    "id": "flash",
+    "shape": { "type": "cone", "radius": 0.05, "angleRadians": 0.35 },
+    "position": [0, 0, 0],
+    "ratePerSecond": 0,
+    "bursts": [{ "tick": 0, "count": 24 }],
+    "lifetimeTicks": [4, 10],
+    "localSpace": false,
+    "modules": [
+      { "id": "initial", "type": "initialize", "params": { "velocity": [0, 0, 9], "color": [12, 8, 3, 1], "size": [0.05, 0.22] } },
+      { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 6 } },
+      { "id": "fade", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+        { "t": 0, "value": [12, 8, 3, 1] }, { "t": 1, "value": [2, 0.6, 0.1, 0] }
+      ] } }
+    ],
+    "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "additive", "lit": false }]
+  }],
+  "events": [{ "on": "spawn", "spawn": "sparks_burst", "limit": 1, "delayTicks": 1 }]
+}

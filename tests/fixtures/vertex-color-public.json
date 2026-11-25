@@ -1,0 +1,45 @@
+{
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "models": [
+    {
+      "name": "UnlitTest",
+      "entry": "UnlitTest/UnlitTest.glb",
+      "copyright": "Copyright 2019 Analytical Graphics, Inc.",
+      "author": "Ed Mackey",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "name": "BoxVertexColors",
+      "entry": "BoxVertexColors/BoxVertexColors.glb",
+      "copyright": "Copyright 2023 Public",
+      "author": "Marco Hutter",
+      "license": "CC0-1.0"
+    }
+  ],
+  "files": [
+    {
+      "file": "UnlitTest/UnlitTest.glb",
+      "bytes": 3992,
+      "sha256": "e07b68c6fd9fbf73d372c610a681b89d6b013bdd1a506e46a411df82210a2481",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/UnlitTest/glTF-Binary/UnlitTest.glb"
+    },
+    {
+      "file": "UnlitTest/README.md",
+      "bytes": 3122,
+      "sha256": "98c16c1530c5adc47bc606a1b52675da572f190ae7a9d5f10130bdc4bb83514e",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/UnlitTest/README.md"
+    },
+    {
+      "file": "BoxVertexColors/BoxVertexColors.glb",
+      "bytes": 1924,
+      "sha256": "9c48227f33b0ba2fbcf23b98ebf60d1c8ae0c6e6c5281e0aa3cc58affee10382",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/BoxVertexColors/glTF-Binary/BoxVertexColors.glb"
+    },
+    {
+      "file": "BoxVertexColors/README.md",
+      "bytes": 1323,
+      "sha256": "24d7b19b532d083545d921d62f1f59c5f7ac1cdcccd623888ad1ea1d9f4a419f",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/BoxVertexColors/README.md"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "leaves_drift",
+  "revision": 0,
+  "seed": 601,
+  "durationTicks": 120,
+  "loop": true,
+  "maxAlive": 600,
+  "bounds": { "min": [-8, -1, -8], "max": [8, 10, 8] },
+  "budget": { "maxSpawnPerTick": 32, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [{
+    "id": "leaves",
+    "shape": { "type": "box", "extent": [7, 0.5, 7] },
+    "position": [0, 6, 0],
+    "ratePerSecond": 70,
+    "bursts": [],
+    "lifetimeTicks": [480, 720],
+    "localSpace": false,
+    "modules": [
+      { "id": "initial", "type": "initialize", "params": { "velocity": [0.6, -0.45, 0.2], "color": [0.55, 0.38, 0.12, 0.9], "size": [0.06, 0.11] } },
+      { "id": "gust", "type": "curlNoise", "after": ["initial"], "params": { "amplitude": 1.2, "frequency": 0.3 } },
+      { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 0.9 } },
+      { "id": "tumble", "type": "sizeOverLife", "after": ["initial"], "params": { "keys": [
+        { "t": 0, "value": [0.06, 0.11] }, { "t": 0.5, "value": [0.02, 0.11] }, { "t": 1, "value": [0.06, 0.11] }
+      ] } }
+    ],
+    "renderers": [{ "type": "sprite", "texture": "textures/lamp.albedo.ngtex", "blend": "cutout", "lit": false }]
+  }],
+  "events": []
+}

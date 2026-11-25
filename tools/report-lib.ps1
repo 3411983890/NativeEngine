@@ -1,4 +1,4 @@
-# Shared report plumbing for tools/verify.ps1, tools/ci.ps1 and the G1 gate.
+# Shared report plumbing for .incrementalTesting/core/verify.ps1, .incrementalTesting/core/ci.ps1 and the G1 gate.
 #
 # Evidence layout (never overwritten by a later run):
 #   reports/<version>/<commit12>/<runStamp>/*.json   authoritative, append-only
@@ -32,7 +32,7 @@ function Get-GitDirty {
     return $true
 }
 
-function Get-SceneHash([string]$relativePath = 'assets/courtyard.scene.json') {
+function Get-SceneHash([string]$relativePath = '.screen/courtyard.scene.json') {
     $path = Join-Path (Get-ProjectRoot) $relativePath
     if (-not (Test-Path -LiteralPath $path)) { return '' }
     return (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()

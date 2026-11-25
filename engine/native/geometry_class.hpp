@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-// Geometry routing contract (docs/GEOMETRY-LAYOUT.md §3).
+// Geometry routing contract (.developmentAgent/rendering/GEOMETRY-LAYOUT.md §3).
 //
 // The point of this enum is that "which rasterizer draws this mesh" is a property of the
 // mesh, not a global mode switch. The layout can be unified while the rasterizer stays

@@ -1,0 +1,284 @@
+{
+  "schema": "nativegpu.vegetation-species/1",
+  "id": "oak_broadleaf",
+  "kind": "tree",
+  "profile": "broadleaf",
+  "seed": 20261025,
+  "dimensions": {
+    "heightMetres": 13.5,
+    "crownRadiusMetres": 6.1,
+    "trunkRadiusMetres": 0.34,
+    "leafWidthMetres": 0.17,
+    "leafHeightMetres": 0.23
+  },
+  "lod": {
+    "levels": 3,
+    "screenErrorPixels": [
+      0.4,
+      2.5,
+      9
+    ]
+  },
+  "wind": {
+    "amplitudeMetres": 0.16,
+    "frequencyHz": 0.55,
+    "stiffness": 0.55
+  },
+  "materials": [
+    {
+      "id": "bark",
+      "kind": "bark",
+      "alphaMode": "opaque",
+      "doubleSided": false,
+      "roughnessFactor": 0.86,
+      "normalScale": 1,
+      "normalConvention": "directX-",
+      "thicknessScaleMetres": 0.02,
+      "heightScaleMetres": 0.008,
+      "occlusionStrength": 1,
+      "uvTileMetres": 1.6,
+      "transmission": [
+        0.05,
+        0.04,
+        0.02
+      ]
+    },
+    {
+      "id": "leaf",
+      "kind": "leaf",
+      "alphaMode": "mask",
+      "alphaCutoff": 0.35,
+      "doubleSided": true,
+      "roughnessFactor": 0.52,
+      "normalScale": 0.85,
+      "normalConvention": "directX-",
+      "thicknessScaleMetres": 0.00035,
+      "absorptionPerMetre": 1100,
+      "heightScaleMetres": 0,
+      "occlusionStrength": 0.7,
+      "transmission": [
+        0.24,
+        0.44,
+        0.11
+      ]
+    }
+  ],
+  "budget": {
+    "maxVertices": 400000,
+    "maxTriangles": 400000
+  },
+  "impostor": {
+    "views": 8,
+    "size": 128
+  },
+  "textures": {
+    "bark": {
+      "baseColor": "bark_basecolor",
+      "normal": "bark_normal",
+      "orm": "bark_orm",
+      "height": "bark_height"
+    },
+    "leaf": {
+      "baseColor": "leaf_basecolor",
+      "normal": "leaf_normal",
+      "orm": "leaf_orm",
+      "thickness": "leaf_thickness",
+      "opacity": "leaf_opacity"
+    }
+  },
+  "generators": {
+    "schema": "nativegpu.vegetation-generators/1",
+    "levels": [
+      {
+        "id": "trunk",
+        "type": "trunk",
+        "level": 0,
+        "count": 1,
+        "startHeightRatio": 0.46,
+        "steps": 8,
+        "lean": 0.035,
+        "segmentTaper": 0.6,
+        "wind": 0.08
+      },
+      {
+        "id": "branch_1",
+        "type": "branch",
+        "level": 1,
+        "parent": "trunk",
+        "count": 3,
+        "attachArc": [
+          0.28,
+          1
+        ],
+        "spread": [
+          0.62,
+          0.92
+        ],
+        "lengthRatio": [
+          0.62,
+          0.76
+        ],
+        "childRadiusScale": 0.6,
+        "segmentTaper": 0.52,
+        "apicalDominance": 0.55,
+        "divergence": 2.399963,
+        "upBias": 0.1,
+        "droop": 0.02,
+        "wind": 0.32
+      },
+      {
+        "id": "branch_2",
+        "type": "branch",
+        "level": 2,
+        "parent": "branch_1",
+        "count": 3,
+        "attachArc": [
+          0.28,
+          1
+        ],
+        "spread": [
+          0.5,
+          0.78
+        ],
+        "lengthRatio": [
+          0.58,
+          0.7
+        ],
+        "childRadiusScale": 0.58,
+        "segmentTaper": 0.5,
+        "apicalDominance": 0.35,
+        "upBias": 0.09,
+        "droop": 0.04,
+        "wind": 0.49
+      },
+      {
+        "id": "branch_3",
+        "type": "branch",
+        "level": 3,
+        "parent": "branch_2",
+        "count": 3,
+        "attachArc": [
+          0.28,
+          1
+        ],
+        "spread": [
+          0.44,
+          0.72
+        ],
+        "lengthRatio": [
+          0.55,
+          0.68
+        ],
+        "childRadiusScale": 0.56,
+        "segmentTaper": 0.5,
+        "apicalDominance": 0.3,
+        "upBias": 0.08,
+        "droop": 0.06,
+        "wind": 0.66
+      },
+      {
+        "id": "branch_4",
+        "type": "branch",
+        "level": 4,
+        "parent": "branch_3",
+        "count": 3,
+        "attachArc": [
+          0.28,
+          1
+        ],
+        "spread": [
+          0.42,
+          0.72
+        ],
+        "lengthRatio": [
+          0.55,
+          0.68
+        ],
+        "childRadiusScale": 0.55,
+        "segmentTaper": 0.48,
+        "apicalDominance": 0.25,
+        "upBias": 0.07,
+        "droop": 0.08,
+        "wind": 0.83
+      },
+      {
+        "id": "branch_5",
+        "type": "branch",
+        "level": 5,
+        "parent": "branch_4",
+        "count": 3,
+        "attachArc": [
+          0.28,
+          1
+        ],
+        "spread": [
+          0.45,
+          0.75
+        ],
+        "lengthRatio": [
+          0.55,
+          0.7
+        ],
+        "childRadiusScale": 0.5,
+        "segmentTaper": 0.45,
+        "apicalDominance": 0.2,
+        "upBias": 0.06,
+        "droop": 0.1,
+        "wind": 1
+      }
+    ],
+    "fronds": [
+      {
+        "id": "frond_outer",
+        "type": "frond",
+        "parentLevel": 4,
+        "hostLevels": [
+          4,
+          5
+        ],
+        "cardsPerSegment": 80,
+        "cardWidth": 0.17,
+        "cardHeight": 0.23,
+        "scale": [
+          0.8,
+          1.15
+        ],
+        "petioleLengthMetres": 0.022,
+        "petioleAngle": 0.95,
+        "divergence": 2.399963,
+        "bladeSegments": 3,
+        "bladeCurl": 0.35,
+        "droop": [
+          0.02,
+          0.1
+        ],
+        "wind": 0.95
+      },
+      {
+        "id": "frond_inner",
+        "type": "frond",
+        "parentLevel": 3,
+        "hostLevels": [
+          3
+        ],
+        "cardsPerSegment": 80,
+        "cardWidth": 0.16,
+        "cardHeight": 0.22,
+        "scale": [
+          0.85,
+          1.1
+        ],
+        "petioleLengthMetres": 0.02,
+        "petioleAngle": 1.05,
+        "divergence": 2.399963,
+        "bladeSegments": 2,
+        "bladeCurl": 0.3,
+        "droop": [
+          0.02,
+          0.09
+        ],
+        "wind": 0.85
+      }
+    ]
+  }
+}

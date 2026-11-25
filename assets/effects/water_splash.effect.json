@@ -1,0 +1,61 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "water_splash",
+  "revision": 0,
+  "seed": 2027,
+  "durationTicks": 72,
+  "loop": false,
+  "maxAlive": 96,
+  "bounds": { "min": [-1.5, -0.5, -1.5], "max": [1.5, 2.5, 1.5] },
+  "budget": { "maxSpawnPerTick": 64, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [
+    {
+      "id": "crown",
+      "shape": { "type": "cone", "radius": 0.10, "angleRadians": 0.85 },
+      "position": [0, 0.01, 0],
+      "ratePerSecond": 0,
+      "bursts": [{ "tick": 0, "count": 40 }],
+      "lifetimeTicks": [22, 52],
+      "localSpace": false,
+      "modules": [
+        { "id": "initial", "type": "initialize", "params": { "velocity": [0, 2.55, 0], "color": [0.86, 0.92, 0.97, 0.9], "size": [0.022, 0.045] } },
+        { "id": "gravity", "type": "acceleration", "after": ["initial"], "params": { "value": [0, -9.81, 0] } },
+        { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 1.1 } },
+        { "id": "fade", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.86, 0.92, 0.97, 0.9] },
+          { "t": 0.55, "value": [0.80, 0.88, 0.94, 0.62] },
+          { "t": 1, "value": [0.72, 0.82, 0.90, 0] }
+        ] } },
+        { "id": "shrink", "type": "sizeOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.022, 0.045] },
+          { "t": 1, "value": [0.010, 0.024] }
+        ] } }
+      ],
+      "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "premultiplied", "lit": false }]
+    },
+    {
+      "id": "mist",
+      "shape": { "type": "sphere", "radius": 0.16 },
+      "position": [0, 0.03, 0],
+      "ratePerSecond": 0,
+      "bursts": [{ "tick": 0, "count": 18 }],
+      "lifetimeTicks": [30, 64],
+      "localSpace": false,
+      "modules": [
+        { "id": "initial", "type": "initialize", "params": { "velocity": [0, 0.85, 0], "color": [0.78, 0.87, 0.94, 0.22], "size": [0.05, 0.10] } },
+        { "id": "lift", "type": "acceleration", "after": ["initial"], "params": { "value": [0, -1.2, 0] } },
+        { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 2.2 } },
+        { "id": "fade", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.78, 0.87, 0.94, 0.22] },
+          { "t": 1, "value": [0.70, 0.80, 0.90, 0] }
+        ] } },
+        { "id": "grow", "type": "sizeOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.05, 0.10] },
+          { "t": 1, "value": [0.12, 0.22] }
+        ] } }
+      ],
+      "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "premultiplied", "lit": false }]
+    }
+  ],
+  "events": []
+}

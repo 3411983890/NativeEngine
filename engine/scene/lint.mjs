@@ -9,7 +9,7 @@
  */
 
 export const ENTITY_KINDS = Object.freeze([
-  'ground', 'wall', 'prop', 'player', 'key', 'door', 'goal', 'light',
+  'ground', 'wall', 'prop', 'player', 'key', 'door', 'goal', 'light', 'vehicle',
 ]);
 
 export const LINT_RULES = Object.freeze([
@@ -17,7 +17,7 @@ export const LINT_RULES = Object.freeze([
   { code: 'NG-LINT-NO-GOAL', severity: 'error', summary: 'Scene has no goal' },
   { code: 'NG-LINT-MULTI-PLAYER', severity: 'error', summary: 'Scene has more than one player spawn' },
   { code: 'NG-LINT-DUP-ID', severity: 'error', summary: 'Two entities share the same id' },
-  { code: 'NG-LINT-BAD-KIND', severity: 'error', summary: 'Entity kind is not one of the eight supported kinds' },
+  { code: 'NG-LINT-BAD-KIND', severity: 'error', summary: 'Entity kind is not one of the nine supported kinds' },
   { code: 'NG-LINT-OUT-OF-WORLD', severity: 'error', summary: 'Entity is outside the play area or below the ground' },
   { code: 'NG-LINT-OVERLAP', severity: 'error', summary: 'Two solid colliders intersect beyond the tolerance' },
   { code: 'NG-LINT-KEY-UNREACHABLE', severity: 'error', summary: 'Key cannot be reached by walking from the spawn' },

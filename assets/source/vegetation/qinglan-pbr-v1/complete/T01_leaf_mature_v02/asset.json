@@ -1,0 +1,301 @@
+{
+  "schema": "qinglan.pbr-asset/1",
+  "assetId": "T01_leaf_mature_v02",
+  "speciesId": "T01",
+  "part": "leaf_mature",
+  "variant": 2,
+  "source": "built-in image_gen",
+  "pbrData": "AI-inferred art data, not physical measurement or model bake",
+  "files": [
+    {
+      "file": "basecolor.png",
+      "sha256": "cd5162518e498487205568305f421588a6ef796e16da09da9b30e70550465fee",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "srgb"
+    },
+    {
+      "file": "normal_dx.png",
+      "sha256": "b220162f8d5a5a1fd6f1aa8db47b8930f24d5eb73cfdbca837daabb6e920f952",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "orm.png",
+      "sha256": "4c538189d05e32b8cb2f717131c4297cf01c79c13c2dc09eea9783e107bef65c",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "height.png",
+      "sha256": "aaca2b12392ebc48c395555c8b1b5059147c437a1c5bcd2aa46abe06cb69d506",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "thickness.png",
+      "sha256": "c803ac55e98f6452168910cc8804f46f00c375ccac66d908b613f38b2dba5c26",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "ao.png",
+      "sha256": "6082a1b07772695cb81381a1db125af7de5a7d35b72ee6a1667418d25e96f760",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "roughness.png",
+      "sha256": "d8459cfbd145cb82913eb314be5d78fa3bf0d40e86dd9d9b69f8024a2352c4d5",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "metallic.png",
+      "sha256": "63f7b9e39db4edcdfea0e852b21c950f8a50ee1e7b516f89e91e08d6052e588f",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "opacity.png",
+      "sha256": "9321a8d2c1ce811b3e1a235dd10185c67ca7b2118257ec44678f1f327d8b7982",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    },
+    {
+      "file": "uv-check.png",
+      "sha256": "1d25ac4a3212b247bf0712236a3f3352f09dda22ffa7cfd6edde9893f61a8f4a",
+      "width": 1024,
+      "height": 1024,
+      "colorSpace": "linear"
+    }
+  ],
+  "rawFiles": [
+    {
+      "file": "../../raw/T01_leaf_mature_v02/basecolor.png",
+      "sha256": "54f2ce718800a164885a9f6929e74f809ff6dba541468cc08f7b28bb82210eb2"
+    },
+    {
+      "file": "../../raw/T01_leaf_mature_v02/normal_dx.png",
+      "sha256": "0d1c986a7b317d90de7c03e90abd9a8cd852290e17f1a05db0f0f4b21b509c6c"
+    },
+    {
+      "file": "../../raw/T01_leaf_mature_v02/orm.png",
+      "sha256": "750d18ba596fdebc49a78202157044a17a3cb41ec53dfbe809858f992364437b"
+    },
+    {
+      "file": "../../raw/T01_leaf_mature_v02/height.png",
+      "sha256": "67293dc12733dee40f0e146596fba446590ac29bf37529f82fc935d403af9ea0"
+    },
+    {
+      "file": "../../raw/T01_leaf_mature_v02/thickness.png",
+      "sha256": "d07370238f774f93ee9a470285469b8a6a1fa7f7f90bf37464f59ac464a828fb"
+    }
+  ],
+  "generation": {
+    "assetId": "T01_leaf_mature_v02",
+    "records": [
+      {
+        "map": "thickness",
+        "prompt": "Edit target: supplied single willow leaf texture. Produce ONLY a relative optical THICKNESS data map matching the source's exact leaf silhouette, canvas dimensions, root, tip, position, scale, orientation and vein layout. No new composition. One grayscale map: black empty background, thin blade around gray 95, slightly thicker veins around gray150, central midrib and basal connection brighter around200. No illumination, no shadow, no shading gradient pretending to be thickness, no bevel on outer edge. White thicker, black thinner/empty. Single technical image, no text, panels or border. Preserve exact UV registration; this is AI-inferred relative thickness, not calibrated measured metres.",
+        "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-cdbadf68-a940-444e-b32e-8bd4f24cc867.png",
+        "tool": "built-in image_gen",
+        "date": "2026-10-28",
+        "reference": "basecolor.png"
+      },
+      {
+        "map": "orm",
+        "prompt": "Edit the supplied willow leaf texture into ONLY a packed linear ORM material DATA MAP for that SAME exact leaf in the SAME pixel positions and dimensions. Preserve canvas, silhouette, root, tip, veins, orientation and scale exactly. R=ambient occlusion, mostly 245-255 on this isolated flat leaf, subtle crevice AO on veins; G=roughness naturally 120-175 with slightly smoother midrib, not a shaded grayscale photograph; B=metallic EXACT zero everywhere. Thus the leaf will appear yellow-orange/ochre as a data map, not green or purple. Background R=255 G=200 B=0. No lighting gradients, no shadows, no labels, no legend, no panels, no border. A single flat technical data image aligned to the source UV.",
+        "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-5ed30476-1026-4c09-9be2-0a2f388f0a9b.png",
+        "tool": "built-in image_gen",
+        "date": "2026-10-28",
+        "reference": "basecolor.png"
+      },
+      {
+        "map": "normal_dx",
+        "prompt": "Edit the supplied willow leaf texture into ONLY a tangent-space DirectX -Y NORMAL MAP. Preserve the exact canvas dimensions, leaf silhouette, root, tip, position, orientation, scale and vein layout with pixel registration to the input. No new composition. Output purple-blue RGB data, flat (128,128,255) background and smooth blade, fine raised vein relief only; normalized upward normals, no baked illumination, no text, no panels. DirectX green channel convention. One single normal texture matching the referenced BaseColor UVs. No color leaf, no grayscale image, no checkerboard.",
+        "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-f4dd9dd9-3e30-4f7d-b276-add57127f202.png",
+        "tool": "built-in image_gen",
+        "date": "2026-10-28",
+        "reference": "basecolor.png"
+      },
+      {
+        "map": "height",
+        "prompt": "Edit target: the supplied willow leaf BASE COLOR texture. Create ONLY a matching grayscale RELATIVE HEIGHT texture for that exact leaf on that exact canvas. Preserve its exact silhouette, root, tip, vein positions, orientation, size, crop, and every background pixel position: NO new leaf, NO recentering, NO scaling, NO atlas, NO panels. Output one square grayscale height map, not a photograph: raised central midrib and finer veins are brighter gray; lamina is medium gray with subtle microrelief, empty background pure black; no directional lighting or shadows, no outline bevel. Match the input dimensions exactly. White means raised, black recessed; inferred art data, not physical measurement. No text, labels, checkerboard or border. Keep the flat blade's overall height field subtle, with a gently raised midrib. This map will be sampled using the exact same UVs as the supplied color image.",
+        "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-bc262828-7609-4d51-9b8b-b2f43daca8d1.png",
+        "tool": "built-in image_gen",
+        "date": "2026-10-28",
+        "reference": "basecolor.png"
+      },
+      {
+        "map": "baseColor",
+        "prompt": "Use case: photorealistic-natural. Asset type: game vegetation BASE COLOR + genuine RGBA alpha, one isolated mature weeping willow leaf (Salix babylonica), bladeOnly. Generate ONE SINGLE healthy narrow lanceolate leaf, front surface facing the viewer, orthographic top-down, flattened blade, natural green de-lit diffuse color and fine veins, delicate serrated edges. No long petiole, no branches, no other leaves, no flowers. Square canvas 1024x1024 preferred; real transparent background. Leaf base horizontally centered at UV (0.5,0.0625), meaning x50%, y93.75% in top-left raster coordinates. Tip points vertically up, at y6.25% or below; left/right margin >=6.25%; preserve the willow leaf's naturally slender aspect ratio, do not make a broad leaf to fill canvas. Central vein vertical. Entire leaf including its base and tip visible. Keep all four transparent safety margins. Color only: no baked lighting, no directional shadows, no gloss highlights, no ambient shadow, no backdrop, no checkerboard pattern, no labels, text, borders or ruler. No holes, insects, disease or tears. This is a single original botanical texture source, NOT an atlas, collage, PBR contact sheet or a 3D render. Author a second natural mature-leaf variant: slightly more slender blade, slightly asymmetric serrations and subtle natural pale green tonal variation, still healthy and perfectly upright. This is a new independently authored leaf, not a collage.",
+        "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-8010a042-ff8b-426b-af3e-2e16656b61c8.png",
+        "tool": "built-in image_gen",
+        "date": "2026-10-28",
+        "reference": null
+      }
+    ]
+  },
+  "uv": {
+    "set": 0,
+    "origin": "bottomLeft",
+    "u": "right",
+    "v": "up",
+    "domain": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "sampler": "clamp",
+    "pivot": [
+      0.5,
+      0.0625
+    ],
+    "diagnostic": "uv-check.png",
+    "modelUnwrap": false
+  },
+  "normalConvention": "directX-",
+  "ormChannels": {
+    "R": "ambientOcclusion",
+    "G": "roughness",
+    "B": "metallic=0"
+  },
+  "sizeMetres": [
+    0.12,
+    0.024
+  ],
+  "sizeProvenance": "art-direction values, not measured; null requires assignment",
+  "canonical": {
+    "schema": "nativegpu.leaf-texture-source/1",
+    "schemaVersion": 2,
+    "assetKind": "leaf",
+    "leafProfile": "bladeOnly",
+    "speciesId": "T01",
+    "side": "front",
+    "imageSize": [
+      1024,
+      1024
+    ],
+    "sourceImageSize": [
+      1254,
+      1254
+    ],
+    "coordinates": {
+      "origin": "bottomLeft",
+      "u": "right",
+      "v": "up"
+    },
+    "rootPivotUV": [
+      0.5,
+      0.0625
+    ],
+    "tipDirectionUV": [
+      0,
+      1
+    ],
+    "tipUV": [
+      0.503016,
+      0.935547
+    ],
+    "contentBoundsUV": {
+      "u0": 0.421875,
+      "v0": 0.0625,
+      "u1": 0.583008,
+      "v1": 0.935547
+    },
+    "safeMarginFraction": 0.0625,
+    "bladeLengthMetres": 0.12,
+    "bladeWidthMetres": 0.024,
+    "pixelsPerMetre": 7450.044,
+    "normalConvention": "directX-",
+    "baseDamageState": "healthy",
+    "maps": {
+      "baseColor": {
+        "source": "basecolor.png"
+      },
+      "normal": {
+        "source": "normal_dx.png"
+      },
+      "orm": {
+        "source": "orm.png"
+      },
+      "opacity": {
+        "source": "opacity.png"
+      },
+      "thickness": {
+        "source": "thickness.png"
+      }
+    },
+    "provenance": {
+      "source": "built-in image_gen",
+      "sizeProvenance": "art-direction values, not measured; null requires assignment",
+      "rootLandmark": "detected lowest alpha row; single upright source visually inspected",
+      "normalizedFrom": "built-in image_gen"
+    },
+    "transform": {
+      "rotateClockwiseDegrees": 0,
+      "mirrored": false,
+      "scale": 0.745311,
+      "translatePixels": [
+        42.454,
+        47.367
+      ],
+      "normalMatrix": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "rootMethod": "landmark",
+      "rootConfidence": 1
+    },
+    "landmarks": {
+      "rootUV": [
+        0.5023923444976076,
+        0.023524720893141948
+      ],
+      "rootSourcePixel": [
+        630,
+        1224.5
+      ],
+      "landmarkUprightPixel": [
+        630,
+        1224.5
+      ],
+      "bladeBaseUV": null
+    },
+    "validation": {
+      "status": "ok",
+      "components": 1,
+      "rootErrorPixels": 0,
+      "tipTolerancePixels": null,
+      "inference": "declared"
+    }
+  },
+  "validation": {
+    "numericPass": true,
+    "rootErrorPixels": 0,
+    "maxNormalLengthError": 0.005969373805238987,
+    "sharedTransform": true,
+    "opacityEqualsBaseAlpha": true,
+    "metallicZero": true,
+    "visualRegistration": "pending",
+    "normalYRendererCheck": "pending",
+    "engineVerified": false
+  },
+  "warnings": [
+    "Shared transform and dimensions do not prove AI feature registration.",
+    "Visual silhouette and vein alignment must pass before this set is complete.",
+    "No runtime cook, mip or engine material assignment performed."
+  ]
+}

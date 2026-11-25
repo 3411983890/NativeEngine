@@ -82,7 +82,7 @@ function deepFreeze(value) {
 
 async function courtyard() {
   return JSON.parse(await fs.readFile(
-    new URL('../assets/courtyard.scene.json', import.meta.url), 'utf8',
+    new URL('../.screen/courtyard.scene.json', import.meta.url), 'utf8',
   ));
 }
 

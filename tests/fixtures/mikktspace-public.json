@@ -1,0 +1,13 @@
+{
+  "model": "NormalTangentTest",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/NormalTangentTest/README.md",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "copyright": "Copyright 2018 Analytical Graphics, Inc.",
+  "author": "Ed Mackey",
+  "files": [
+    {"file":"NormalTangentTest.glb","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/NormalTangentTest/glTF-Binary/NormalTangentTest.glb","bytes":1796996,"sha256":"5ac0932355ae1ea05a7485eeddcc3f1fbe56c678e00b519075feced80e9e9d6a"},
+    {"file":"README.md","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/NormalTangentTest/README.md","bytes":3535,"sha256":"933df94257d7282e55491f3183634fe9c028773585698376f8abcd32bf3f0d1b"}
+  ]
+}

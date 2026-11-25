@@ -46,9 +46,24 @@ public:
     virtual bool rtShadowsEnabled() const = 0;
     virtual void setMeshShaders(bool enabled) = 0;
     virtual bool meshShadersEnabled() const = 0;
+    // View-frustum culling for the raster path. Backends without a culling stage keep
+    // submitting every item; the report field tells the two cases apart.
+    virtual void setFrustumCulling(bool enabled) { (void)enabled; }
+    virtual bool frustumCullingEnabled() const { return false; }
+    virtual unsigned culledDrawsLastFrame() const { return 0; }
     virtual void setCompositeDebugView(unsigned view) = 0;
+    virtual void setLayerDebugView(unsigned mode, unsigned layer) = 0;
     // Compute probe toggle (B1/B3). Backends without compute ignore it.
     virtual void setCompute(bool enabled, bool corrupt) = 0;
+    // Particle field toggle (docs/FIELD-PLAN.md). Backends without compute ignore it.
+    virtual void setParticles(bool enabled) = 0;
+    // Obstacles for the particle field; the backend clamps to its own capacity.
+    virtual void setFieldColliders(const std::vector<FieldCollider>& colliders) = 0;
+    // Campfire preset and the frame that fires the explosion burst (0 disables it).
+    virtual void setFireEffect(bool firePreset, unsigned explodeAtFrame) = 0;
+    // Half-res temporal volume path; backends without it may keep the default no-op.
+    virtual void setParticleTemporal(bool enabled) { (void)enabled; }
+    virtual bool setEffectSprites(std::vector<EffectSprite> sprites, std::string& error) = 0;
 
     virtual bool requestScreenshot(const std::string& path, std::string& error) = 0;
     virtual bool captureScreenshot(const std::string& path, std::string& error) = 0;

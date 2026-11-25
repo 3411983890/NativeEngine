@@ -34,7 +34,7 @@ Entity object(const char* id, const char* kind, Vec3 position, Vec3 scale,
 Scene courtyard() {
     Scene scene;
     scene.entities = {
-        object("player", "player", {0, 0, 5}, {1, 1, 1}),
+        object("player", "player", {0, 0, 5}, {.6f, 1.8f, .6f}),
         object("ground", "ground", {0, -0.2f, 0}, {20, 0.4f, 20}, true),
         object("key", "key", {4, 0.8f, 1}, {0.25f, 0.5f, 0.25f}),
         object("gate", "door", {0, 1.5f, -8}, {2.4f, 3, 0.25f}, true),
@@ -56,6 +56,20 @@ void pressE(Game& game) {
     game.update({}, 1.0f / 60.0f);
 }
 
+void testRenderVisibilityMasks() {
+    Scene scene=courtyard();
+    scene.entities.push_back(object("car","vehicle",{2,1,0},{2,1,4}));
+    scene.entities.push_back(object("lamp","light",{-3,3,2},{0.4f,0.4f,0.4f}));
+    Game game;game.initialize(scene);
+    unsigned emitters=0;bool car=false,ground=false,door=false;
+    for(const auto& pose:game.renderPoses()) {
+        emitters+=pose.rayVisibilityMask==4;
+        if(near(pose.position.x,2)&&near(pose.position.y,1)&&near(pose.scale.z,4))car=pose.rayVisibilityMask==2;
+        if(near(pose.scale.x,20)&&near(pose.scale.z,20))ground=pose.rayVisibilityMask==1;
+        if(near(pose.position.z,-8)&&near(pose.scale.x,2.4f))door=pose.rayVisibilityMask==2;
+    }
+    assert(car&&ground&&door&&emitters==5);
+}
 void testFixedStepAndSpeed() {
     Game sixty;
     Game oneTwenty;
@@ -125,7 +139,7 @@ void testSweptCollisionsAndVerticalContacts() {
 
     Scene platform;
     platform.entities = {
-        object("player", "player", {0, 4, 0}, {1, 1, 1}),
+        object("player", "player", {0, 4, 0}, {.6f, 1.8f, .6f}),
         object("platform", "prop", {0, 0.5f, 0}, {3, 1, 3}, true)
     };
     game.initialize(platform);
@@ -135,7 +149,7 @@ void testSweptCollisionsAndVerticalContacts() {
 
     Scene ceiling;
     ceiling.entities = {
-        object("player", "player", {0, 0, 0}, {1, 1, 1}),
+        object("player", "player", {0, 0, 0}, {.6f, 1.8f, .6f}),
         object("ceiling", "prop", {0, 2.3f, 0}, {3, 0.2f, 3}, true)
     };
     game.initialize(ceiling);
@@ -429,6 +443,7 @@ void testMaterialHandles() {
 } // namespace
 
 int main() {
+    testRenderVisibilityMasks();
     testFixedStepAndSpeed();
     testJumpAndInputEdges();
     testSweptCollisionsAndVerticalContacts();

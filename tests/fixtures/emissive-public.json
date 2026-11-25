@@ -1,0 +1,12 @@
+{
+  "model": "EmissiveStrengthTest",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "author": "Ed Mackey / AGI",
+  "copyright": "Copyright 2022 AGI",
+  "license": "CC-BY-4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+  "files": [
+    {"file":"EmissiveStrengthTest.glb","bytes":10668,"sha256":"074898ec4c3636230faffe0cacac7403c3f6135db61f943da28ffaa88ca2a39f","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/EmissiveStrengthTest/glTF-Binary/EmissiveStrengthTest.glb"},
+    {"file":"README.md","bytes":2636,"sha256":"9bf3926c75ec145faec3afa3a9ca86cd726feed1f13255a6d01842fe054ca6ab","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/EmissiveStrengthTest/README.md"}
+  ]
+}

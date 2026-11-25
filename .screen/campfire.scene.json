@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 2,
+  "projectId": "b2f00000-0000-4000-8000-000000000001",
+  "name": "Campfire clearing",
+  "revision": 1,
+  "settings": {
+    "walkSpeed": 3,
+    "runSpeed": 6,
+    "jumpSpeed": 7,
+    "gravity": 20
+  },
+  "entities": [
+    {
+      "id": "b2f00000-0000-4000-8000-000000000010",
+      "name": "Clearing floor",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.2,
+        0
+      ],
+      "scale": [
+        26,
+        0.4,
+        26
+      ],
+      "color": [
+        0.13,
+        0.14,
+        0.1
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000011",
+      "name": "Fire pit",
+      "kind": "prop",
+      "position": [
+        0,
+        0.03,
+        0
+      ],
+      "scale": [
+        2.4,
+        0.06,
+        2.4
+      ],
+      "color": [
+        0.1,
+        0.09,
+        0.08
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000012",
+      "name": "Log north south",
+      "kind": "prop",
+      "position": [
+        0,
+        0.16,
+        0
+      ],
+      "scale": [
+        2.1,
+        0.24,
+        0.26
+      ],
+      "color": [
+        0.26,
+        0.17,
+        0.1
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000013",
+      "name": "Log east west",
+      "kind": "prop",
+      "position": [
+        0,
+        0.2,
+        0
+      ],
+      "scale": [
+        0.26,
+        0.24,
+        2.1
+      ],
+      "color": [
+        0.24,
+        0.15,
+        0.09
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000014",
+      "name": "Log kindling",
+      "kind": "prop",
+      "position": [
+        0.35,
+        0.12,
+        -0.35
+      ],
+      "scale": [
+        1.3,
+        0.16,
+        0.18
+      ],
+      "color": [
+        0.3,
+        0.2,
+        0.11
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000020",
+      "name": "Stone ring 1",
+      "kind": "prop",
+      "position": [
+        1.5,
+        0.18,
+        0
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.34,
+        0.34,
+        0.33
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000021",
+      "name": "Stone ring 2",
+      "kind": "prop",
+      "position": [
+        1.06,
+        0.18,
+        1.06
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.31,
+        0.31,
+        0.3
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000022",
+      "name": "Stone ring 3",
+      "kind": "prop",
+      "position": [
+        0,
+        0.18,
+        1.5
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.36,
+        0.35,
+        0.34
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000023",
+      "name": "Stone ring 4",
+      "kind": "prop",
+      "position": [
+        -1.06,
+        0.18,
+        1.06
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.32,
+        0.32,
+        0.31
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000024",
+      "name": "Stone ring 5",
+      "kind": "prop",
+      "position": [
+        -1.5,
+        0.18,
+        0
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.35,
+        0.34,
+        0.33
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000025",
+      "name": "Stone ring 6",
+      "kind": "prop",
+      "position": [
+        -1.06,
+        0.18,
+        -1.06
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.3,
+        0.3,
+        0.29
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000026",
+      "name": "Stone ring 7",
+      "kind": "prop",
+      "position": [
+        0,
+        0.18,
+        -1.5
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.33,
+        0.33,
+        0.32
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000027",
+      "name": "Stone ring 8",
+      "kind": "prop",
+      "position": [
+        1.06,
+        0.18,
+        -1.06
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.29,
+        0.29,
+        0.28
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000030",
+      "name": "Sitting stump",
+      "kind": "prop",
+      "position": [
+        3.2,
+        0.35,
+        1.6
+      ],
+      "scale": [
+        1,
+        0.7,
+        1
+      ],
+      "color": [
+        0.28,
+        0.19,
+        0.11
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000031",
+      "name": "Player spawn",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        5
+      ],
+      "scale": [
+        0.6,
+        1.8,
+        0.6
+      ],
+      "color": [
+        0.85,
+        0.72,
+        0.58
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000040",
+      "name": "Firelight",
+      "kind": "light",
+      "position": [
+        0,
+        0.8,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "color": [
+        1,
+        0.55,
+        0.22
+      ],
+      "light": {
+        "color": [
+          1,
+          0.55,
+          0.22
+        ],
+        "intensity": 9,
+        "range": 16
+      },
+      "collider": false
+    }
+  ]
+}

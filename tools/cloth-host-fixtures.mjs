@@ -1,0 +1,15 @@
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+import {cookClothLibrary} from './cloth.mjs';
+import {cookEffectLibrary} from './effects.mjs';
+const directory=path.resolve('build/cloth-host');await fs.mkdir(directory,{recursive:true});
+const scene=JSON.parse(await fs.readFile('.screen/courtyard.scene.json','utf8'));
+scene.name='GPU cloth incremental preview';delete scene.audio;
+scene.entities=scene.entities.filter(e=>['ground','player','key','door','goal'].includes(e.kind));
+scene.lighting={ambient:[.22,.24,.28],skyColor:[.04,.06,.09],keyDirection:[.3,.7,1],keyColor:[1,.95,.9],keyIntensity:2,toneMap:true,exposure:1,quality:0};
+await fs.writeFile(path.join(directory,'preview.scene.json'),`${JSON.stringify(scene,null,2)}\n`);
+await cookClothLibrary({sourceDirectory:'assets/cloth',outputDirectory:path.join(directory,'cooked')});
+const effectsSource=path.join(directory,'effects-source');await fs.mkdir(effectsSource,{recursive:true});
+await fs.copyFile('assets/effects/sprite_demo.effect.json',path.join(effectsSource,'sprite_demo.effect.json'));
+await cookEffectLibrary({sourceDirectory:effectsSource,outputDirectory:path.join(directory,'effects')});
+console.log(JSON.stringify({directory}));

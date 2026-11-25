@@ -1,0 +1,84 @@
+<p class="lede">编辑器采用"Web 界面 + 独立原生进程"的路线，而不是内嵌 GPU 视口。这个选择不炫技，但把最容易烂掉的部分——跨进程共享纹理、帧同步、输入路由、设备恢复——从第一版里摘出去了。</p>
+
+<div class="meta-row">
+  <span class="badge badge--partial">初版</span>
+  <span class="badge badge--no">无内嵌实时视口</span>
+  <span class="meta">editor/ · .developmentAgent/editor/EDITOR.md</span>
+</div>
+
+<h2 id="start">启动</h2>
+
+<pre><code>npm install
+npm run editor        # Electron 桌面版
+npm run editor:web    # 本机浏览器版</code></pre>
+
+<p>原生预览与快照需要 <code>build/NativeGPU.exe</code>；缺失时先 <code>npm run build:native</code>。缺少原生程序不影响场景编辑，只影响预览与截图——错误会明确显示，不会假装成功。</p>
+
+<h2 id="flow">编辑流程</h2>
+
+<ol>
+<li>从场景列表打开 <code>assets/</code> 内的 <code>.scene.json</code>，通过实体列表或二维顶视布局选择实体。</li>
+<li>在属性面板修改名称、位置、缩放、颜色或碰撞开关。修改先进入<strong>本地草稿</strong>，场景文件尚未改变。</li>
+<li>点击"预览修改"，由现有事务层校验整批命令并返回实际差异。无效数值、场景约束或版本冲突会显示错误，不会写入半个场景。</li>
+<li>检查差异后提交。服务以 <code>projectId</code> 与 <code>expectedRevision</code> 原子提交一次，revision 增加一次。</li>
+<li>启动原生预览窗口查看真实 D3D12 画面。提交后原生程序自动热重载；"撤销"通过同一服务提交反向恢复，revision 继续增加。</li>
+</ol>
+
+<p>新增方盒道具、删除实体都支持。删除玩家、删除最后一个地面这类违反场景约束的操作仍会被事务校验拒绝。未提交草稿不写盘——离开前应提交或丢弃。</p>
+
+<div class="callout callout--note">
+<span class="callout-title">并发编辑</span>
+<p>其他工具或 Agent 修改同一场景时，旧的 <code>expectedRevision</code> 会被拒绝。界面保留本地草稿供检查；重新加载新 revision 后需要重新预览，而不是静默覆盖外部修改。</p>
+</div>
+
+<h2 id="views">三种"画面"</h2>
+
+<table>
+<thead><tr><th>视图</th><th>是什么</th><th>不是什么</th></tr></thead>
+<tbody>
+<tr><td>场景布局</td><td>二维顶视图，用于选择与检查位置、尺度、颜色</td><td>不是 D3D12 渲染，不代表遮挡、材质或最终光照</td></tr>
+<tr><td>原生预览</td><td>独立的 <code>NativeGPU.exe</code> 交互窗口，由编辑器启动与停止</td><td>不是内嵌视口，不是跨进程共享纹理</td></tr>
+<tr><td>原生快照</td><td>按需运行一次隐藏的原生截图任务，返回静态 PNG</td><td>不是实时视频；未提交草稿不会出现在快照里</td></tr>
+</tbody>
+</table>
+
+<p>原生程序约每 400 ms 检查已提交场景。热重载会重新初始化玩法状态——当前没有运行中状态迁移，也没有逐帧把草稿发送到引擎。</p>
+
+<h2 id="modules">模块边界</h2>
+
+<pre><code>Web 界面（本地草稿、选择、差异展示）
+    │ 受控场景 / 运行操作
+    ▼
+编辑器服务
+    ├─ 现有 Node 场景事务（查询、预览、提交、撤销）
+    └─ 原生进程管理（启动、停止、按需快照）
+          │ 读取已提交场景
+          ▼
+      NativeGPU.exe（模拟、D3D12 渲染、热重载）</code></pre>
+
+<p>编辑器与 MCP 复用同一事务实现，<strong>不存在</strong>绕过校验直接写 <code>assets/</code> 的路径。Web 界面不持有任意文件访问或任意命令执行能力。</p>
+
+<h2 id="material">材质面板</h2>
+
+<p>命名材质的 <code>wetness</code> / <code>wear</code> / <code>roughness</code> / <code>metalness</code> / <code>uvScale</code> 通过 <code>material_patch</code> 原子写入。它和场景字段走同一条校验路径。</p>
+
+<h2 id="verify">验证</h2>
+
+<pre><code>npm test
+npm run test:editor</code></pre>
+
+<p><code>npm test</code> 跑既有 Node 测试及编辑器新增测试；<code>npm run test:editor</code> 只跑编辑器服务与传输相关测试。桌面窗口、浏览器界面和实际 D3D12 快照需要在有运行环境的机器上检查——<strong>单元测试不能替代 GPU 证据</strong>。</p>
+
+<h2 id="next">为什么还没做内嵌视口</h2>
+
+<p>内嵌实时视口的前置是成熟容器的共享纹理导入能力，需要先测量：复制次数、同步等待、输入延迟、缩放与最小化行为、设备丢失恢复。<code>.developmentAgent/core/OUTPUT-CONTRACT.md</code> 保留了这些要求；当前编辑器交付<strong>不代表</strong>该契约已实现，也不代表 G2 共享纹理关口通过。</p>
+
+<p>原先"先冻结并构建定制 Chromium"的路线已暂缓，不再作为界面开发的前置条件。</p>
+
+<h2 id="limits">边界</h2>
+<ul>
+<li>没有模型调用、没有自然语言任务编排。</li>
+<li>没有资产导入、没有灯光属性编辑、没有三维操纵柄。</li>
+<li>没有多用户协作、没有权限系统——这是本地受信工具。</li>
+<li>浏览器入口只监听本机，<strong>不要</strong>暴露到不可信网络。</li>
+</ul>

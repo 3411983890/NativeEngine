@@ -1,0 +1,26 @@
+{
+  "asset": "royal_esplanade",
+  "name": "Royal Esplanade",
+  "provider": "Poly Haven",
+  "credit": "Powered by Poly Haven",
+  "author": "Greg Zaal",
+  "license": "CC0-1.0",
+  "source": "https://polyhaven.com/a/royal_esplanade",
+  "licenseUrl": "https://polyhaven.com/license",
+  "files": [
+    {
+      "file": "royal_esplanade_1k.hdr",
+      "bytes": 1676014,
+      "sha256": "fec2166383a45eca3700f9abd020bc0ba490741c7ae22f91b5c2fa420a98e4d1",
+      "providerMd5": "c5e5b76deac047d88c72bcf692b64b48",
+      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/royal_esplanade_1k.hdr"
+    },
+    {
+      "file": "royal_esplanade_1k.exr",
+      "bytes": 1617635,
+      "sha256": "545710527cb97cb7183042d2e2046427afc49549a49da5ec8e8b7e676a15c22d",
+      "providerMd5": "d0aa2ba76c1d9842da8dbf2d615799b2",
+      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/1k/royal_esplanade_1k.exr"
+    }
+  ]
+}

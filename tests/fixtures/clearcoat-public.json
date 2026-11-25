@@ -1,0 +1,12 @@
+{
+  "model":"ClearCoatTest",
+  "source":"https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ClearCoatTest",
+  "copyright":"© 2020 Analytical Graphics, Inc.",
+  "author":"Ed Mackey",
+  "license":"CC-BY-4.0",
+  "licenseUrl":"https://creativecommons.org/licenses/by/4.0/",
+  "files":[
+    {"file":"ClearCoatTest.glb","bytes":258048,"sha256":"c3a1cbe318cd043b937130af4eb83ec2ea0b03613387b1b7d769dfab4ac15948","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ClearCoatTest/glTF-Binary/ClearCoatTest.glb"},
+    {"file":"README.md","bytes":4922,"sha256":"dd0d8791d54e03e4a22ab8c72fc27b6961044f9fb0c822c040eb9b8594db0517","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ClearCoatTest/README.md"}
+  ]
+}

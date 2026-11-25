@@ -1,0 +1,78 @@
+{
+  "schema": "nativegpu.cloth/2",
+  "id": "skirt_panel",
+  "revision": 0,
+  "seed": 71,
+  "kind": "skinned",
+  "mesh": {
+    "type": "grid",
+    "columns": 14,
+    "rows": 12,
+    "widthMetres": 0.9,
+    "heightMetres": 0.7
+  },
+  "material": {
+    "arealDensityKgM2": 0.26,
+    "thicknessMetres": 0.003,
+    "stretchCompliance": 1e-8,
+    "shearCompliance": 3e-7,
+    "damping": 0.5,
+    "dragCoefficient": 1.15,
+    "bendAngleCompliance": 1000
+  },
+  "pins": [
+    {
+      "column": 0,
+      "row": 11
+    },
+    {
+      "column": 4,
+      "row": 11
+    },
+    {
+      "column": 9,
+      "row": 11
+    },
+    {
+      "column": 13,
+      "row": 11
+    }
+  ],
+  "collision": {
+    "thicknessMetres": 0.008,
+    "plane": null,
+    "spheres": [],
+    "capsules": [
+      {
+        "a": [
+          0,
+          0.75,
+          0
+        ],
+        "b": [
+          0,
+          0.05,
+          0
+        ],
+        "radiusMetres": 0.16
+      }
+    ]
+  },
+  "lod": [
+    {
+      "maxDistanceMetres": 5,
+      "columns": 14,
+      "rows": 12
+    },
+    {
+      "maxDistanceMetres": 16,
+      "columns": 7,
+      "rows": 6
+    }
+  ],
+  "budget": {
+    "maxVertices": 4096,
+    "maxSubsteps": 4,
+    "iterations": 10
+  }
+}

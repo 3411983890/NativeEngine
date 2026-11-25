@@ -1,0 +1,27 @@
+{
+  "schema": "nativegpu.material-graph/1",
+  "name": "cobble_graph",
+  "nodes": [
+    { "id": "albedo", "type": "texture", "params": { "name": "cobble" } },
+    { "id": "normal", "type": "texture", "params": { "name": "cobble" } },
+    { "id": "orm", "type": "texture", "params": { "name": "cobble" } },
+    { "id": "scale", "type": "scalar", "params": { "value": 2 } },
+    { "id": "wet", "type": "scalar", "params": { "value": 0.35 } },
+    { "id": "dryRough", "type": "scalar", "params": { "value": 0.85 } },
+    { "id": "wetRough", "type": "scalar", "params": { "value": 0.2 } },
+    { "id": "blend", "type": "scalar", "params": { "value": 0.5 } },
+    { "id": "roughness", "type": "lerp" },
+    { "id": "output", "type": "output" }
+  ],
+  "links": [
+    { "from": "albedo", "to": "output", "toPort": "albedo" },
+    { "from": "normal", "to": "output", "toPort": "normal" },
+    { "from": "orm", "to": "output", "toPort": "orm" },
+    { "from": "scale", "to": "output", "toPort": "uvScale" },
+    { "from": "wet", "to": "output", "toPort": "wetness" },
+    { "from": "dryRough", "to": "roughness", "toPort": "a" },
+    { "from": "wetRough", "to": "roughness", "toPort": "b" },
+    { "from": "blend", "to": "roughness", "toPort": "t" },
+    { "from": "roughness", "to": "output", "toPort": "roughness" }
+  ]
+}

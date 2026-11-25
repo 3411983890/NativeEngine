@@ -1,0 +1,1004 @@
+{
+  "schemaVersion": 2,
+  "projectId": "c3a00000-0000-4000-8000-000000000001",
+  "name": "Physics lab - fracture yard",
+  "revision": 1,
+  "settings": {
+    "walkSpeed": 3.2,
+    "runSpeed": 6.4,
+    "jumpSpeed": 7,
+    "gravity": 20
+  },
+  "lighting": {
+    "ambient": [
+      0.12,
+      0.14,
+      0.18
+    ],
+    "skyColor": [
+      0.08,
+      0.12,
+      0.18
+    ],
+    "keyDirection": [
+      -0.45,
+      0.82,
+      -0.35
+    ],
+    "keyColor": [
+      1,
+      0.93,
+      0.82
+    ],
+    "keyIntensity": 1,
+    "fogColor": [
+      0.08,
+      0.1,
+      0.14
+    ],
+    "fogDensity": 0.003,
+    "exposure": 0.82,
+    "toneMap": true,
+    "quality": 1,
+    "maxShadowLights": 2
+  },
+  "entities": [
+    {
+      "id": "c3a00000-0000-4000-8000-000000000010",
+      "name": "Lab floor",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.2,
+        0
+      ],
+      "scale": [
+        22,
+        0.4,
+        22
+      ],
+      "color": [
+        0.22,
+        0.23,
+        0.24
+      ],
+      "material": {
+        "albedo": [
+          0.22,
+          0.23,
+          0.24
+        ],
+        "roughness": 0.9,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000011",
+      "name": "Back wall",
+      "kind": "wall",
+      "position": [
+        0,
+        2.5,
+        -8
+      ],
+      "scale": [
+        18,
+        5,
+        0.5
+      ],
+      "color": [
+        0.26,
+        0.27,
+        0.28
+      ],
+      "material": {
+        "albedo": [
+          0.26,
+          0.27,
+          0.28
+        ],
+        "roughness": 0.86,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000012",
+      "name": "West boundary",
+      "kind": "wall",
+      "position": [
+        -9.75,
+        1.8,
+        2
+      ],
+      "scale": [
+        0.5,
+        3.6,
+        26
+      ],
+      "color": [
+        0.24,
+        0.25,
+        0.27
+      ],
+      "material": {
+        "albedo": [
+          0.24,
+          0.25,
+          0.27
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000013",
+      "name": "East boundary",
+      "kind": "wall",
+      "position": [
+        9.75,
+        1.8,
+        2
+      ],
+      "scale": [
+        0.5,
+        3.6,
+        26
+      ],
+      "color": [
+        0.24,
+        0.25,
+        0.27
+      ],
+      "material": {
+        "albedo": [
+          0.24,
+          0.25,
+          0.27
+        ],
+        "roughness": 0.88,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000014",
+      "name": "Player spawn",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        8
+      ],
+      "scale": [
+        0.6,
+        1.8,
+        0.6
+      ],
+      "color": [
+        0.85,
+        0.72,
+        0.58
+      ],
+      "material": {
+        "albedo": [
+          0.85,
+          0.72,
+          0.58
+        ],
+        "roughness": 0.55,
+        "metalness": 0.1,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000020",
+      "name": "Central plinth",
+      "kind": "prop",
+      "position": [
+        0,
+        0.1,
+        -2
+      ],
+      "scale": [
+        2.5,
+        0.2,
+        2.5
+      ],
+      "color": [
+        0.34,
+        0.34,
+        0.33
+      ],
+      "material": {
+        "albedo": [
+          0.34,
+          0.34,
+          0.33
+        ],
+        "roughness": 0.82,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000021",
+      "name": "Tower course 1",
+      "kind": "prop",
+      "position": [
+        0,
+        0.5,
+        -2
+      ],
+      "scale": [
+        1.8,
+        0.6,
+        1.8
+      ],
+      "color": [
+        0.56,
+        0.55,
+        0.5
+      ],
+      "material": {
+        "albedo": [
+          0.56,
+          0.55,
+          0.5
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 16,
+        "friction": 0.72,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 45,
+        "fragments": 14,
+        "debrisLifetime": 22,
+        "structural": true,
+        "seed": 101
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000022",
+      "name": "Tower course 2",
+      "kind": "prop",
+      "position": [
+        0,
+        1.1,
+        -2
+      ],
+      "scale": [
+        1.8,
+        0.6,
+        1.8
+      ],
+      "color": [
+        0.52,
+        0.51,
+        0.47
+      ],
+      "material": {
+        "albedo": [
+          0.52,
+          0.51,
+          0.47
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 16,
+        "friction": 0.72,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 42,
+        "fragments": 14,
+        "debrisLifetime": 22,
+        "structural": true,
+        "seed": 102
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000023",
+      "name": "Tower course 3",
+      "kind": "prop",
+      "position": [
+        0,
+        1.7,
+        -2
+      ],
+      "scale": [
+        1.8,
+        0.6,
+        1.8
+      ],
+      "color": [
+        0.48,
+        0.47,
+        0.43
+      ],
+      "material": {
+        "albedo": [
+          0.48,
+          0.47,
+          0.43
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 16,
+        "friction": 0.72,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 40,
+        "fragments": 14,
+        "debrisLifetime": 22,
+        "structural": true,
+        "seed": 103
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000024",
+      "name": "Tower course 4",
+      "kind": "prop",
+      "position": [
+        0,
+        2.3,
+        -2
+      ],
+      "scale": [
+        1.8,
+        0.6,
+        1.8
+      ],
+      "color": [
+        0.45,
+        0.44,
+        0.4
+      ],
+      "material": {
+        "albedo": [
+          0.45,
+          0.44,
+          0.4
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 16,
+        "friction": 0.72,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 38,
+        "fragments": 14,
+        "debrisLifetime": 22,
+        "structural": true,
+        "seed": 104
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000025",
+      "name": "Tower cap",
+      "kind": "prop",
+      "position": [
+        0,
+        2.9,
+        -2
+      ],
+      "scale": [
+        2,
+        0.6,
+        2
+      ],
+      "color": [
+        0.42,
+        0.41,
+        0.37
+      ],
+      "material": {
+        "albedo": [
+          0.42,
+          0.41,
+          0.37
+        ],
+        "roughness": 0.78,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 18,
+        "friction": 0.72,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 36,
+        "fragments": 14,
+        "debrisLifetime": 22,
+        "structural": true,
+        "seed": 105
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000030",
+      "name": "West stack base",
+      "kind": "prop",
+      "position": [
+        -3.4,
+        0.6,
+        -1.8
+      ],
+      "scale": [
+        1.4,
+        1.2,
+        1.4
+      ],
+      "color": [
+        0.47,
+        0.38,
+        0.3
+      ],
+      "material": {
+        "albedo": [
+          0.47,
+          0.38,
+          0.3
+        ],
+        "roughness": 0.78,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 10,
+        "friction": 0.7,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 38,
+        "fragments": 12,
+        "debrisLifetime": 20,
+        "structural": true,
+        "seed": 201
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000031",
+      "name": "West stack middle",
+      "kind": "prop",
+      "position": [
+        -3.4,
+        1.8,
+        -1.8
+      ],
+      "scale": [
+        1.4,
+        1.2,
+        1.4
+      ],
+      "color": [
+        0.43,
+        0.35,
+        0.28
+      ],
+      "material": {
+        "albedo": [
+          0.43,
+          0.35,
+          0.28
+        ],
+        "roughness": 0.78,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 10,
+        "friction": 0.7,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 36,
+        "fragments": 12,
+        "debrisLifetime": 20,
+        "structural": true,
+        "seed": 202
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000032",
+      "name": "West stack top",
+      "kind": "prop",
+      "position": [
+        -3.4,
+        3,
+        -1.8
+      ],
+      "scale": [
+        1.4,
+        1.2,
+        1.4
+      ],
+      "color": [
+        0.4,
+        0.32,
+        0.25
+      ],
+      "material": {
+        "albedo": [
+          0.4,
+          0.32,
+          0.25
+        ],
+        "roughness": 0.78,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 10,
+        "friction": 0.7,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 34,
+        "fragments": 12,
+        "debrisLifetime": 20,
+        "structural": true,
+        "seed": 203
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000040",
+      "name": "East stack base",
+      "kind": "prop",
+      "position": [
+        2.9,
+        0.5,
+        -2.7
+      ],
+      "scale": [
+        1.6,
+        1,
+        1.6
+      ],
+      "color": [
+        0.44,
+        0.46,
+        0.49
+      ],
+      "material": {
+        "albedo": [
+          0.44,
+          0.46,
+          0.49
+        ],
+        "roughness": 0.82,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 12,
+        "friction": 0.7,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 38,
+        "fragments": 12,
+        "debrisLifetime": 20,
+        "structural": true,
+        "seed": 301
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000041",
+      "name": "East stack middle",
+      "kind": "prop",
+      "position": [
+        2.9,
+        1.5,
+        -2.7
+      ],
+      "scale": [
+        1.6,
+        1,
+        1.6
+      ],
+      "color": [
+        0.4,
+        0.42,
+        0.45
+      ],
+      "material": {
+        "albedo": [
+          0.4,
+          0.42,
+          0.45
+        ],
+        "roughness": 0.82,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 12,
+        "friction": 0.7,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 36,
+        "fragments": 12,
+        "debrisLifetime": 20,
+        "structural": true,
+        "seed": 302
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000042",
+      "name": "East stack top",
+      "kind": "prop",
+      "position": [
+        2.9,
+        2.5,
+        -2.7
+      ],
+      "scale": [
+        1.6,
+        1,
+        1.6
+      ],
+      "color": [
+        0.37,
+        0.39,
+        0.42
+      ],
+      "material": {
+        "albedo": [
+          0.37,
+          0.39,
+          0.42
+        ],
+        "roughness": 0.82,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "static",
+        "mass": 12,
+        "friction": 0.7,
+        "restitution": 0.03
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 34,
+        "fragments": 12,
+        "debrisLifetime": 20,
+        "structural": true,
+        "seed": 303
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000050",
+      "name": "Crate A",
+      "kind": "prop",
+      "position": [
+        -6.3,
+        0.55,
+        2.4
+      ],
+      "scale": [
+        1.1,
+        1.1,
+        1.1
+      ],
+      "color": [
+        0.55,
+        0.37,
+        0.19
+      ],
+      "material": {
+        "albedo": [
+          0.55,
+          0.37,
+          0.19
+        ],
+        "roughness": 0.72,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 4,
+        "friction": 0.66,
+        "restitution": 0.12
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000051",
+      "name": "Crate B",
+      "kind": "prop",
+      "position": [
+        -6.3,
+        1.75,
+        2.4
+      ],
+      "scale": [
+        1.1,
+        1.1,
+        1.1
+      ],
+      "color": [
+        0.49,
+        0.33,
+        0.17
+      ],
+      "material": {
+        "albedo": [
+          0.49,
+          0.33,
+          0.17
+        ],
+        "roughness": 0.72,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 3.4,
+        "friction": 0.66,
+        "restitution": 0.12
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000052",
+      "name": "Crate C",
+      "kind": "prop",
+      "position": [
+        -6,
+        2.85,
+        2
+      ],
+      "scale": [
+        1.1,
+        1.1,
+        1.1
+      ],
+      "color": [
+        0.44,
+        0.3,
+        0.15
+      ],
+      "material": {
+        "albedo": [
+          0.44,
+          0.3,
+          0.15
+        ],
+        "roughness": 0.72,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 2.8,
+        "friction": 0.66,
+        "restitution": 0.12
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000060",
+      "name": "Blast barrel left",
+      "kind": "prop",
+      "position": [
+        -1.4,
+        0.45,
+        1.3
+      ],
+      "scale": [
+        0.8,
+        0.9,
+        0.8
+      ],
+      "color": [
+        0.62,
+        0.2,
+        0.1
+      ],
+      "material": {
+        "albedo": [
+          0.62,
+          0.2,
+          0.1
+        ],
+        "roughness": 0.5,
+        "metalness": 0.35,
+        "pattern": "metal"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 2.2,
+        "friction": 0.55,
+        "restitution": 0.18
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000061",
+      "name": "Blast barrel right",
+      "kind": "prop",
+      "position": [
+        1.5,
+        0.45,
+        1
+      ],
+      "scale": [
+        0.8,
+        0.9,
+        0.8
+      ],
+      "color": [
+        0.58,
+        0.18,
+        0.09
+      ],
+      "material": {
+        "albedo": [
+          0.58,
+          0.18,
+          0.09
+        ],
+        "roughness": 0.5,
+        "metalness": 0.35,
+        "pattern": "metal"
+      },
+      "collider": true,
+      "physics": {
+        "mode": "dynamic",
+        "mass": 2.2,
+        "friction": 0.55,
+        "restitution": 0.18
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000070",
+      "name": "Key light",
+      "kind": "light",
+      "position": [
+        4.2,
+        5,
+        4
+      ],
+      "scale": [
+        0.02,
+        0.02,
+        0.02
+      ],
+      "color": [
+        1,
+        0.78,
+        0.55
+      ],
+      "light": {
+        "color": [
+          1,
+          0.78,
+          0.55
+        ],
+        "intensity": 5,
+        "range": 17
+      },
+      "collider": false
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000071",
+      "name": "Cool rim light",
+      "kind": "light",
+      "position": [
+        -5.5,
+        4,
+        -3
+      ],
+      "scale": [
+        0.02,
+        0.02,
+        0.02
+      ],
+      "color": [
+        0.34,
+        0.58,
+        1
+      ],
+      "light": {
+        "color": [
+          0.34,
+          0.58,
+          1
+        ],
+        "intensity": 3.2,
+        "range": 15
+      },
+      "collider": false
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000015",
+      "name": "Lab exit",
+      "kind": "goal",
+      "position": [
+        0,
+        0.04,
+        -6.5
+      ],
+      "scale": [
+        1.2,
+        0.08,
+        1.2
+      ],
+      "color": [
+        0.25,
+        0.9,
+        0.55
+      ],
+      "material": {
+        "albedo": [
+          0.25,
+          0.9,
+          0.55
+        ],
+        "roughness": 0.35,
+        "metalness": 0,
+        "pattern": "metal"
+      },
+      "collider": false
+    }
+  ]
+}

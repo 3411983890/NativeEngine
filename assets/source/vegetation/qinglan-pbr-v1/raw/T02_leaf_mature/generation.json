@@ -1,0 +1,27 @@
+{
+  "assetId": "T02_leaf_mature",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game vegetation source texture, square1024x1024 preferred, one healthy isolated single leaf bladeOnly, orthographic front surface facing viewer, flattened and de-lit natural diffuse color. TRUE transparent RGBA, no baked shadow or specular highlight. Root at UV(0.5,0.0625), tip upward with content inside 6.25% safety margins. Preserve natural aspect ratio. No petiole extension, no branches, other leaves, flowers, holes, labels, borders, ruler, checkerboard or background. Single original BaseColor+Alpha texture, not an atlas or render. Species Cinnamomum camphora 香樟: ONE mature camphor leaf, elliptical to ovate, pointed tip, smooth entire margin, three characteristic strong basal veins, natural rich medium green, waxy but NO reflected highlights.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-119d8909-a3b6-4498-990b-1b07ab90e54b.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ],
+  "sourceGeometryReview": {
+    "assetId": "T02_leaf_mature",
+    "width": 1254,
+    "height": 1254,
+    "bounds": {
+      "minX": 318,
+      "minY": 20,
+      "maxX": 944,
+      "maxY": 1228
+    },
+    "trueTransparency": true,
+    "edgeCutoff": false,
+    "status": "needs-canonical-normalization"
+  }
+}

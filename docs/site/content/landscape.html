@@ -1,0 +1,157 @@
+<p class="lede">地形是目前唯一一个"设计完成、代码为零"的大系统。这一页把结论写清楚：<strong>不需要照抄 UE5 的组件 + 顶点工厂</strong>，因为在 120 m 视距下，一块静态瓦片就够了；真正难的不是生成高度，而是 LOD、接缝、碰撞与材质混合。</p>
+
+<div class="meta-row">
+  <span class="badge badge--plan">设计稿</span>
+  <span class="badge badge--no">未实现</span>
+  <span class="meta">对照 Unreal Engine 5 Landscape · 目标版本 0.12+</span>
+</div>
+
+<div class="callout callout--warn">
+<span class="callout-title">这不是能力声明</span>
+<p>本页描述的代码<strong>尚未存在</strong>。它存在的目的是把"要做什么、为什么这样做、验收标准是什么"提前定下来，避免实现时反复推翻。</p>
+</div>
+
+<h2 id="ue5">UE5 的做法与它的代价</h2>
+
+<p>UE5 地形不是"一个网格"，而是"一张 16 位高度图 + 一套按需派生的数据"。四个关键决策值得学，也值得知道代价。</p>
+
+<table>
+<thead><tr><th>决策</th><th>做法</th><th>代价</th></tr></thead>
+<tbody>
+<tr><td>存高度场</td><td>每顶点 <code>uint16</code>，<code>世界Z = (h − 32768) / 128 × ScaleZ</code>（ScaleZ=100 时 ±256 m，1 LSB ≈ 0.78 cm）</td><td>精度上限固定；陡崖会出现阶梯</td></tr>
+<tr><td>组件化</td><td>每组件 63×63 四边形 = 64×64 顶点，边缘与邻居<strong>重复存储</strong></td><td>内存冗余，换来独立流送与独立 LOD</td></tr>
+<tr><td>顶点着色器取高度</td><td>VS 采样 heightmap mip 算位置与法线，CPU 只决定 LOD 级别</td><td>绑定 vertex texture fetch；材质受限</td></tr>
+<tr><td>权重图即材质分层</td><td>RGBA8 一张装 4 层，每层配 LayerInfo（物理材质、硬度）</td><td>层数受纹理数量约束</td></tr>
+</tbody>
+</table>
+
+<p>内存上的理由很硬：1 km² @ 1 m 精度 = 100 万顶点，存成高度图是 <strong>2 MB</strong>，存成网格（pos + normal + uv）是 <strong>32 MB</strong>。16 倍的差距，而且高度图天然带 mip，LOD 与碰撞简化都只是"取哪一级"。</p>
+
+<p>UE5 还有两个对 AI 生成特别友好的机制：<strong>Edit Layers</strong>（高度/权重分图层存，运行时 GPU 合成，非破坏）和 <strong>Landscape Patch</strong>（蓝图驱动的运行时补丁，道路与河床不改基础高度图）。它们让"AI 写一层、美术改一层"成为可能。</p>
+
+<h2 id="constraints">本引擎的约束</h2>
+
+<dl class="kv">
+<dt>视距</dt><dd>相机 far = 120 m</dd>
+<dt>几何路径</dt><dd>只有单位立方体顶点/索引缓冲，没有任意网格上传路径</dd>
+<dt>提交方式</dt><dd>每个 item 一次 <code>DrawIndexedInstanced(..., 1, ...)</code></dd>
+<dt>物理</dt><dd>盒体 SAT，宽相 O(n²)</dd>
+<dt>场景上限</dt><dd>10,000 实体、JSON ≤ 16 MiB</dd>
+</dl>
+
+<p>把这几条放在一起，结论很直接：</p>
+
+<div class="callout callout--note">
+<span class="callout-title">关键结论</span>
+<p><strong>第一版不需要 LOD，也不需要 clipmap。</strong> 一块 128 m × 128 m、0.5 m 精度的地形 = 257² ≈ 66k 顶点，一个 draw call，约 1.5 MB 顶点数据——用现有静态网格路径就能跑完。LOD 等视距推到 1 km 再说。</p>
+</div>
+
+<h2 id="design">设计：高度图 → 地面</h2>
+
+<h3 id="asset">1. 资产</h3>
+
+<pre><code>assets/terrain/hills.ngheight
+  header: magic | version | width | height | scaleZ | minZ | maxZ | contentHash
+  data:   uint16[row * width + col]         // 行主序，小端</code></pre>
+
+<p>走现有 <code>.ngtex</code> 的内容寻址思路：同样的输入 → 同样的字节 → 同样的哈希，可以直接进构建缓存。</p>
+
+<h3 id="mesh">2. 网格生成</h3>
+
+<pre><code>for each (i, j) in [0, N]:
+    h  = bilinear(height, u, v)
+    p  = (x0 + i * cell, h, z0 + j * cell)
+    n  = normalize(cross(dh/dx, dh/dz))   // 中心差分
+</code></pre>
+
+<p>法线用中心差分而不是面法线：面法线会在四边形边界产生硬边，中心差分得到连续法线，且不需要额外的法线贴图。</p>
+
+<h3 id="lod">3. 分块与接缝（P2 才做）</h3>
+
+<p>当视距超过 300 m 时，按 32 m 分块，每块独立选 LOD。块间 LOD 不同必然产生 T 型接缝，三种处理：</p>
+
+<table>
+<thead><tr><th>方案</th><th>做法</th><th>适用</th></tr></thead>
+<tbody>
+<tr><td>Skirt 裙边</td><td>块边缘向下延伸一圈，遮住缝隙</td><td>最简单，与现有单网格路径最兼容</td></tr>
+<tr><td>索引缝合</td><td>T 型接缝处插入顶点，硬保证无缝</td><td>最正确，需要每块生成变体索引缓冲</td></tr>
+<tr><td>顶点形变</td><td>同时采样 LOD n 与 n+1，按因子 lerp 位置</td><td>UE 的做法；掩盖跳变，不消除裂缝</td></tr>
+</tbody>
+</table>
+
+<p>第一版选 <strong>skirt</strong>：实现成本最低，视觉上几乎看不出，而且不需要每块维护多套索引。</p>
+
+<h3 id="collision">4. 碰撞</h3>
+
+<p>只做查询，不做刚体：</p>
+
+<pre><code>float heightAt(float x, float z);   // 双线性插值
+vec3  normalAt(float x, float z);   // 中心差分</code></pre>
+
+<p>角色贴地用 <code>heightAt</code>，不引入 heightfield 刚体。现有物理是盒体 SAT + O(n²) 宽相，heightfield 是另一个量级的工作，而且和现有角色控制器（AABB 扫掠）语义冲突。</p>
+
+<h3 id="material">5. 材质</h3>
+
+<p>按坡度与高度离线烘焙 splat 权重图（RGBA8，一张四层），运行时按权重混合 albedo / normal / roughness。这一步不需要新 shader 架构——现有材质路径能直接吃权重图。</p>
+
+<h2 id="ai">AI 生成管线</h2>
+
+<p>"AI 自动生成地编场景"要拆成三件事看，可行性完全不同：</p>
+
+<table>
+<thead><tr><th>任务</th><th>可行性</th><th>真正的卡点</th></tr></thead>
+<tbody>
+<tr><td>高度图 → 地面</td><td><span class="badge badge--done">成熟</span></td><td>不是生成，是 LOD / 接缝 / 碰撞 / 材质混合</td></tr>
+<tr><td>程序化地形（噪声 + 侵蚀）</td><td><span class="badge badge--done">成熟</span></td><td>参数调优，不是技术</td></tr>
+<tr><td>扩散模型生成高度图</td><td><span class="badge badge--partial">可用但需后处理</span></td><td>高程绝对尺度、可平铺、流域一致性、16 位精度</td></tr>
+<tr><td>LLM 直接产出关卡布局</td><td><span class="badge badge--partial">可行</span></td><td>必须走结构化 DSL，不能吐坐标</td></tr>
+<tr><td>一键生成"像美术做的关卡"</td><td><span class="badge badge--no">不行</span></td><td>构图、叙事、可玩性</td></tr>
+</tbody>
+</table>
+
+<h3 id="erosion">为什么必须有侵蚀</h3>
+
+<p>扩散模型生成的地形"不像真的"，根源不是分辨率，是<strong>没有流域一致性</strong>：水不会往低处流，河谷不连续，山坡上出现孤立坑洞。加一道水力侵蚀 + 流量累积，比换更大的模型有效得多。</p>
+
+<pre><code>文本 / 参考图
+   │  产出约束而非像素：河谷走向、村落位置、道路端点
+   ▼
+宏观形态（扩散或噪声）     只负责大形状，不负责物理正确
+   ▼
+侵蚀与流域                 水力 / 热力 / 流量累积 ← 像不像真的在这一步
+   ▼
+派生图                     坡度 / 曲率 / 流量 / 湿度
+   ▼
+组装                       材质 splat · 植被散布 · 道路 · POI
+   ▼
+场景 DSL → 渲染 → 打分     确定性种子 + 固定机位截图 + VLM/规则评分
+   └──────────────────────▶ 回到"宏观形态"改参数</code></pre>
+
+<p>核心原则：<strong>LLM 不该碰顶点，该碰参数和图结构</strong>。它输出的是"河谷沿 X 轴、村落放在坡度 &lt; 8° 的南向台地、道路连接 A 与 B"，由确定性求解器落地。这样才可复现、可校验、可回退。</p>
+
+<h2 id="phases">分阶段计划</h2>
+
+<table>
+<thead><tr><th>阶段</th><th>内容</th><th>验收</th></tr></thead>
+<tbody>
+<tr><td>P0</td><td>高度图资产格式 + CPU 双线性采样 + 法线</td><td>单测：已知高度场往返误差 &lt; 1 LSB</td></tr>
+<tr><td>P1</td><td>128 m 单瓦片网格，接入现有 draw 循环</td><td>固定机位截图，与纯平面基线有可测差异</td></tr>
+<tr><td>P2</td><td>32 m 分块 + skirt 接缝</td><td>块边界无可见裂缝（截图 + 逐像素检查）</td></tr>
+<tr><td>P3</td><td>坡度/高度 → splat 权重图烘焙</td><td>三种地表在固定机位下可区分</td></tr>
+<tr><td>P4</td><td>离线 AI 生成工具（Node），输出高度图 + 场景 JSON</td><td>同一提示词 + 同一种子 → 逐字节相同产物</td></tr>
+</tbody>
+</table>
+
+<div class="callout callout--limit">
+<span class="callout-title">确定性要求</span>
+<p>侵蚀仿真必须确定性：CPU 定点顺序执行，或 GPU 上用整数原子加（整数加法满足结合律，与线程调度顺序无关）。参考<a href="particles.html">粒子与场</a>里 splat 源项的做法。浮点求解器不承诺确定性，这一点必须写清楚。</p>
+</div>
+
+<h2 id="not">明确不做</h2>
+<ul>
+<li>不做 UE 式的组件网格 + 顶点工厂（前置是任意网格路径 + VS 纹理采样 + 每组件常量）。</li>
+<li>不做运行时地形编辑（笔刷、图层合成）——离线生成，运行时只读。</li>
+<li>不做 heightfield 刚体。</li>
+<li>不做地形流送（World Partition 等价物）；单场景单瓦片。</li>
+<li>不在 P0–P2 阶段引入任何 AI 依赖；生成工具是最后一步。</li>
+</ul>

@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "sampleRate": 48000,
+  "sounds": [
+    {
+      "name": "fogtown/blast",
+      "file": "assets/audio/fogtown/blast.ngsnd",
+      "channels": 1,
+      "frames": 13441,
+      "sampleRate": 48000,
+      "loudnessLufs": -25.14,
+      "peakDbtp": -15.3,
+      "sha256": "05b27a3b337cb080d18a6b89de5eeee42d7998165ff7875d4ab9ed83b0fd13bf"
+    },
+    {
+      "name": "fogtown/complete",
+      "file": "assets/audio/fogtown/complete.ngsnd",
+      "channels": 1,
+      "frames": 52801,
+      "sampleRate": 48000,
+      "loudnessLufs": -24.33,
+      "peakDbtp": -15.13,
+      "sha256": "d836041c93831205d5e1a184581154f9d5ea0e60ba8e2e5be880552fd7bc3013"
+    },
+    {
+      "name": "fogtown/door",
+      "file": "assets/audio/fogtown/door.ngsnd",
+      "channels": 1,
+      "frames": 13441,
+      "sampleRate": 48000,
+      "loudnessLufs": -22.52,
+      "peakDbtp": -15.14,
+      "sha256": "6fa99bdd54a1c19467fc8429d03bbc8cce875f98f389ac333b590196c3fdfd7f"
+    },
+    {
+      "name": "fogtown/fail",
+      "file": "assets/audio/fogtown/fail.ngsnd",
+      "channels": 1,
+      "frames": 13441,
+      "sampleRate": 48000,
+      "loudnessLufs": -22.59,
+      "peakDbtp": -15.17,
+      "sha256": "fe54eba5330eaa2347ccf07756a0924c05d6e64aeb036043574facadd61514c1"
+    },
+    {
+      "name": "fogtown/power",
+      "file": "assets/audio/fogtown/power.ngsnd",
+      "channels": 1,
+      "frames": 20160,
+      "sampleRate": 48000,
+      "loudnessLufs": -22.9,
+      "peakDbtp": -15.13,
+      "sha256": "06c69812b1e396b1c5a573114e27ece314e2fe2acae95ca1cb97acf2263c95c1"
+    }
+  ],
+  "hash": "e2b276d36617610852d94488a305c01040260d57975c0422881dc22dd8e2cb19"
+}

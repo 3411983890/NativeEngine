@@ -1,0 +1,13 @@
+{
+  "assetId": "T02_bark",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game PBR seamless BASE COLOR source, opaque square1024x1024 preferred. Orthographic flattened mature tree bark surface filling entire canvas. Natural diffuse albedo, de-lit, no directional shading, gloss, cast shadows, cylinder silhouette, perspective, leaves, moss, labels or borders. Tree trunk axis along +V (bottom to top). Seamlessly tile BOTH horizontal and vertical edges, no distinctive central composition. ONLY basecolor, no panels or PBR contact sheet. Species Cinnamomum camphora 香樟: mature camphor bark, gray-brown irregular coarse longitudinal fissures and rough ridged plates; realistic subdued hues. One art-directed patch0.8m wide by1.6m tall, not a measured scan.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-154b85d5-109c-4218-ae8c-4d9096b2a45f.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

@@ -15,7 +15,7 @@ export const PACKAGE_KIND = 'nativegpu.geometry-package';
 export const MANIFEST_NAME = 'geometry.package.json';
 export const MAX_CLUSTER_VERTICES = 128;
 export const MAX_CLUSTER_TRIANGLES = 128;
-// v2 cluster capabilities. The values are frozen by docs/GEOMETRY-LAYOUT.md.
+// v2 cluster capabilities. The values are frozen by .developmentAgent/rendering/GEOMETRY-LAYOUT.md.
 export const CAPABILITIES = Object.freeze({
   clusterPipeline: true,
   lodError: true,

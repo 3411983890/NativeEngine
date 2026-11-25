@@ -1,0 +1,97 @@
+<p class="lede">确定性不是"跑得稳"，而是"同样的输入必然得到同样的结果"。这条性质撑起了回放、图像回归、世界分叉与崩溃复现——没有它，<code>reports/</code> 里的一切数字都只是快照，不能作为证据。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已实现</span>
+  <span class="meta">engine/native/determinism.{hpp,cpp} · .developmentAgent/core/DETERMINISM.md · .developmentAgent/core/REPLAY.md</span>
+</div>
+
+<h2 id="rules">四条硬约束</h2>
+
+<table>
+<thead><tr><th>规则</th><th>含义</th><th>如何强制</th></tr></thead>
+<tbody>
+<tr><td>禁止进程级随机源</td><td><code>engine/native/</code> 里不许出现 <code>std::rand</code>、<code>srand</code>、<code>std::random_device</code></td><td><code>tools/determinism.ps1</code> 静态扫描，违规即失败</td></tr>
+<tr><td>禁止读墙上时钟</td><td>不许 <code>std::time</code>、<code>GetTickCount</code>、<code>QueryPerformanceCounter</code></td><td>同上；帧间隔只能由宿主传入 <code>update(input, dt)</code></td></tr>
+<tr><td>随机必须命名</td><td>Lua 用 <code>ctx:random(name, bound)</code>；原生用 <code>registry().stream("&lt;name&gt;")</code></td><td>新增消费者不会移动其它流已依赖的序列</td></tr>
+<tr><td>渲染不得反馈进模拟</td><td>分辨率、调试视图、DXR / Mesh 开关不改变摘要</td><td>作为证据断言，每次 verify 都跑</td></tr>
+</tbody>
+</table>
+
+<p>摘要编码固定：原生数值按 <strong>1e-4</strong> 网格量化；玩法组件、Lua 显式状态与队列按有序 JSON 序列化后取摘要；非有限状态拒绝提交。</p>
+
+<h2 id="components">组成</h2>
+
+<table>
+<thead><tr><th>组件</th><th>实现</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>Hasher</code></td><td>FNV-1a 64，纯整数运算</td><td>跨编译器一致；<code>quantized()</code> 做网格量化</td></tr>
+<tr><td><code>Stream</code></td><td>xoshiro128**，splitmix64 播种</td><td><code>next</code> / <code>unit</code> / <code>range</code> + 计数器</td></tr>
+<tr><td><code>Registry</code></td><td>按名字持有流（<code>std::deque</code>，引用稳定）</td><td><code>fingerprint()</code> 覆盖种子、流名与计数器</td></tr>
+<tr><td><code>Game::digest()</code></td><td>汇总模拟状态</td><td>tick、玩家位置/速度、相机角、动画相位、玩法标志、刚体状态、损伤与断裂计数</td></tr>
+</tbody>
+</table>
+
+<p>摘要<strong>不包含</strong>：渲染状态、窗口尺寸、GPU 时序、墙钟时间。它们不是模拟输入。</p>
+
+<h2 id="cli">CLI</h2>
+
+<pre><code>build/NativeGPU.exe --smoke --no-watch --frames 240 \
+  --hash-log reports/x.log --seed 20261020</code></pre>
+
+<table>
+<thead><tr><th>参数</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>--seed &lt;u64&gt;</code></td><td>本次运行种子（默认 20261020），重置所有命名流</td></tr>
+<tr><td><code>--hash-log &lt;path&gt;</code></td><td>逐帧摘要日志，<code>\n</code> 行尾、无 BOM</td></tr>
+</tbody>
+</table>
+
+<p>报告新增 <code>determinism</code> 段：<code>seed</code>、<code>fixedStepHz</code>、<code>ticks</code>、<code>hashLines</code>、<code>finalHash</code>、<code>rng.streams[]</code>、<code>rng.fingerprint</code>。</p>
+
+<h2 id="evidence">证据</h2>
+
+<pre><code>powershell -File tools/determinism.ps1 -Frames 240</code></pre>
+
+<p>跑 5 次冒烟：基线两次、640×360 一次、<code>--debug-view mask</code> 一次、<code>--seed 7</code> 一次，然后断言：</p>
+
+<ul>
+<li>两次基线摘要日志<strong>逐字节相同</strong>；</li>
+<li>分辨率与调试视图不改变摘要；</li>
+<li>240 帧 = 480 tick（120 Hz 固定步长，2 tick/帧）；</li>
+<li>报告的 <code>ticks</code> / <code>finalHash</code> 与日志末行一致；</li>
+<li>两个命名流（<code>gameplay</code>、<code>cosmetic</code>）已注册，<code>fingerprint</code> 为 16 位十六进制；</li>
+<li>换种子后 <code>fingerprint</code> 变化；</li>
+<li>静态扫描通过。</li>
+</ul>
+
+<h2 id="replay">回放与黑匣子</h2>
+
+<pre><code>build/NativeGPU.exe --record reports/run.replay
+build/NativeGPU.exe --replay reports/run.replay --replay-strict</code></pre>
+
+<table>
+<thead><tr><th>参数</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>--record &lt;path&gt;</code></td><td>记录输入、dt、内容指纹与初始快照</td></tr>
+<tr><td><code>--replay &lt;path&gt;</code></td><td>重放；摘要不符时报告差异</td></tr>
+<tr><td><code>--replay-strict</code></td><td>任何不符立即失败</td></tr>
+<tr><td><code>--stall-frame</code> / <code>--stall-ms</code></td><td>注入卡顿，验证黑匣子定位能力</td></tr>
+<tr><td><code>--blackbox-stall-ms</code></td><td>黑匣子专用的卡顿注入</td></tr>
+</tbody>
+</table>
+
+<p>回放 v4 保存源码构建指纹、场景身份、Lua / 组件 / 动画内容契约，以及 <code>.initial.json</code> 初始模拟快照；逐帧记录精确 <code>dt</code>，支持变帧率录制。正式录制/回放关闭自动重载，回放在模拟前验证内容。</p>
+
+<p>证据：<code>tools/replay.ps1</code> 25 项，240 帧 <strong>0 不符</strong>；篡改可定位到具体帧；anomaly sidecar 可回放。</p>
+
+<h2 id="limits">承诺范围</h2>
+
+<div class="callout callout--limit">
+<span class="callout-title">只承诺这些</span>
+<ul>
+<li>同机、同构建、同内容、同输入 → 逐字节相同。</li>
+<li><strong>不承诺</strong>跨平台、跨编译器优化级别的浮点一致。</li>
+<li>摘要覆盖模拟状态，不覆盖材质、灯光、场景文件——它们由场景哈希单独覆盖。</li>
+<li>旧版本日志可解析，但不同模拟契约下的摘要<strong>不能</strong>当作兼容性保证。</li>
+</ul>
+</div>

@@ -41,7 +41,7 @@ export function createMcpHandler({ service, protocolVersion = DEFAULT_PROTOCOL_V
         protocolVersion: typeof params?.protocolVersion === 'string' ? params.protocolVersion : protocolVersion,
         capabilities: { tools: { listChanged: false } },
         serverInfo: { name: SERVER_NAME, version: SERVER_VERSION },
-        instructions: 'NativeGPU deterministic scene tools. Preview before apply; the running editor hot-reloads assets/*.scene.json. Prefer scene_build and runtime_smoke for verification.',
+        instructions: 'NativeGPU deterministic scene tools. Preview before apply; the running editor hot-reloads assets/*.scene.json and .screen/*.scene.json. Prefer scene_build and runtime_smoke for verification.',
       });
     }
     if (method === 'ping') return reply(id, {});

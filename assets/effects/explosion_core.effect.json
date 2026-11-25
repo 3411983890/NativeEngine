@@ -1,0 +1,56 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "explosion_core",
+  "revision": 0,
+  "seed": 211,
+  "durationTicks": 180,
+  "loop": false,
+  "maxAlive": 640,
+  "bounds": { "min": [-12, -3, -12], "max": [12, 12, 12] },
+  "budget": { "maxSpawnPerTick": 320, "maxEventsPerTick": 8, "maxDepth": 2 },
+  "emitters": [
+    {
+      "id": "fireball",
+      "shape": { "type": "sphere", "radius": 0.35 },
+      "position": [0, 0, 0],
+      "ratePerSecond": 0,
+      "bursts": [{ "tick": 0, "count": 160 }],
+      "lifetimeTicks": [48, 96],
+      "localSpace": false,
+      "modules": [
+        { "id": "initial", "type": "initialize", "params": { "velocity": [0, 2.4, 0], "color": [8, 3.4, 0.8, 1], "size": [0.35, 0.9] } },
+        { "id": "buoyancy", "type": "acceleration", "after": ["initial"], "params": { "value": [0, 2.2, 0] } },
+        { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 2.4 } },
+        { "id": "grow", "type": "sizeOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.35, 0.9] }, { "t": 1, "value": [1.6, 2.4] }
+        ] } },
+        { "id": "cool", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [8, 3.4, 0.8, 1] }, { "t": 0.4, "value": [3.2, 0.9, 0.15, 0.85] }, { "t": 1, "value": [0.05, 0.03, 0.03, 0] }
+        ] } }
+      ],
+      "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "additive", "lit": false }]
+    },
+    {
+      "id": "smoke_puff",
+      "shape": { "type": "sphere", "radius": 0.6 },
+      "position": [0, 0.4, 0],
+      "ratePerSecond": 0,
+      "bursts": [{ "tick": 2, "count": 48 }],
+      "lifetimeTicks": [180, 360],
+      "localSpace": false,
+      "modules": [
+        { "id": "initial", "type": "initialize", "params": { "velocity": [0, 1.1, 0], "color": [0.22, 0.2, 0.18, 0.55], "size": [0.9, 1.6] } },
+        { "id": "buoyancy", "type": "acceleration", "after": ["initial"], "params": { "value": [0, 0.7, 0] } },
+        { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 1.1 } },
+        { "id": "grow", "type": "sizeOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.9, 1.6] }, { "t": 1, "value": [3.2, 4.2] }
+        ] } },
+        { "id": "fade", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.22, 0.2, 0.18, 0.55] }, { "t": 1, "value": [0.1, 0.1, 0.1, 0] }
+        ] } }
+      ],
+      "renderers": [{ "type": "sprite", "texture": "textures/lamp.albedo.ngtex", "blend": "premultiplied", "lit": false }]
+    }
+  ],
+  "events": [{ "on": "death", "spawn": "sparks_burst", "limit": 1, "delayTicks": 0 }]
+}

@@ -1,0 +1,27 @@
+{
+  "assetId": "T04_leaf_mature",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game vegetation source texture, square1024x1024 preferred, one healthy isolated single leaf bladeOnly, orthographic front surface facing viewer, flattened and de-lit natural diffuse color. TRUE transparent RGBA, no baked shadow or specular highlight. Root at UV(0.5,0.0625), tip upward with content inside 6.25% safety margins. Preserve natural aspect ratio. No petiole extension, no branches, other leaves, flowers, holes, labels, borders, ruler, checkerboard or background. Single original BaseColor+Alpha texture, not an atlas or render. Species Celtis sinensis 朴树 Chinese hackberry: one ovate leaf, noticeably asymmetrical leaf base, pointed upper tip, serrated upper margin and relatively smoother lower margin, several strong basal veins, mature natural green. Preserve base asymmetry while basal root remains centered.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-cbead354-f341-46b7-9b13-6f09bb4fcb1c.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ],
+  "sourceGeometryReview": {
+    "assetId": "T04_leaf_mature",
+    "width": 1254,
+    "height": 1254,
+    "bounds": {
+      "minX": 245,
+      "minY": 6,
+      "maxX": 1009,
+      "maxY": 1245
+    },
+    "trueTransparency": true,
+    "edgeCutoff": false,
+    "status": "needs-canonical-normalization"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "schema": "nativegpu.cloth/2",
+  "id": "flag_banner",
+  "revision": 0,
+  "seed": 11,
+  "kind": "environment",
+  "mesh": {
+    "type": "grid",
+    "columns": 20,
+    "rows": 14,
+    "widthMetres": 1.2,
+    "heightMetres": 0.8
+  },
+  "material": {
+    "arealDensityKgM2": 0.22,
+    "thicknessMetres": 0.003,
+    "stretchCompliance": 1e-8,
+    "shearCompliance": 2e-7,
+    "damping": 0.35,
+    "dragCoefficient": 1.1,
+    "bendAngleCompliance": 1000
+  },
+  "pins": [
+    {
+      "column": 0,
+      "row": 0
+    },
+    {
+      "column": 0,
+      "row": 2
+    },
+    {
+      "column": 0,
+      "row": 4
+    },
+    {
+      "column": 0,
+      "row": 6
+    },
+    {
+      "column": 0,
+      "row": 8
+    },
+    {
+      "column": 0,
+      "row": 10
+    },
+    {
+      "column": 0,
+      "row": 12
+    },
+    {
+      "column": 0,
+      "row": 13
+    }
+  ],
+  "collision": {
+    "thicknessMetres": 0.004,
+    "plane": null,
+    "spheres": [],
+    "capsules": []
+  },
+  "lod": [
+    {
+      "maxDistanceMetres": 8,
+      "columns": 20,
+      "rows": 14
+    },
+    {
+      "maxDistanceMetres": 24,
+      "columns": 10,
+      "rows": 7
+    },
+    {
+      "maxDistanceMetres": 60,
+      "columns": 6,
+      "rows": 4
+    }
+  ],
+  "budget": {
+    "maxVertices": 4096,
+    "maxSubsteps": 4,
+    "iterations": 8
+  }
+}

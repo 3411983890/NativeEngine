@@ -1,0 +1,119 @@
+{
+  "schema": "nativeengine.builtin/1",
+  "source": {
+    "robot": "assets/source/builtin/robot.glb",
+    "sha256": "f84448f458ec6b00da9fb98865c0d2ddc2a13973bcb32f783620651cd6254930"
+  },
+  "character": {
+    "file": "builtin/robot/character.json",
+    "sha256": "3e4605f3f980f70cc7ae48e2c7b1d9bfee54e0750c2c01c305df5c5f58d1b809",
+    "binarySha256": "debc001615054fe0f477ee5a406f2c4e3354968c56266825c0fd4bc65b5e8ff2",
+    "anchor": "feet",
+    "rootMotion": "extract",
+    "scale": [
+      1.8406537157858247,
+      1.8406537157858247,
+      1.8406537157858247
+    ],
+    "offset": [
+      -3.4903583979581813e-8,
+      -6.523517498670227e-7,
+      -6.340045023515096e-8
+    ],
+    "controller": {
+      "stepHeight": 0.36,
+      "orbitDistance": 5,
+      "orbitHeight": 1.35,
+      "targetHeight": 1.05
+    }
+  },
+  "collider": [
+    0.6,
+    1.7999999999999998,
+    0.6
+  ],
+  "materials": {
+    "m0": {
+      "albedo": "m0",
+      "normal": "m0",
+      "orm": "m0",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0
+    },
+    "m1": {
+      "albedo": "m1",
+      "normal": "m1",
+      "orm": "m1",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0,
+      "textureMappings": {
+        "albedo": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "normal": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "orm": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        }
+      }
+    },
+    "default": {
+      "albedo": "engine_grid",
+      "normal": "engine_grid",
+      "orm": "engine_grid",
+      "uvScale": 5,
+      "roughness": 0.88,
+      "metalness": 0
+    }
+  },
+  "controller": [
+    "idle",
+    "walk.001",
+    "run.001",
+    "jump.001",
+    "fall"
+  ]
+}

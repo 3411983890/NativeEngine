@@ -8,7 +8,9 @@
 param(
     [switch]$Quiet,
     [switch]$RequireDxc,
-    [switch]$SelfTest
+    [switch]$SelfTest,
+    [string[]]$Source=@(),
+    [string]$OutputDirectory='build'
 )
 $ErrorActionPreference = 'Stop'
 
@@ -16,8 +18,9 @@ function Write-Info([string]$text) { if (-not $Quiet) { Write-Host $text } }
 
 $root = Split-Path $PSScriptRoot -Parent
 $manifestPath = Join-Path $root 'shaders\manifest.json'
-$shaderOutDir = Join-Path $root 'build\shaders'
-$generatedDir = Join-Path $root 'build\generated'
+$outputRoot = [IO.Path]::GetFullPath((Join-Path $root $OutputDirectory))
+$shaderOutDir = Join-Path $outputRoot 'shaders'
+$generatedDir = Join-Path $outputRoot 'generated'
 $headerPath = Join-Path $generatedDir 'nativegpu_shaders.h'
 $buildManifestPath = Join-Path $shaderOutDir 'manifest.json'
 
@@ -76,6 +79,23 @@ function Format-ByteArray([string]$symbol, [byte[]]$bytes) {
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $blobs = @()
 if ($manifest.blobs) { $blobs = @($manifest.blobs) }
+if ($Source) {
+    $blobs = @($blobs | Where-Object { $Source -contains $_.source })
+    if ($blobs.Count -eq 0) { throw "No shader entries for source: $Source" }
+}
+$shaderInputs = [ordered]@{}
+function Add-ShaderInput([string]$path) {
+    $absolute = [IO.Path]::GetFullPath($path)
+    if ($shaderInputs.Contains($absolute)) { return }
+    $shaderInputs[$absolute] = (Get-FileHash -LiteralPath $absolute -Algorithm SHA256).Hash
+    foreach ($line in (Get-Content -LiteralPath $absolute)) {
+        if ($line -match '^\s*#\s*include\s*"([^"]+)"') {
+            Add-ShaderInput (Join-Path (Split-Path $absolute -Parent) $Matches[1])
+        }
+    }
+}
+$shaderInputs[$manifestPath] = (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash
+foreach ($blob in $blobs) { Add-ShaderInput (Join-Path $root $blob.source) }
 
 $dxcPath = $null
 $dxcVersion = 'unavailable'
@@ -139,6 +159,7 @@ $compileLog = New-Object System.Collections.Generic.List[string]
 $failures = New-Object System.Collections.Generic.List[string]
 
 foreach ($blob in $blobs) {
+    if ($null -ne $blob.ieeeStrict -and $blob.ieeeStrict -isnot [bool]) { throw "ieeeStrict must be boolean: $($blob.symbol)" }
     $sourcePath = Join-Path $root $blob.source
     if (-not (Test-Path -LiteralPath $sourcePath)) {
         $failures.Add("Shader source missing: $($blob.source)")
@@ -151,6 +172,7 @@ foreach ($blob in $blobs) {
             source = $blob.source
             target = $blob.target
             entry = $blob.entry
+            ieeeStrict = [bool]$blob.ieeeStrict
             bytes = 0
             sha256 = ''
             status = 'dxcUnavailable'
@@ -159,6 +181,7 @@ foreach ($blob in $blobs) {
         continue
     }
     $arguments = @('-T', $blob.target, '-HV', '2018', '-O3')
+    if ($blob.ieeeStrict) { $arguments += '-Gis' }
     if ($blob.entry) { $arguments += @('-E', $blob.entry) }
     if ($blob.defines) { foreach ($define in $blob.defines) { $arguments += @('-D', $define) } }
     $arguments += @('-Fo', $outputPath, $sourcePath)
@@ -183,6 +206,7 @@ foreach ($blob in $blobs) {
         source = $blob.source
         target = $blob.target
         entry = $blob.entry
+        ieeeStrict = [bool]$blob.ieeeStrict
         bytes = $bytes.Length
         sha256 = (Get-FileHash -LiteralPath $outputPath -Algorithm SHA256).Hash.ToLowerInvariant()
         status = 'ok'
@@ -195,6 +219,9 @@ foreach ($blob in $blobs) {
 if ($failures.Count -gt 0) {
     throw ("Shader build failed:`n" + ($failures -join "`n"))
 }
+foreach ($inputPath in $shaderInputs.Keys) {
+    if ((Get-FileHash -LiteralPath $inputPath -Algorithm SHA256).Hash -ne $shaderInputs[$inputPath]) { throw "Shader input changed during compilation: $inputPath" }
+}
 
 $buildManifest = [pscustomobject]@{
     generatedAtUtc = (Get-Date).ToUniversalTime().ToString('o')
@@ -202,6 +229,8 @@ $buildManifest = [pscustomobject]@{
     dxcVersion = $dxcVersion
     dxcSha256 = $dxcSha
     dxcError = $dxcError
+    sourceSelection = $(if($Source.Count -eq 1){$Source[0]}else{@($Source)})
+    sourceInputs = $shaderInputs
     blobs = $compiled
 }
 $buildManifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $buildManifestPath -Encoding utf8

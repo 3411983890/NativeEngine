@@ -1,5 +1,7 @@
 #pragma once
 
+namespace engine::gameplay { struct NativeSnapshot; }
+
 #include <cstdint>
 #include <deque>
 #include <string>
@@ -34,6 +36,7 @@ public:
     void reset() { value_ = kOffset; }
     std::string hex() const;
 private:
+    friend struct engine::gameplay::NativeSnapshot;
     static constexpr std::uint64_t kOffset = 1469598103934665603ull;
     static constexpr std::uint64_t kPrime = 1099511628211ull;
     std::uint64_t value_ = kOffset;
@@ -54,6 +57,7 @@ public:
     const std::string& name() const { return name_; }
     std::uint64_t counter() const { return counter_; }
 private:
+    friend struct engine::gameplay::NativeSnapshot;
     std::string name_;
     std::uint32_t state_[4]{};
     std::uint64_t counter_ = 0;
@@ -73,6 +77,7 @@ public:
     // RNG state, not just the configuration.
     std::uint64_t fingerprint() const;
 private:
+    friend struct engine::gameplay::NativeSnapshot;
     std::uint64_t seed_ = 0;
     std::deque<Stream> streams_;
 };

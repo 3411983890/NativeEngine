@@ -1,0 +1,94 @@
+<p class="lede">动画系统是"数据很窄、纪律很严"的典型：只支持一个刻意收窄的 glTF 子集和 60 Hz 量化片段，但把确定性、通道掩码、阶段哈希做成了硬约束——因为动画一旦不确定，整个回放体系就失效了。</p>
+
+<div class="meta-row">
+  <span class="badge badge--partial">部分实现</span>
+  <span class="badge badge--no">无脚 IK / 动作匹配</span>
+  <span class="meta">.developmentAgent/animation-audio/ANIMATION.md · engine/native/animation.*</span>
+</div>
+
+<h2 id="run">运行</h2>
+
+<pre><code>npm run build:native
+npm start
+npm run animation</code></pre>
+
+<p>默认小院角色使用仓库内原创的 16 骨骼人偶与六段 60 Hz 动作，通过顶点着色器蒙皮绘制。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>Shift</kbd> / <kbd>Space</kbd> 驱动 idle / walk / run / jump / fall，<kbd>E</kbd> 触发上半身 interact slot。通知进入动画事件队列，<strong>不直接修改</strong>钥匙或门的玩法状态——这条隔离很重要，否则动画会变成第二套玩法逻辑。</p>
+
+<h2 id="import">导入子集</h2>
+
+<pre><code>node tools/offline/animation.mjs import --in character.gltf --out build/animation/custom
+build/NativeGPU.exe --character build/animation/custom/character.json</code></pre>
+
+<table>
+<thead><tr><th>支持</th><th>限制</th></tr></thead>
+<tbody>
+<tr><td><code>.gltf</code> JSON，buffer 为 base64 或同目录 <code>.bin</code></td><td>不支持 GLB、扩展、压缩、稀疏 accessor、morph</td></tr>
+<tr><td>一个 scene、一个 identity 根 mesh 节点、一个 skin</td><td>—</td></tr>
+<tr><td>一个 indexed <code>TRIANGLES</code> primitive</td><td>多 primitive 拒绝</td></tr>
+<tr><td>POSITION / NORMAL 必需，UV 可选</td><td>—</td></tr>
+<tr><td>JOINTS_0 为 U8/U16；WEIGHTS_0 为 FLOAT 或归一化 U8/U16</td><td>每顶点超过四权重拒绝</td></tr>
+<tr><td>最多 256 骨骼/辅助节点，单根、父先、无环、名字唯一</td><td>—</td></tr>
+<tr><td>TRS 节点、正的均匀 scale、LINEAR/STEP 轨道</td><td>非均匀/负 scale、CUBICSPLINE 拒绝</td></tr>
+</tbody>
+</table>
+
+<p>动作固定 60 Hz，最后一个样本是端点；变换十分量乘 10,000 后编码为 <code>int32le</code>，运行时归一化四元数。片段最长 120 秒、最多 64 段、总包上限 64 MiB。</p>
+
+<p>输出 <code>character.json</code> + <code>animation.bin</code>：顶点 64 字节（position / normal / UV / u32 joints / float weights），索引 <code>uint32le</code>，片段 frame-major。头里含骨架、片段偏移、通知与二进制长度，以及 FNV-1a 检错哈希。</p>
+
+<div class="callout callout--note">
+<span class="callout-title">两个哈希，不要混用</span>
+<p><code>contentHash</code> 是 SHA-256，覆盖头 + 二进制，用于内容寻址与缓存；<code>runtimeFingerprint</code> 是 64 位 FNV-1a，由运行时对实际加载的字节计算，进入玩法摘要。前者回答"这是不是同一份资产"，后者回答"这次运行的动画内容和上次是否一致"。</p>
+</div>
+
+<h2 id="runtime">运行时</h2>
+
+<h3 id="graph">Trait DAG</h3>
+
+<p>动画图不是节点树，而是按 <code>(stage, priority, id)</code> 排序的 DAG。五个阶段：<strong>Select → Blend → Correct → Deform → Emit</strong>。<code>after</code> 必须引用排序中更早的节点，违反顺序或成环直接拒绝——不会"根据依赖悄悄改顺序"。</p>
+
+<table>
+<thead><tr><th>阶段</th><th>职责</th><th>约束</th></tr></thead>
+<tbody>
+<tr><td>Select</td><td>选片段、算权重</td><td>必须确定；不得写骨骼</td></tr>
+<tr><td>Blend</td><td>混合姿态</td><td>必须确定</td></tr>
+<tr><td>Correct</td><td>修正（未来的脚 IK 在这）</td><td>必须确定</td></tr>
+<tr><td>Deform</td><td>形变（肌肉/布料）</td><td>不得写根骨骼</td></tr>
+<tr><td>Emit</td><td>输出最终姿态</td><td>不得写骨骼</td></tr>
+</tbody>
+</table>
+
+<p>每个 trait 执行后检查全部 256 骨骼与 32 曲线；越界写立即 <code>NG-E-ANIM-MASK</code>。<code>reads</code> 是数据流声明，<code>writes</code> 是实际强制检查——前者靠自觉，后者靠代码。</p>
+
+<h3 id="buffers">SoA 双缓冲</h3>
+
+<p>256 骨骼按结构体数组拆成 SoA，双缓冲避免读写同一份数据。阶段哈希分五段（S1–S5），S1 包含意图与选择，S2–S4 累积量化后的确定性写通道，S5 不进入哈希。空阶段也有可定位的链节点，但没有对应效果——这样报告里能看到"哪一段是空的"，而不是一片空白。</p>
+
+<h3 id="controller">控制器</h3>
+
+<p>五状态控制器（idle / walk / run / jump / fall）、1D 走跑混合、2D 三角形混合 API、Montage / Slot、逐骨骼 profile、固定 tick Notify、根位移提取。</p>
+
+<p>惯性化用绝对 tick 年龄的临界阻尼<strong>解析解</strong>，旋转偏移用 quaternion log/exp，不做逐帧弹簧积分。Montage 使用逐骨骼 mask/profile、100 ms smoothstep 权重包络，结束恢复 locomotion。Notify 按跨过的固定 tick 派发，宿主用 <code>Game::takeAnimationEvents()</code> 消费，不会丢掉一个渲染帧第一个子步的事件。</p>
+
+<h2 id="determinism">确定性</h2>
+
+<p>固定 120 Hz 控制器与 Game 同步；渲染不推进动画。片段 tick、状态、蒙太奇、弹簧偏移与速度、双缓冲的必要历史、内容指纹都进入 <code>digest()</code>。<strong>计时只供报告，绝不进入摘要。</strong></p>
+
+<p>门禁包含：720 tick 跨运行对拍、60/120 Hz 更新等价、固定 tick 通知、严格回放零不符。</p>
+
+<h2 id="render">渲染</h2>
+
+<p>最多同时一个蒙皮角色，256 骨骼、每顶点四权重。静态物体继续走 Mesh Shader / 顶点路径，角色走独立 VS 路径。几何在每个在途帧首次遇到内容时上传一次；palette 使用三套 fence 隔离的 upload buffer，每帧只更新骨骼矩阵。</p>
+
+<p>DXR TLAS 只包含刚体——角色<strong>可以接收</strong>静态物体阴影，但<strong>自己的变形阴影未实现</strong>，报告里明确 <code>dynamicBlas=false</code>。把蒙皮角色当单位方盒塞进 TLAS 是错误做法，会得到一个随方盒变化的假阴影。</p>
+
+<h2 id="limits">边界</h2>
+
+<ul>
+<li>2D 混合空间只提供已测 API，<strong>未接</strong>小院输入。</li>
+<li>没有脚部 IK，<strong>不能宣称无脚滑</strong>。</li>
+<li>没有动作数据库、26 维特征、KD-tree、距离匹配、运动扭曲。</li>
+<li>没有 Sync Marker 对齐。</li>
+<li>没有肌肉、软组织、生理、面部。</li>
+<li>根旋转提取未实现；小院用 in-place 模式，角色平移由扫掠碰撞控制器决定。</li>
+</ul>

@@ -1,0 +1,13 @@
+{
+  "assetId": "T04_bark",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game PBR seamless BASE COLOR source, opaque square1024x1024 preferred. Orthographic flattened mature tree bark surface filling entire canvas. Natural diffuse albedo, de-lit, no directional shading, gloss, cast shadows, cylinder silhouette, perspective, leaves, moss, labels or borders. Tree trunk axis along +V (bottom to top). Seamlessly tile BOTH horizontal and vertical edges, no distinctive central composition. ONLY basecolor, no panels or PBR contact sheet. Species Celtis sinensis 朴树 Chinese hackberry: gray to pale gray-brown mature bark, comparatively smooth with subtle corky irregular warty ridges and shallow fissures, no deep pine-like plates. Orthographic surface patch0.8m U by1.6m V at art-directed scale.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-79959b18-aca2-4eeb-96ab-2f479f14864b.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

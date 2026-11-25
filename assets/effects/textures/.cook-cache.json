@@ -1,0 +1,119 @@
+{
+  "schema": "nativegpu.texture-cache/2",
+  "fingerprint": "07065477b73e6679d0cd5860acb8e777720b02f492502ba4a32482857cfffe02",
+  "manifest": {
+    "schema": "nativegpu.textures/1",
+    "size": 64,
+    "preserveAspect": false,
+    "budgetBytes": null,
+    "totalBytes": 21932,
+    "overBudget": false,
+    "decisions": [],
+    "textures": [
+      {
+        "name": "reference_glow",
+        "semantic": "albedo",
+        "file": "reference_glow.albedo.ngtex",
+        "source": "reference_glow.albedo.png",
+        "width": 64,
+        "height": 64,
+        "sourceWidth": 64,
+        "sourceHeight": 64,
+        "mips": 7,
+        "bytes": 21932,
+        "format": "rgba8",
+        "formatCode": 0,
+        "srgb": true,
+        "quality": {
+          "metric": "psnr",
+          "psnr": 100
+        },
+        "fallback": false,
+        "candidateIndex": 0,
+        "candidateCount": 3,
+        "sha256": "f7a815a4ebc8730411d2b412d1ad7eb4f7596da04220063754f2d273b0f5d55b"
+      }
+    ]
+  },
+  "textures": [
+    {
+      "name": "reference_glow",
+      "semantic": "albedo",
+      "file": "reference_glow.albedo.ngtex",
+      "source": "reference_glow.albedo.png",
+      "width": 64,
+      "height": 64,
+      "sourceWidth": 64,
+      "sourceHeight": 64,
+      "mips": 7,
+      "bytes": 21932,
+      "format": "rgba8",
+      "formatCode": 0,
+      "srgb": true,
+      "quality": {
+        "metric": "psnr",
+        "psnr": 100
+      },
+      "fallback": false,
+      "candidateIndex": 0,
+      "candidateCount": 3,
+      "candidates": [
+        {
+          "size": 64,
+          "width": 64,
+          "height": 64,
+          "format": "rgba8",
+          "bytes": 21932,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 100
+          }
+        },
+        {
+          "size": 32,
+          "width": 32,
+          "height": 32,
+          "format": "rgba8",
+          "bytes": 5540,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 57.66
+          }
+        },
+        {
+          "size": 16,
+          "width": 16,
+          "height": 16,
+          "format": "rgba8",
+          "bytes": 1436,
+          "quality": {
+            "metric": "psnr",
+            "psnr": 48.44
+          }
+        }
+      ],
+      "sha256": "f7a815a4ebc8730411d2b412d1ad7eb4f7596da04220063754f2d273b0f5d55b",
+      "stats": {
+        "min": [
+          255,
+          255,
+          255,
+          0
+        ],
+        "max": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "mean": [
+          1,
+          1,
+          1,
+          0.1964
+        ],
+        "normalMeanLength": null
+      }
+    }
+  ]
+}

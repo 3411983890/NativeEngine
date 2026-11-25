@@ -1,0 +1,108 @@
+<p class="lede">纹理管线是离线的，材质是数据驱动的。一张 PNG 进，一个带 mip 的 <code>.ngtex</code> 出，中间有预算求解器决定每张图能有多大——不是"能塞多少塞多少"，而是"总预算 4.5 MiB，怎么分最不亏"。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已实现</span>
+  <span class="meta">tools/textures.mjs · engine/material/ · shaders/material.hlsl</span>
+</div>
+
+<h2 id="pipeline">端到端</h2>
+
+<pre><code>assets/source/textures/*.png
+        │  cook：解码 → 尺寸归一 → mip 链 → 格式选择
+        ▼
+assets/textures/*.ngtex          RGBA8 / BC1 / BC3 / BC5 / BC7
+        │  预算求解：按总字节上限逐张降级
+        ▼
+场景 v2 materials 表             albedo / normal / ORM / emissive
+        │  运行时：8 槽有界表 + 代际
+        ▼
+material.hlsl                    采样 → 光照 → 合成</code></pre>
+
+<h2 id="ngtex">.ngtex 容器</h2>
+
+<p>自定义容器，不是 DDS：头部记录尺寸、格式、mip 数量、源内容哈希与 FNV-1a 检错，后面紧跟 mip 数据。<strong>内容寻址</strong>——同一份 PNG、同样的 cook 参数，产物字节完全一致，可以直接进构建缓存。</p>
+
+<table>
+<thead><tr><th>格式</th><th>用途</th><th>每像素</th></tr></thead>
+<tbody>
+<tr><td><code>RGBA8</code></td><td>UI、需要精度的 albedo</td><td>4 B</td></tr>
+<tr><td><code>BC1</code></td><td>不透明 albedo、粗糙度</td><td>0.5 B</td></tr>
+<tr><td><code>BC3</code></td><td>带 alpha 的 albedo</td><td>1 B</td></tr>
+<tr><td><code>BC5</code></td><td>法线（双通道重建 Z）</td><td>1 B</td></tr>
+<tr><td><code>BC7</code></td><td>高质量 albedo / 法线</td><td>1 B</td></tr>
+</tbody>
+</table>
+
+<h2 id="cook">Cook 命令</h2>
+
+<pre><code>node tools/textures.mjs cook --source assets/source/textures --out assets/textures \
+  --report reports/textures --size 256 --format auto --budget-mib 4.5</code></pre>
+
+<table>
+<thead><tr><th>参数</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>--source</code> / <code>--out</code></td><td>输入 PNG 目录 / 输出 <code>.ngtex</code> 目录</td></tr>
+<tr><td><code>--size</code></td><td>边长上限，超出则降采样</td></tr>
+<tr><td><code>--format</code></td><td><code>auto</code> 或指定格式；auto 按用途与 alpha 选择</td></tr>
+<tr><td><code>--budget-mib</code></td><td>总预算，超了会逐张降级而不是静默丢弃</td></tr>
+<tr><td><code>--report</code></td><td>每张图的最终尺寸、格式、字节数与降级原因</td></tr>
+</tbody>
+</table>
+
+<p>预算求解的结果会写进报告：哪张图被降级、降了几档、省了多少字节。没有这份记录，"4.5 MiB 预算"就只是一句口号。</p>
+
+<h2 id="material">材质模型</h2>
+
+<pre><code>"materials": {
+  "stone_wet": {
+    "albedo": "textures/stone_albedo.ngtex",
+    "normal": "textures/stone_normal.ngtex",
+    "orm":    "textures/stone_orm.ngtex",
+    "roughness": 0.62,
+    "metalness": 0.0,
+    "uvScale": [2, 2],
+    "wetness": 0.35,
+    "wear": 0.2,
+    "emissive": [0, 0, 0]
+  }
+}</code></pre>
+
+<p><code>wetness</code> 与 <code>wear</code> 是"表面经历"参数，不是贴图：湿润会降低粗糙度、加深 albedo；磨损会提亮边缘、提高粗糙度。它们让同一个材质资产能覆盖"新石头 / 泡水石头 / 被踩烂的石头"三种状态，而不必烘三套图。</p>
+
+<h2 id="runtime">运行时材质表</h2>
+
+<p>8 槽有界表：<code>0</code> 为缺材质默认槽（品红棋盘），<code>1–3</code> 常驻，<code>4–7</code> 可分配。带代际计数——材质被替换后旧句柄立即失效，不会采样到别人的纹理。</p>
+
+<table>
+<thead><tr><th>情况</th><th>行为</th></tr></thead>
+<tbody>
+<tr><td>句柄越界</td><td>返回诊断，使用默认槽</td></tr>
+<tr><td>代际过期</td><td>返回诊断，使用默认槽</td></tr>
+<tr><td>材质缺失</td><td><code>NG-E-MAT-MISSING</code></td></tr>
+<tr><td>材质过期</td><td><code>NG-E-MAT-STALE</code></td></tr>
+<tr><td>表满</td><td><code>NG-E-MAT-TABLE</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="town">参考场景：石桥小镇</h2>
+
+<pre><code>npm run textures
+npm run town</code></pre>
+
+<p><code>town.scene.json</code> 是材质与光照的综合基线：608 个实体、4.5 MiB 纹理预算、默认光照质量档 1。它会生成固定机位截图与报告，是"管线没坏"的日常体检。</p>
+
+<h2 id="tools">编辑入口</h2>
+
+<pre><code>npm run material -- list --scene assets/town.scene.json</code></pre>
+
+<p>Web 编辑器的材质面板通过 <code>material_patch</code> 工具原子写入 <code>wetness</code> / <code>wear</code> / <code>roughness</code> / <code>metalness</code> / <code>uvScale</code>。它和场景事务走同一条校验路径，不会出现"编辑器能改、Agent 改不了"的分叉。</p>
+
+<div class="callout callout--limit">
+<span class="callout-title">边界</span>
+<ul>
+<li>材质表是<strong>有界 8 槽</strong>，不是 SM 6.6 descriptor heap 直接索引；后者已验证一致但未迁移主路径。</li>
+<li>没有材质图编译器（<code>engine/material/</code> 只有 graph 与 MIR 的骨架），没有节点编辑器。</li>
+<li>材质像素着色器用世界空间平面投影 UV，不读顶点 UV；没有 alpha test、没有双面。这三条是植被系统落地前的硬前置。</li>
+<li>没有运行时纹理流送，全部常驻。</li>
+</ul>
+</div>

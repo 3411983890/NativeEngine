@@ -1,0 +1,13 @@
+{
+  "assetId": "T01_bark",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Use case: photorealistic-natural. Asset type: seamless game PBR BASE COLOR source. A square 1024x1024 preferred orthographic macro surface texture of mature weeping willow Salix babylonica bark. Fill the entire canvas with dry gray-brown willow bark with naturally long irregular vertical furrows, longitudinal ridges and fine weathering. Vertical trunk direction goes bottom to top (+V). Flattened de-lit diffuse albedo scan-like appearance, NO directional lighting, NO specular highlights or cast shadows, NO cylinder shading, no perspective. Seamlessly tileable in BOTH U and V, no distinctive central motif, no moss, no lichen, no leaves, no roots, no tree silhouette, no collage, no text or border. Opaque full coverage. Intended one tile represents an art-directed 0.8m circumferential by1.6m vertical patch, not a measured scan. Output ONLY base color; companion PBR maps will reference this exact surface.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-dbadfebc-d87f-40e1-9102-b42a77793f28.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

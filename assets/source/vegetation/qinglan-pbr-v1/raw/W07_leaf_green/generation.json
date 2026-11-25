@@ -1,0 +1,13 @@
+{
+  "assetId": "W07_leaf_green",
+  "records": [
+    {
+      "map": "basecolor",
+      "prompt": "Use case: photorealistic-natural. Game vegetation BASE COLOR+TRUE ALPHA texture of ONE mature healthy intact lotus leaf Nelumbo nucifera 荷叶. Perfectly orthographic TOP VIEW, flattened circular peltate leaf seen from upper surface, natural muted blue-green diffuse color, fine radial veins. PELTATE petiole insertion socket at the geometric CENTER of the leaf, exactly canvas UV(0.5,0.5), radial veins converge there. The whole leaf is a near-circular complete disc with subtle natural softly wavy margin, NO open notch or split to the center, NO stem protruding outside disc, no droplets, flower, water, soil or other leaves. Square1024x1024 preferred, centered circular leaf entirely within x/y12%..88%, large true transparent margin all around. De-lit color, no highlights, shadows, dramatic folds, perspective, lens blur, labels, border, checkerboard, panels or watermark. This is one botanical texture source, not a scene.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-5f96206c-5fc8-452a-8500-d6e470ce84b7.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "spark_reference",
+  "revision": 0,
+  "seed": 41,
+  "durationTicks": 120,
+  "loop": false,
+  "maxAlive": 512,
+  "bounds": { "min": [-4, -1, -4], "max": [4, 6, 4] },
+  "budget": { "maxSpawnPerTick": 128, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [{
+    "id": "sparks",
+    "shape": { "type": "cone", "radius": 0.1, "angleRadians": 0.6 },
+    "position": [0, 0, 0],
+    "ratePerSecond": 0,
+    "bursts": [{ "tick": 0, "count": 96 }],
+    "lifetimeTicks": [24, 96],
+    "localSpace": false,
+    "modules": [
+      { "id": "initial", "type": "initialize", "params": { "velocity": [0, 4, 0], "color": [4, 1.2, 0.15, 1], "size": [0.03, 0.12] } },
+      { "id": "gravity", "type": "acceleration", "after": ["initial"], "params": { "value": [0, -9.81, 0] } },
+      { "id": "fade", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+        { "t": 0, "value": [4, 1.2, 0.15, 1] }, { "t": 1, "value": [0.5, 0.05, 0, 0] }
+      ] } }
+    ],
+    "renderers": [{ "type": "sprite", "texture": "textures/lamp.albedo.ngtex", "blend": "additive", "lit": false }]
+  }],
+  "events": []
+}

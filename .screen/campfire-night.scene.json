@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 2,
+  "projectId": "b2f00000-0000-4000-8000-000000000101",
+  "name": "Campfire night clearing",
+  "revision": 1,
+  "settings": {
+    "walkSpeed": 3,
+    "runSpeed": 6,
+    "jumpSpeed": 7,
+    "gravity": 20
+  },
+  "lighting": {
+    "quality": 1,
+    "ambient": [
+      0.014,
+      0.02,
+      0.038
+    ],
+    "skyColor": [
+      0.004,
+      0.008,
+      0.018
+    ],
+    "keyDirection": [
+      0.22,
+      0.42,
+      -0.88
+    ],
+    "keyColor": [
+      0.4,
+      0.52,
+      0.9
+    ],
+    "keyIntensity": 0.09,
+    "fogColor": [
+      0.06,
+      0.075,
+      0.11
+    ],
+    "fogDensity": 0.012,
+    "fogHeightFalloff": 0.05,
+    "fogBaseHeight": 0,
+    "toneMap": true,
+    "exposure": 0.7,
+    "cloudCoverage": 0.5,
+    "cloudHeight": 92,
+    "cloudThickness": 36,
+    "cloudSpeed": 0.02
+  },
+  "entities": [
+    {
+      "id": "b2f00000-0000-4000-8000-000000000110",
+      "name": "Clearing floor",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.2,
+        0
+      ],
+      "scale": [
+        30,
+        0.4,
+        30
+      ],
+      "color": [
+        0.09,
+        0.085,
+        0.07
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000111",
+      "name": "Fire pit",
+      "kind": "prop",
+      "position": [
+        0,
+        0.03,
+        0
+      ],
+      "scale": [
+        2.6,
+        0.06,
+        2.6
+      ],
+      "color": [
+        0.07,
+        0.06,
+        0.055
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000112",
+      "name": "Log north south",
+      "kind": "prop",
+      "position": [
+        0,
+        0.16,
+        0
+      ],
+      "scale": [
+        2.1,
+        0.24,
+        0.26
+      ],
+      "color": [
+        0.2,
+        0.13,
+        0.08
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000113",
+      "name": "Log east west",
+      "kind": "prop",
+      "position": [
+        0,
+        0.2,
+        0
+      ],
+      "scale": [
+        0.26,
+        0.24,
+        2.1
+      ],
+      "color": [
+        0.19,
+        0.12,
+        0.07
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000114",
+      "name": "Kindling",
+      "kind": "prop",
+      "position": [
+        0.32,
+        0.1,
+        -0.3
+      ],
+      "scale": [
+        1.1,
+        0.12,
+        0.14
+      ],
+      "color": [
+        0.26,
+        0.16,
+        0.09
+      ],
+      "collider": false
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000120",
+      "name": "Stone ring 1",
+      "kind": "prop",
+      "position": [
+        1.55,
+        0.18,
+        0
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.3,
+        0.3,
+        0.29
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000121",
+      "name": "Stone ring 2",
+      "kind": "prop",
+      "position": [
+        1.1,
+        0.18,
+        1.1
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.28,
+        0.28,
+        0.27
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000122",
+      "name": "Stone ring 3",
+      "kind": "prop",
+      "position": [
+        0,
+        0.18,
+        1.55
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.32,
+        0.31,
+        0.3
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000123",
+      "name": "Stone ring 4",
+      "kind": "prop",
+      "position": [
+        -1.1,
+        0.18,
+        1.1
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.29,
+        0.29,
+        0.28
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000124",
+      "name": "Stone ring 5",
+      "kind": "prop",
+      "position": [
+        -1.55,
+        0.18,
+        0
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.31,
+        0.3,
+        0.29
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000125",
+      "name": "Stone ring 6",
+      "kind": "prop",
+      "position": [
+        -1.1,
+        0.18,
+        -1.1
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.27,
+        0.27,
+        0.26
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000126",
+      "name": "Stone ring 7",
+      "kind": "prop",
+      "position": [
+        0,
+        0.18,
+        -1.55
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.3,
+        0.29,
+        0.28
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000127",
+      "name": "Stone ring 8",
+      "kind": "prop",
+      "position": [
+        1.1,
+        0.18,
+        -1.1
+      ],
+      "scale": [
+        0.55,
+        0.36,
+        0.55
+      ],
+      "color": [
+        0.26,
+        0.26,
+        0.25
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000130",
+      "name": "Sitting stump",
+      "kind": "prop",
+      "position": [
+        3.1,
+        0.35,
+        1.4
+      ],
+      "scale": [
+        1,
+        0.7,
+        1
+      ],
+      "color": [
+        0.22,
+        0.15,
+        0.09
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000131",
+      "name": "Sitting stump west",
+      "kind": "prop",
+      "position": [
+        -2.9,
+        0.32,
+        -1.6
+      ],
+      "scale": [
+        0.9,
+        0.64,
+        0.9
+      ],
+      "color": [
+        0.2,
+        0.14,
+        0.08
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000140",
+      "name": "Pine trunk north",
+      "kind": "prop",
+      "position": [
+        0,
+        3,
+        -8
+      ],
+      "scale": [
+        0.9,
+        6,
+        0.9
+      ],
+      "color": [
+        0.11,
+        0.08,
+        0.06
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000141",
+      "name": "Pine trunk east",
+      "kind": "prop",
+      "position": [
+        7,
+        3.2,
+        -3
+      ],
+      "scale": [
+        0.8,
+        6.4,
+        0.8
+      ],
+      "color": [
+        0.1,
+        0.075,
+        0.055
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000142",
+      "name": "Pine trunk west",
+      "kind": "prop",
+      "position": [
+        -7,
+        2.8,
+        -1
+      ],
+      "scale": [
+        0.85,
+        5.6,
+        0.85
+      ],
+      "color": [
+        0.105,
+        0.078,
+        0.058
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000143",
+      "name": "Tent",
+      "kind": "prop",
+      "position": [
+        4.2,
+        0.85,
+        -4.6
+      ],
+      "scale": [
+        2.6,
+        1.7,
+        3.2
+      ],
+      "color": [
+        0.32,
+        0.26,
+        0.19
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000150",
+      "name": "Player spawn",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        5.4
+      ],
+      "scale": [
+        0.6,
+        1.8,
+        0.6
+      ],
+      "color": [
+        0.85,
+        0.72,
+        0.58
+      ],
+      "collider": true
+    },
+    {
+      "id": "b2f00000-0000-4000-8000-000000000160",
+      "name": "Firelight",
+      "kind": "light",
+      "position": [
+        0,
+        0.85,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "color": [
+        1,
+        0.52,
+        0.18
+      ],
+      "light": {
+        "color": [
+          1,
+          0.5,
+          0.17
+        ],
+        "intensity": 6,
+        "range": 7
+      },
+      "collider": false
+    }
+  ]
+}

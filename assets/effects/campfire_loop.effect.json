@@ -1,0 +1,53 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "campfire_loop",
+  "revision": 0,
+  "seed": 701,
+  "durationTicks": 120,
+  "loop": true,
+  "maxAlive": 900,
+  "bounds": { "min": [-2, -0.5, -2], "max": [2, 4, 2] },
+  "budget": { "maxSpawnPerTick": 96, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [
+    {
+      "id": "flame",
+      "shape": { "type": "sphere", "radius": 0.16 },
+      "position": [0, 0.1, 0],
+      "ratePerSecond": 180,
+      "bursts": [],
+      "lifetimeTicks": [24, 48],
+      "localSpace": false,
+      "modules": [
+        { "id": "initial", "type": "initialize", "params": { "velocity": [0, 1.5, 0], "color": [5, 2.2, 0.4, 0.95], "size": [0.1, 0.3] } },
+        { "id": "rise", "type": "acceleration", "after": ["initial"], "params": { "value": [0, 1.6, 0] } },
+        { "id": "flicker", "type": "curlNoise", "after": ["initial"], "params": { "amplitude": 0.9, "frequency": 2.2 } },
+        { "id": "shrink", "type": "sizeOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [0.1, 0.3] }, { "t": 1, "value": [0.02, 0.08] }
+        ] } },
+        { "id": "cool", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [5, 2.2, 0.4, 0.95] }, { "t": 0.6, "value": [2.2, 0.55, 0.08, 0.5] }, { "t": 1, "value": [0.3, 0.05, 0, 0] }
+        ] } }
+      ],
+      "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "additive", "lit": false }]
+    },
+    {
+      "id": "embers",
+      "shape": { "type": "cone", "radius": 0.2, "angleRadians": 0.5 },
+      "position": [0, 0.2, 0],
+      "ratePerSecond": 14,
+      "bursts": [],
+      "lifetimeTicks": [90, 180],
+      "localSpace": false,
+      "modules": [
+        { "id": "initial", "type": "initialize", "params": { "velocity": [0, 2.6, 0], "color": [6, 2.6, 0.5, 1], "size": [0.015, 0.05] } },
+        { "id": "gravity", "type": "acceleration", "after": ["initial"], "params": { "value": [0, -1.2, 0] } },
+        { "id": "flutter", "type": "curlNoise", "after": ["initial"], "params": { "amplitude": 1.6, "frequency": 1.4 } },
+        { "id": "fade", "type": "colorOverLife", "after": ["initial"], "params": { "keys": [
+          { "t": 0, "value": [6, 2.6, 0.5, 1] }, { "t": 1, "value": [0.4, 0.06, 0, 0] }
+        ] } }
+      ],
+      "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "additive", "lit": false }]
+    }
+  ],
+  "events": []
+}

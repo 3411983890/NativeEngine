@@ -1,0 +1,358 @@
+{
+  "schemaVersion": 2,
+  "projectId": "c3a00000-0000-4000-8000-000000000005",
+  "name": "Character rig - steps and turns",
+  "revision": 1,
+  "settings": {
+    "walkSpeed": 3.2,
+    "runSpeed": 6.4,
+    "jumpSpeed": 7,
+    "gravity": 20
+  },
+  "materials": {
+    "m0": {
+      "albedo": "m0",
+      "normal": "m0",
+      "orm": "m0",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0
+    },
+    "m1": {
+      "albedo": "m1",
+      "normal": "m1",
+      "orm": "m1",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0,
+      "textureMappings": {
+        "albedo": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "normal": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        },
+        "orm": {
+          "offset": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotation": 0,
+          "wrapS": "repeat",
+          "wrapT": "repeat",
+          "magFilter": "linear",
+          "minFilter": "linear-mipmap-linear"
+        }
+      }
+    },
+    "default": {
+      "albedo": "engine_grid",
+      "normal": "engine_grid",
+      "orm": "engine_grid",
+      "uvScale": 5,
+      "roughness": 0.88,
+      "metalness": 0
+    }
+  },
+  "entities": [
+    {
+      "id": "c3a00000-0000-4000-8000-000000000501",
+      "name": "Rig yard floor",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.2,
+        0
+      ],
+      "scale": [
+        40,
+        0.4,
+        40
+      ],
+      "color": [
+        0.22,
+        0.23,
+        0.24
+      ],
+      "material": {
+        "albedo": [
+          0.22,
+          0.23,
+          0.24
+        ],
+        "roughness": 0.86,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000502",
+      "name": "Rig player",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        6
+      ],
+      "scale": [
+        0.6,
+        1.7999999999999998,
+        0.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "character": {
+        "file": "builtin/robot/character.json",
+        "sha256": "3e4605f3f980f70cc7ae48e2c7b1d9bfee54e0750c2c01c305df5c5f58d1b809",
+        "binarySha256": "debc001615054fe0f477ee5a406f2c4e3354968c56266825c0fd4bc65b5e8ff2",
+        "anchor": "feet",
+        "rootMotion": "extract",
+        "scale": [
+          1.8406537157858247,
+          1.8406537157858247,
+          1.8406537157858247
+        ],
+        "offset": [
+          -3.4903583979581813e-8,
+          -6.523517498670227e-7,
+          -6.340045023515096e-8
+        ],
+        "controller": {
+          "stepHeight": 0.36,
+          "orbitDistance": 5,
+          "orbitHeight": 1.35,
+          "targetHeight": 1.05
+        },
+        "rig": {
+          "turnCooldown": 0.15,
+          "maxSlopeCosine": 0.7071068,
+          "soleRoll": 0.5,
+          "maxPelvisShift": 0.08
+        }
+      }
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000510",
+      "name": "Step 1",
+      "kind": "prop",
+      "position": [
+        2,
+        0.125,
+        -2
+      ],
+      "scale": [
+        4,
+        0.25,
+        1.2
+      ],
+      "color": [
+        0.55,
+        0.52,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.55,
+          0.52,
+          0.48
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000511",
+      "name": "Step 2",
+      "kind": "prop",
+      "position": [
+        2,
+        0.25,
+        -3.2
+      ],
+      "scale": [
+        4,
+        0.5,
+        1.2
+      ],
+      "color": [
+        0.55,
+        0.52,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.55,
+          0.52,
+          0.48
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000512",
+      "name": "Step 3",
+      "kind": "prop",
+      "position": [
+        2,
+        0.375,
+        -4.4
+      ],
+      "scale": [
+        4,
+        0.75,
+        1.2
+      ],
+      "color": [
+        0.55,
+        0.52,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.55,
+          0.52,
+          0.48
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000513",
+      "name": "Step 4",
+      "kind": "prop",
+      "position": [
+        2,
+        0.5,
+        -5.6
+      ],
+      "scale": [
+        4,
+        1,
+        1.2
+      ],
+      "color": [
+        0.55,
+        0.52,
+        0.48
+      ],
+      "material": {
+        "albedo": [
+          0.55,
+          0.52,
+          0.48
+        ],
+        "roughness": 0.8,
+        "metalness": 0,
+        "pattern": "checker"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000520",
+      "name": "Turn platform",
+      "kind": "prop",
+      "position": [
+        -3,
+        0.5,
+        -3
+      ],
+      "scale": [
+        2.4,
+        1,
+        2.4
+      ],
+      "color": [
+        0.4,
+        0.44,
+        0.5
+      ],
+      "material": {
+        "albedo": [
+          0.4,
+          0.44,
+          0.5
+        ],
+        "roughness": 0.75,
+        "metalness": 0.05,
+        "pattern": "metal"
+      },
+      "collider": true
+    },
+    {
+      "id": "c3a00000-0000-4000-8000-000000000521",
+      "name": "Blocking wall",
+      "kind": "prop",
+      "position": [
+        0,
+        1.2,
+        -9
+      ],
+      "scale": [
+        8,
+        2.4,
+        0.6
+      ],
+      "color": [
+        0.5,
+        0.42,
+        0.38
+      ],
+      "material": {
+        "albedo": [
+          0.5,
+          0.42,
+          0.38
+        ],
+        "roughness": 0.85,
+        "metalness": 0,
+        "pattern": "brick"
+      },
+      "collider": true
+    }
+  ]
+}

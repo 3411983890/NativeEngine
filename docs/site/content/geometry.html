@@ -1,0 +1,98 @@
+<p class="lede">几何系统被拆成两件事：<strong>离线把资产做成可校验的包</strong>，<strong>在线按类别路由到不同绘制路径</strong>。前者已经能跑，后者只冻结了数据结构——运行时 LOD 选择器和 GPU 剔除还没有。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">离线包已实现</span>
+  <span class="badge badge--partial">运行时部分</span>
+  <span class="meta">.developmentAgent/rendering/GEOMETRY-PACKAGE.md · .developmentAgent/rendering/GEOMETRY-LAYOUT.md · .developmentAgent/rendering/SDF-BAKE.md</span>
+</div>
+
+<h2 id="package">内容寻址几何包</h2>
+
+<pre><code>node tools/offline/geometry-package.mjs build --in assets/gltf --out outputs/geometry</code></pre>
+
+<p>包由 manifest + 二进制块组成。manifest 记录源文件哈希、cluster 数量、LOD 层级、材质句柄与能力标记；二进制里是顶点、索引与 cluster 记录。同一个输入重复构建，字节与摘要完全一致——篡改任何一段，读取时都会被发现。</p>
+
+<table>
+<thead><tr><th>项</th><th>当前实测</th></tr></thead>
+<tbody>
+<tr><td>cluster 数</td><td>37</td></tr>
+<tr><td>LOD 层级</td><td>6</td></tr>
+<tr><td>重建确定性</td><td>重复构建摘要相同</td></tr>
+<tr><td>篡改检测</td><td>逐块哈希，失败返回 <code>NG-E-GEOMETRY-TAMPERED</code></td></tr>
+<tr><td>格式版本</td><td>v2（v1 仍可读）</td></tr>
+</tbody>
+</table>
+
+<h3 id="v2">v2 新增字段</h3>
+
+<pre><code>struct ClusterRecord {      // 48 B，16 B 对齐
+  float    lodError;        // 实测简化误差（不是 AABB 对角线估算）
+  uint32_t flags;
+  uint32_t materialHandle;  // 32 位：索引 + 代际
+  ...
+};</code></pre>
+
+<p><code>lodError</code> 是 v1 到 v2 最重要的改动。v1 用 <code>diagonal / maxLod</code> 当误差，那只是包围盒代理误差，对植被和曲面网格会严重低估；v2 要求离线算出真实的简化误差，运行时才能用屏幕误差选 LOD。</p>
+
+<h2 id="class">GeometryClass 路由</h2>
+
+<p>不是所有东西都值得进 cluster 管线。场景里每个绘制项先被分类：</p>
+
+<table>
+<thead><tr><th>类别</th><th>判定</th><th>绘制路径</th></tr></thead>
+<tbody>
+<tr><td><code>Simple</code></td><td>三角形少、无变形</td><td>顶点/索引直绘，或 Mesh Shader</td></tr>
+<tr><td><code>Deformable</code></td><td>蒙皮、每帧变形的顶点</td><td>VS 蒙皮路径</td></tr>
+<tr><td><code>Cluster</code></td><td>三角形多、静态</td><td>cluster 管线（尚未启用）</td></tr>
+</tbody>
+</table>
+
+<p>小院基线：17 个实体 = 16 Simple + 1 Deformable + <strong>0 Cluster</strong>。这是正确结果——12 个三角形的方盒进 cluster 只会更慢。分类器存在，不代表一定要用。</p>
+
+<h2 id="gltf">glTF 2.0 子集</h2>
+
+<p>只支持一个刻意做窄的子集，超出范围<strong>明确拒绝</strong>，不做"尽力而为"的解析。</p>
+
+<table>
+<thead><tr><th>支持</th><th>不支持</th></tr></thead>
+<tbody>
+<tr><td><code>.gltf</code> JSON，buffer 为 base64 或同目录 <code>.bin</code></td><td>GLB、扩展、压缩（Draco/Meshopt）、稀疏 accessor、morph target</td></tr>
+<tr><td>一个 scene、一个 identity 根 mesh 节点、一个 skin</td><td>多 scene、多 mesh、节点变换动画之外的复杂层级</td></tr>
+<tr><td>一个 indexed <code>TRIANGLES</code> primitive</td><td>其他 primitive 模式、多 primitive</td></tr>
+<tr><td>POSITION / NORMAL 必需，UV 可选</td><td>切线、顶点色（自动推导或忽略）</td></tr>
+<tr><td>JOINTS_0 为 U8/U16，WEIGHTS_0 为 FLOAT 或归一化整数</td><td>每顶点超过四权重</td></tr>
+<tr><td>TRS 节点、正的均匀 scale、LINEAR/STEP 轨道</td><td>非均匀/负 scale、CUBICSPLINE</td></tr>
+</tbody>
+</table>
+
+<p>参考 <a href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html" target="_blank" rel="noreferrer">Khronos glTF 2.0 规范</a> 的 skin、动画采样、JOINTS/WEIGHTS、inverse bind 语义。导入只写显式 <code>--out</code>，不修改源文件、不下载内容。</p>
+
+<h2 id="sdf">离线窄带 SDF 烘焙</h2>
+
+<pre><code>node tools/offline/sdf-bake.mjs --in outputs/geometry/mesh.bin --out outputs/sdf</code></pre>
+
+<p>为未来的软件光追与 GI 准备距离场：窄带存储、远场钳制、float32 量化、分块哈希。<code>surface cache metadata</code> 只是占用统计，<strong>不是</strong>表面缓存。</p>
+
+<table>
+<thead><tr><th>指标</th><th>实测</th></tr></thead>
+<tbody>
+<tr><td>球面中心最大误差</td><td>0.0587 体素</td></tr>
+<tr><td>符号约定</td><td>内部为负；watertight 检测失败会拒绝</td></tr>
+<tr><td>错误码</td><td><code>NG-E-SDF-*</code>（INPUT / IO / MANIFEST / MISSING / PATH / TAMPERED / ARGUMENT）</td></tr>
+</tbody>
+</table>
+
+<h2 id="visibility">可见性缓冲（设计冻结，未实现）</h2>
+
+<p>架构文档冻结了 GPU 工作队列与可见性缓冲的数据契约：<code>InstanceRef</code> / <code>ClusterRef</code>、48 B cluster 记录、32 位材质句柄。这层设计的价值在于<strong>先定契约再写代码</strong>——队列格式一旦上线就很难改。</p>
+
+<div class="callout callout--limit">
+<span class="callout-title">明确未实现</span>
+<ul>
+<li>没有运行时 LOD 选择器（<code>lodError</code> 算出来了，没人用）。</li>
+<li>没有 GPU 剔除、没有 <code>ExecuteIndirect</code>、没有 HZB。</li>
+<li>没有可见性缓冲的实际 pass。</li>
+<li>没有运行时 glTF 导入——只在离线工具里。</li>
+<li>没有 Nanite 式虚拟几何；cluster DAG 是骨架，不是 Nanite。</li>
+</ul>
+</div>

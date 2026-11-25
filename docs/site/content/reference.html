@@ -1,0 +1,139 @@
+<p class="lede">这一页是速查：所有命令行开关、npm 脚本、文件格式与报告字段。完整语义在各系统页面与 <code>docs/</code> 下的设计文档里。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">随代码维护</span>
+  <span class="meta">来源：host/main.cpp · package.json · shaders/manifest.json</span>
+</div>
+
+<h2 id="cli">命令行</h2>
+
+<h3 id="cli-core">运行与场景</h3>
+
+<table>
+<thead><tr><th>参数</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>--scene &lt;path&gt;</code></td><td>加载场景，默认 <code>assets/courtyard.scene.json</code></td></tr>
+<tr><td><code>--character &lt;path&gt;</code></td><td>加载角色资产（<code>character.json</code>）</td></tr>
+<tr><td><code>--smoke</code></td><td>无交互冒烟模式，跑固定帧数后退出</td></tr>
+<tr><td><code>--frames &lt;n&gt;</code></td><td>冒烟帧数（240 帧 = 480 tick）</td></tr>
+<tr><td><code>--no-watch</code> / <code>--watch</code></td><td>关闭 / 打开场景热重载轮询</td></tr>
+<tr><td><code>--report &lt;path&gt;</code></td><td>运行报告输出路径</td></tr>
+<tr><td><code>--seed &lt;u64&gt;</code></td><td>确定性种子</td></tr>
+<tr><td><code>--hash-log &lt;path&gt;</code></td><td>逐帧摘要日志</td></tr>
+</tbody>
+</table>
+
+<h3 id="cli-render">渲染</h3>
+
+<table>
+<thead><tr><th>参数</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>--rt-shadows on|off</code></td><td>DXR 静态阴影</td></tr>
+<tr><td><code>--mesh-shaders on|off</code></td><td>Mesh Shader 路径</td></tr>
+<tr><td><code>--compute on|off</code></td><td>compute 队列探针</td></tr>
+<tr><td><code>--textures &lt;dir&gt;</code></td><td>纹理目录</td></tr>
+<tr><td><code>--render-size WxH</code></td><td>渲染分辨率</td></tr>
+<tr><td><code>--debug-view &lt;mode&gt;</code></td><td>合成调试视图（<code>mask</code> / <code>key</code> / <code>base</code>）</td></tr>
+<tr><td><code>--camera &lt;spec&gt;</code> / <code>--camera-cut</code></td><td>固定机位 / 硬切机位</td></tr>
+<tr><td><code>--screenshot &lt;path&gt;</code> / <code>--screenshot-frame &lt;n&gt;</code></td><td>截图输出与帧号</td></tr>
+<tr><td><code>--validation</code></td><td>启用 D3D12 调试层</td></tr>
+</tbody>
+</table>
+
+<h3 id="cli-sim">仿真</h3>
+
+<table>
+<thead><tr><th>参数</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>--physics-demo</code></td><td>物理演示模式</td></tr>
+<tr><td><code>--animation-demo</code></td><td>动画演示模式</td></tr>
+<tr><td><code>--particles on|off</code></td><td>粒子与场</td></tr>
+<tr><td><code>--particle-colliders on|off</code></td><td>粒子与场景 AABB 碰撞</td></tr>
+<tr><td><code>--particle-emitter &lt;x,y,z&gt;</code></td><td>发射器位置覆盖</td></tr>
+<tr><td><code>--particle-temporal on|off</code></td><td>时域重建</td></tr>
+<tr><td><code>--fire</code></td><td>篝火预设（含 6 m 场包围盒）</td></tr>
+<tr><td><code>--explode-at &lt;n&gt;</code></td><td>第 n 个粒子帧起爆</td></tr>
+</tbody>
+</table>
+
+<h3 id="cli-evidence">证据与故障注入</h3>
+
+<table>
+<thead><tr><th>参数</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>--probe</code></td><td>输出能力与子系统探针</td></tr>
+<tr><td><code>--budget auto|off</code> + <code>--budget-*</code></td><td>帧预算管理器（见<a href="performance.html">性能</a>）</td></tr>
+<tr><td><code>--record &lt;path&gt;</code> / <code>--replay &lt;path&gt;</code></td><td>录制 / 重放</td></tr>
+<tr><td><code>--replay-strict</code></td><td>任何摘要不符立即失败</td></tr>
+<tr><td><code>--stall-frame</code> / <code>--stall-ms</code></td><td>注入卡顿</td></tr>
+<tr><td><code>--blackbox-stall-ms</code></td><td>黑匣子卡顿注入</td></tr>
+<tr><td><code>--device-removal-after &lt;n&gt;</code></td><td>第 n 帧注入设备丢失</td></tr>
+<tr><td><code>--lifecycle &lt;n&gt;</code></td><td>渲染器生命周期循环 n 次</td></tr>
+<tr><td><code>--fault-test</code> / <code>--fault-scene</code> / <code>--fault-material</code></td><td>负路径注入</td></tr>
+<tr><td><code>--save &lt;path&gt;</code> / <code>--load-save &lt;path&gt;</code></td><td>退出保存 / 启动恢复</td></tr>
+</tbody>
+</table>
+
+<h2 id="npm">npm 脚本</h2>
+
+<table>
+<thead><tr><th>脚本</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>npm test</code></td><td>Node 单测（事务 / 查询 / lint / 离线工具）</td></tr>
+<tr><td><code>npm run test:native</code></td><td>C++ 单测（物理 / 数学 / RHI 契约）</td></tr>
+<tr><td><code>npm run test:editor</code></td><td>编辑器服务测试</td></tr>
+<tr><td><code>npm run build:native</code></td><td>构建原生程序（含着色器编译）</td></tr>
+<tr><td><code>npm start</code></td><td>启动交互式样板</td></tr>
+<tr><td><code>npm run scene -- &lt;cmd&gt;</code></td><td>场景 CLI（validate / preview / apply / undo / recover / build / query / lint）</td></tr>
+<tr><td><code>npm run material -- list</code></td><td>材质表查看</td></tr>
+<tr><td><code>npm run textures</code></td><td>PNG → <code>.ngtex</code> cook</td></tr>
+<tr><td><code>npm run town</code> / <code>npm run night</code></td><td>小镇 / 夜景综合基线</td></tr>
+<tr><td><code>npm run physics</code> / <code>animation</code> / <code>gameplay</code></td><td>各系统证据脚本</td></tr>
+<tr><td><code>npm run determinism</code> / <code>budget</code> / <code>replay</code></td><td>确定性 / 预算 / 回放证据</td></tr>
+<tr><td><code>npm run image-regression</code> / <code>contract</code></td><td>图像基线 / 误差契约</td></tr>
+<tr><td><code>npm run offline</code> / <code>sdf</code> / <code>gltf</code></td><td>几何包 / SDF 烘焙 / glTF 导入</td></tr>
+<tr><td><code>npm run probe</code> / <code>verify</code> / <code>ci</code></td><td>探针 / 全量验证 / 干净 CI</td></tr>
+<tr><td><code>npm run editor</code> / <code>editor:web</code></td><td>桌面编辑器 / 浏览器编辑器</td></tr>
+<tr><td><code>npm run mcp</code></td><td>MCP stdio 服务</td></tr>
+<tr><td><code>npm run package</code></td><td>生成可分发包与 zip</td></tr>
+</tbody>
+</table>
+
+<h2 id="formats">文件格式</h2>
+
+<table>
+<thead><tr><th>扩展名</th><th>内容</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td><code>.scene.json</code></td><td>场景文档（Schema v2）</td><td>已实现</td></tr>
+<tr><td><code>.ngtex</code></td><td>纹理容器：头 + mip 链，内容寻址</td><td>已实现</td></tr>
+<tr><td><code>.behavior.json</code></td><td>行为契约：schema、版本、依赖</td><td>已实现</td></tr>
+<tr><td><code>.lua</code></td><td>行为回调表（Lua 5.4.9）</td><td>已实现</td></tr>
+<tr><td><code>character.json</code> + <code>animation.bin</code></td><td>骨架 + 60 Hz 量化片段</td><td>已实现</td></tr>
+<tr><td>geometry package</td><td>manifest + 二进制块 + cluster DAG</td><td>v2 已实现</td></tr>
+<tr><td><code>.replay</code> + <code>.initial.json</code></td><td>回放 v4</td><td>已实现</td></tr>
+<tr><td><code>quicksave.json</code></td><td>完整模拟快照</td><td>已实现</td></tr>
+<tr><td><code>.ngheight</code></td><td>高度图（uint16 行主序）</td><td><span class="badge badge--plan">规划</span></td></tr>
+</tbody>
+</table>
+
+<h2 id="reports">报告字段</h2>
+
+<table>
+<thead><tr><th>段</th><th>关键字段</th></tr></thead>
+<tbody>
+<tr><td><code>environment</code></td><td>commit、<code>worktreeDirty</code>、<code>staleBuild</code>、node、adapter、dxc</td></tr>
+<tr><td><code>capabilities</code></td><td>raytracingTier、meshShaderTier、shaderModel、<code>implemented.*</code></td></tr>
+<tr><td><code>probes</code></td><td><code>materialTable</code>、<code>sceneLights</code>、<code>accelerationStructures</code>、<code>raytracingShadows</code>、<code>meshShaders</code>、<code>skinning</code>、<code>particles</code>、<code>lightingQuality</code></td></tr>
+<tr><td><code>determinism</code></td><td>seed、fixedStepHz、ticks、finalHash、<code>rng.streams[]</code></td></tr>
+<tr><td><code>budget</code></td><td>status、level、gpuP95Ms、<code>steps[]</code></td></tr>
+<tr><td><code>rhi</code></td><td>backend、<code>framePathThroughInterface</code></td></tr>
+<tr><td><code>geometryClasses</code></td><td>Simple / Deformable / Cluster 计数</td></tr>
+<tr><td><code>animation</code></td><td>状态、频率、指纹、五阶段 hash 与 µs</td></tr>
+<tr><td><code>gameplay</code></td><td>实例数、错误、热重载计数</td></tr>
+</tbody>
+</table>
+
+<div class="callout callout--note">
+<span class="callout-title">读报告的姿势</span>
+<p>先看 <code>environment.worktreeDirty</code> 与 <code>staleBuild</code>：任一为 true，数字就只是"当时那棵树的快照"。再看 <code>capabilities.implemented.*</code>，最后才看性能数字——能力为 false 时的 P95 没有意义。</p>
+</div>

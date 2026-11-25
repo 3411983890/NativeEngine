@@ -1,0 +1,13 @@
+{
+  "assetId": "T07_bark",
+  "records": [
+    {
+      "map": "baseColor",
+      "prompt": "Game PBR seamless BASE COLOR source, opaque square1024x1024 preferred. Orthographic flattened mature tree bark surface filling entire canvas. Natural diffuse albedo, de-lit, no directional shading, gloss, cast shadows, cylinder silhouette, perspective, leaves, moss, labels or borders. Tree trunk axis along +V (bottom to top). Seamlessly tile BOTH horizontal and vertical edges, no distinctive central composition. ONLY basecolor, no panels or PBR contact sheet. Species Pterocarya stenoptera 枫杨: mature Chinese wingnut bark, pale gray to gray-brown and rough, deeply irregular long furrows with slightly interlaced ridges and small flaky edges. Art-directed0.8mU by1.6mV patch.",
+      "source": "C:\\Users\\34119\\.codex\\generated_images\\01a1821d-4660-7532-b769-6e242ab9354c\\exec-0ff00197-b8bf-4ad0-8b31-afe64329c227.png",
+      "tool": "built-in image_gen",
+      "date": "2026-10-28",
+      "reference": null
+    }
+  ]
+}

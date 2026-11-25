@@ -1,0 +1,28 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "smoke_reference",
+  "revision": 0,
+  "seed": 19,
+  "durationTicks": 1200,
+  "loop": true,
+  "maxAlive": 4096,
+  "bounds": { "min": [-3, 0, -3], "max": [3, 6, 3] },
+  "budget": { "maxSpawnPerTick": 32, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "field": { "level": "worldVisible", "channels": ["density", "windVelocity"], "dimensions": [64, 64, 64], "voxelMetres": 0.09375 },
+  "emitters": [{
+    "id": "smoke",
+    "shape": { "type": "sphere", "radius": 0.2 },
+    "position": [0, 0.2, 0],
+    "ratePerSecond": 240,
+    "bursts": [],
+    "lifetimeTicks": [360, 720],
+    "localSpace": false,
+    "modules": [
+      { "id": "initial", "type": "initialize", "params": { "velocity": [0, 0.7, 0], "color": [0.4, 0.4, 0.4, 1], "size": [0.1, 0.1] } },
+      { "id": "turbulence", "type": "curlNoise", "after": ["initial"], "params": { "amplitude": 0.55, "frequency": 0.9 } },
+      { "id": "exchange", "type": "fieldCoupling", "after": ["turbulence"], "params": { "readChannels": ["windVelocity"], "writeChannels": ["density"] } }
+    ],
+    "renderers": [{ "type": "volumetric" }]
+  }],
+  "events": []
+}

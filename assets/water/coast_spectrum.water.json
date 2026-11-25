@@ -1,0 +1,15 @@
+{
+  "schema": "nativegpu.water/1",
+  "id": "coast_spectrum",
+  "revision": 0,
+  "seed": 29,
+  "backend": "spectrum",
+  "extentMetres": [40, 40],
+  "cellMetres": 0.5,
+  "stillHeightMetres": 1.2,
+  "bathymetry": { "type": "slope", "heightMetres": 0, "slopeX": 0.02, "slopeZ": 0.005 },
+  "boundaries": { "type": "open", "inflowCubicMetresPerSecond": 0, "outflowCubicMetresPerSecond": 0 },
+  "waves": { "amplitudeMetres": 0.08, "wavelengthMetres": 8, "speedMetresPerSecond": 4, "direction": [1, 0.35], "components": 8 },
+  "material": { "refractionIndex": 1.333, "absorptionPerMetre": 0.25, "foamThreshold": 0.35 },
+  "budget": { "maxCells": 262144, "maxSubsteps": 8 }
+}

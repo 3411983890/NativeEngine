@@ -1,0 +1,463 @@
+{
+  "schema": "nativegpu.incremental-testing/1",
+  "categories": {
+    "assets": {
+      "scripts": [
+        ".incrementalTesting/assets/asset-audio-check.mjs",
+        ".incrementalTesting/assets/asset-clearcoat-check.mjs",
+        ".incrementalTesting/assets/asset-clearcoat-public-check.mjs",
+        ".incrementalTesting/assets/asset-coordinates-check.mjs",
+        ".incrementalTesting/assets/asset-emissive-check.mjs",
+        ".incrementalTesting/assets/asset-environment-check.mjs",
+        ".incrementalTesting/assets/asset-environment-public-check.mjs",
+        ".incrementalTesting/assets/asset-import-check.ps1",
+        ".incrementalTesting/assets/asset-ior-check.mjs",
+        ".incrementalTesting/assets/asset-ior-hot-check.mjs",
+        ".incrementalTesting/assets/asset-mapping-check.mjs",
+        ".incrementalTesting/assets/asset-mapping-public-check.mjs",
+        ".incrementalTesting/assets/asset-mikktspace-check.mjs",
+        ".incrementalTesting/assets/asset-mikktspace-public-check.mjs",
+        ".incrementalTesting/assets/asset-occlusion-check.mjs",
+        ".incrementalTesting/assets/asset-occlusion-public-check.mjs",
+        ".incrementalTesting/assets/asset-reimport-check.mjs",
+        ".incrementalTesting/assets/asset-scene-check.mjs",
+        ".incrementalTesting/assets/asset-tangent-check.mjs",
+        ".incrementalTesting/assets/asset-tangent-morph-check.mjs",
+        ".incrementalTesting/assets/asset-tangent-public-check.mjs",
+        ".incrementalTesting/assets/asset-texture-check.mjs",
+        ".incrementalTesting/assets/asset-texture-coordinates-check.mjs",
+        ".incrementalTesting/assets/asset-texture-coordinates-public-check.mjs",
+        ".incrementalTesting/assets/asset-transparency-check.mjs",
+        ".incrementalTesting/assets/asset-transparency-public-check.mjs",
+        ".incrementalTesting/assets/asset-vertex-color-check.mjs",
+        ".incrementalTesting/assets/asset-vertex-color-public-check.mjs",
+        ".incrementalTesting/assets/assets-public-check.mjs",
+        ".incrementalTesting/assets/character-controller-check.mjs",
+        ".incrementalTesting/assets/character-instances-check.mjs",
+        ".incrementalTesting/assets/generate-texture-fixtures.mjs"
+      ],
+      "npm": [
+        {
+          "alias": "npm run assets:verify",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/assets/asset-import-check.ps1"
+        },
+        {
+          "alias": "npm run test:assets",
+          "command": "node --test tests/asset-import.test.mjs tests/character-import.test.mjs tests/gltf-compression.test.mjs tests/animation-retarget.test.mjs tests/character-instances.test.mjs tests/asset-coordinates.test.mjs tests/character-fit.test.mjs tests/audio-import.test.mjs tests/scene-import.test.mjs tests/texture-import.test.mjs tests/emissive-import.test.mjs tests/texture-mapping.test.mjs tests/texture-coordinates.test.mjs tests/vertex-color-unlit.test.mjs tests/transparency-import.test.mjs tests/occlusion-import.test.mjs tests/environment-import.test.mjs tests/tangent-import.test.mjs tests/tangent-morph.test.mjs tests/mikktspace-import.test.mjs tests/ior-import.test.mjs tests/clearcoat-import.test.mjs tests/rig-detection.test.mjs tests/asset-source-identity.test.mjs tests/asset-reimport.test.mjs"
+        }
+      ]
+    },
+    "editor": {
+      "scripts": [
+        ".incrementalTesting/editor/editor-camera-check.mjs",
+        ".incrementalTesting/editor/scene-preview-check.mjs",
+        ".incrementalTesting/editor/starter-project-check.mjs",
+        ".incrementalTesting/editor/starter-paths.test.mjs"
+      ],
+      "npm": [
+        {
+          "alias": "npm run test:editor",
+          "command": "node --test tests/editor-*.test.mjs"
+        },
+        {
+          "alias": "npm run test:editor-camera",
+          "command": "node .incrementalTesting/editor/editor-camera-check.mjs"
+        },
+        {
+          "alias": "npm run test:editor-scene",
+          "command": "node .incrementalTesting/editor/scene-preview-check.mjs"
+        },
+        {
+          "alias": "npm run test:starter",
+          "command": "node --test tests/editor-project.test.mjs .incrementalTesting/editor/starter-paths.test.mjs && node .incrementalTesting/editor/starter-project-check.mjs"
+        }
+      ]
+    },
+    "rendering": {
+      "scripts": [
+        ".incrementalTesting/rendering/budget.ps1",
+        ".incrementalTesting/rendering/campfire-night.ps1",
+        ".incrementalTesting/rendering/campfire.ps1",
+        ".incrementalTesting/rendering/capture.ps1",
+        ".incrementalTesting/rendering/compute.ps1",
+        ".incrementalTesting/rendering/error-contract.ps1",
+        ".incrementalTesting/rendering/image-regression.ps1",
+        ".incrementalTesting/rendering/layered-budget.mjs",
+        ".incrementalTesting/rendering/layered-material.test.mjs",
+        ".incrementalTesting/rendering/lighting-quality.ps1",
+        ".incrementalTesting/rendering/mesh-bindless.ps1",
+        ".incrementalTesting/rendering/night.ps1",
+        ".incrementalTesting/rendering/probe.ps1",
+        ".incrementalTesting/rendering/rt-shadows.ps1",
+        ".incrementalTesting/rendering/smoke-host-snapshot.mjs",
+        ".incrementalTesting/rendering/smoke-host.ps1",
+        ".incrementalTesting/rendering/smoke-render-audit.mjs",
+        ".incrementalTesting/rendering/surface-relief.test.mjs",
+        ".incrementalTesting/rendering/world/world-render-check.mjs"
+      ],
+      "npm": [
+        {
+          "alias": "npm run budget",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/rendering/budget.ps1"
+        },
+        {
+          "alias": "npm run compute",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/rendering/compute.ps1"
+        },
+        {
+          "alias": "npm run contract",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/rendering/error-contract.ps1"
+        },
+        {
+          "alias": "npm run image-regression",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/rendering/image-regression.ps1"
+        },
+        {
+          "alias": "npm run night",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/rendering/night.ps1"
+        },
+        {
+          "alias": "npm run probe",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/rendering/probe.ps1"
+        },
+        {
+          "alias": "npm run smoke:host",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/rendering/smoke-host.ps1"
+        },
+        {
+          "alias": "npm run test:layered-material",
+          "command": "node --test .incrementalTesting/rendering/layered-material.test.mjs"
+        },
+        {
+          "alias": "npm run test:surface-relief",
+          "command": "node --test .incrementalTesting/rendering/surface-relief.test.mjs"
+        },
+        {
+          "alias": "npm run test:heightfield",
+          "command": "node --test .incrementalTesting/simulation/heightfield-collision.test.mjs",
+          "scope": "Heightfield physics, CDM ground queries, uphill/downhill support and jumping during step grace"
+        }
+      ]
+    },
+    "simulation": {
+      "scripts": [
+        ".incrementalTesting/simulation/check-effect-deposit-admission.mjs",
+        ".incrementalTesting/simulation/cloth-batch.ps1",
+        ".incrementalTesting/simulation/cloth-draw.ps1",
+        ".incrementalTesting/simulation/cloth-gpu.ps1",
+        ".incrementalTesting/simulation/cloth-grouped.ps1",
+        ".incrementalTesting/simulation/cloth-host.ps1",
+        ".incrementalTesting/simulation/effects-cpu.ps1",
+        ".incrementalTesting/simulation/effects-deposit-host.ps1",
+        ".incrementalTesting/simulation/effects-deposit-service.ps1",
+        ".incrementalTesting/simulation/effects-deposits.ps1",
+        ".incrementalTesting/simulation/effects-fields.ps1",
+        ".incrementalTesting/simulation/effects-gpu-draw.ps1",
+        ".incrementalTesting/simulation/effects-gpu.ps1",
+        ".incrementalTesting/simulation/effects-runtime.ps1",
+        ".incrementalTesting/simulation/field-adapters.ps1",
+        ".incrementalTesting/simulation/field-coordinator-gpu.ps1",
+        ".incrementalTesting/simulation/field-host.ps1",
+        ".incrementalTesting/simulation/field-service-phase-audit.mjs",
+        ".incrementalTesting/simulation/field-services-audit.mjs",
+        ".incrementalTesting/simulation/fields-gpu.ps1",
+        ".incrementalTesting/simulation/fields-joint-audit.mjs",
+        ".incrementalTesting/simulation/fields-joint-gpu.ps1",
+        ".incrementalTesting/simulation/fields-local-gpu.ps1",
+        ".incrementalTesting/simulation/fields-services-gpu.ps1",
+        ".incrementalTesting/simulation/fields-world-gpu.ps1",
+        ".incrementalTesting/simulation/fields.ps1",
+        ".incrementalTesting/simulation/garment-skinned.ps1",
+        ".incrementalTesting/simulation/garment-weights-check.mjs",
+        ".incrementalTesting/simulation/heightfield-collision.test.mjs",
+        ".incrementalTesting/simulation/particles.ps1",
+        ".incrementalTesting/simulation/physics.ps1",
+        ".incrementalTesting/simulation/shared-wind.ps1",
+        ".incrementalTesting/simulation/simulation-baseline.mjs",
+        ".incrementalTesting/simulation/simulation-fields.ps1",
+        ".incrementalTesting/simulation/simulation-suite.ps1",
+        ".incrementalTesting/simulation/smoke-fields-audit.mjs",
+        ".incrementalTesting/simulation/smoke-fields.ps1",
+        ".incrementalTesting/simulation/smoke-gpu.ps1",
+        ".incrementalTesting/simulation/smoke-particles.ps1",
+        ".incrementalTesting/simulation/smoke-service.ps1",
+        ".incrementalTesting/simulation/smoke-sharing-audit.mjs",
+        ".incrementalTesting/simulation/smoke-sharing.ps1",
+        ".incrementalTesting/simulation/water-realism.mjs"
+      ],
+      "npm": [
+        {
+          "alias": "npm run cloth:batch",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/cloth-batch.ps1"
+        },
+        {
+          "alias": "npm run cloth:draw",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/cloth-draw.ps1"
+        },
+        {
+          "alias": "npm run cloth:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/cloth-gpu.ps1"
+        },
+        {
+          "alias": "npm run cloth:grouped",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/cloth-grouped.ps1"
+        },
+        {
+          "alias": "npm run cloth:host",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/cloth-host.ps1"
+        },
+        {
+          "alias": "npm run effects:cpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-cpu.ps1"
+        },
+        {
+          "alias": "npm run effects:deposits",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-deposits.ps1"
+        },
+        {
+          "alias": "npm run effects:deposits:host",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-deposit-host.ps1"
+        },
+        {
+          "alias": "npm run effects:deposits:service",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-deposit-service.ps1"
+        },
+        {
+          "alias": "npm run effects:fields",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-fields.ps1"
+        },
+        {
+          "alias": "npm run effects:fields:host",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/field-host.ps1"
+        },
+        {
+          "alias": "npm run effects:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-gpu.ps1"
+        },
+        {
+          "alias": "npm run effects:gpu:draw",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-gpu-draw.ps1"
+        },
+        {
+          "alias": "npm run effects:runtime",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/effects-runtime.ps1"
+        },
+        {
+          "alias": "npm run fields",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/fields.ps1"
+        },
+        {
+          "alias": "npm run fields:adapters",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/field-adapters.ps1"
+        },
+        {
+          "alias": "npm run fields:coordinator:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/field-coordinator-gpu.ps1"
+        },
+        {
+          "alias": "npm run fields:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/fields-gpu.ps1"
+        },
+        {
+          "alias": "npm run fields:joint:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/fields-joint-gpu.ps1"
+        },
+        {
+          "alias": "npm run fields:local:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/fields-local-gpu.ps1"
+        },
+        {
+          "alias": "npm run fields:services:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/fields-services-gpu.ps1"
+        },
+        {
+          "alias": "npm run fields:shared-wind",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/shared-wind.ps1"
+        },
+        {
+          "alias": "npm run fields:simulation",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/simulation-fields.ps1"
+        },
+        {
+          "alias": "npm run fields:world:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/fields-world-gpu.ps1"
+        },
+        {
+          "alias": "npm run physics",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/physics.ps1"
+        },
+        {
+          "alias": "npm run simulation:baseline",
+          "command": "node .incrementalTesting/simulation/simulation-baseline.mjs"
+        },
+        {
+          "alias": "npm run simulation:suite",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/simulation-suite.ps1"
+        },
+        {
+          "alias": "npm run smoke:fields",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/smoke-fields.ps1"
+        },
+        {
+          "alias": "npm run smoke:gpu",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/smoke-gpu.ps1"
+        },
+        {
+          "alias": "npm run smoke:particles",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/smoke-particles.ps1"
+        },
+        {
+          "alias": "npm run smoke:service",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/smoke-service.ps1"
+        },
+        {
+          "alias": "npm run smoke:sharing",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/smoke-sharing.ps1"
+        },
+        {
+          "alias": "npm run test:water",
+          "command": "node .incrementalTesting/simulation/water-realism.mjs --cpu-only"
+        },
+        {
+          "alias": "npm run test:water:gpu",
+          "command": "node .incrementalTesting/simulation/water-gpu.mjs"
+        },
+        {
+          "alias": "npm run water:verify",
+          "command": "node .incrementalTesting/simulation/water-realism.mjs"
+        },
+        {
+          "alias": "npm run test:garment",
+          "command": "node --test .incrementalTesting/simulation/garment-weights-check.mjs"
+        },
+        {
+          "alias": "npm run test:garment:native",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/simulation/garment-skinned.ps1"
+        }
+      ]
+    },
+    "vegetation": {
+      "scripts": [
+        ".incrementalTesting/vegetation/hair-draw-native-check.mjs",
+        ".incrementalTesting/vegetation/hair-generator-check.mjs",
+        ".incrementalTesting/vegetation/hair-host-check.mjs",
+        ".incrementalTesting/vegetation/hair-gpu-pack-check.mjs",
+        ".incrementalTesting/vegetation/hair-groom-native-check.mjs",
+        ".incrementalTesting/vegetation/hair-render-check.mjs",
+        ".incrementalTesting/vegetation/vegetation-atlas-diagnostics.mjs",
+        ".incrementalTesting/vegetation/vegetation-browser-check.mjs",
+        ".incrementalTesting/vegetation/vegetation-evidence-check.mjs",
+        ".incrementalTesting/vegetation/vegetation-hair-verify.ps1",
+        ".incrementalTesting/vegetation/vegetation-morphology.mjs",
+        ".incrementalTesting/vegetation/vegetation-production-report.mjs",
+        ".incrementalTesting/vegetation/vegetation-silhouette.mjs",
+        ".incrementalTesting/vegetation/vegetation-sync-check.mjs"
+      ],
+      "npm": [
+        {
+          "alias": "npm run test:hair",
+          "command": "node --test .incrementalTesting/vegetation/hair-generator-check.mjs"
+        },
+        {
+          "alias": "npm run test:hair:draw",
+          "command": "node --test .incrementalTesting/vegetation/hair-render-check.mjs .incrementalTesting/vegetation/hair-gpu-pack-check.mjs"
+        },
+        {
+          "alias": "npm run hair:sample",
+          "command": "node tools/hair-sample-record.mjs"
+        },
+        {
+          "alias": "npm run hair:groom",
+          "command": "node tools/hair-groom.mjs"
+        },
+        {
+          "alias": "npm run test:hair:groom",
+          "command": "node --test .incrementalTesting/vegetation/hair-groom-native-check.mjs"
+        },
+        {
+          "alias": "npm run test:hair:gpu",
+          "command": "node --test .incrementalTesting/vegetation/hair-draw-native-check.mjs"
+        },
+        {
+          "alias": "npm run test:hair:host",
+          "command": "node --test .incrementalTesting/vegetation/hair-host-check.mjs"
+        }
+      ]
+    },
+    "core": {
+      "scripts": [
+        ".incrementalTesting/core/animation.ps1",
+        ".incrementalTesting/core/audio.ps1",
+        ".incrementalTesting/core/ci.ps1",
+        ".incrementalTesting/core/determinism.ps1",
+        ".incrementalTesting/core/g1-reliability.ps1",
+        ".incrementalTesting/core/g1.ps1",
+        ".incrementalTesting/core/gameplay.ps1",
+        ".incrementalTesting/core/replay.ps1",
+        ".incrementalTesting/core/test-native.ps1",
+        ".incrementalTesting/core/verify.ps1",
+        ".incrementalTesting/core/world/native_world_tests.cpp",
+        ".incrementalTesting/core/world/test-world.ps1",
+        ".incrementalTesting/core/world/world-contract.test.mjs"
+      ],
+      "npm": [
+        {
+          "alias": "npm run animation",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/animation.ps1"
+        },
+        {
+          "alias": "npm run audio",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/audio.ps1"
+        },
+        {
+          "alias": "npm run ci",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/ci.ps1"
+        },
+        {
+          "alias": "npm run determinism",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/determinism.ps1"
+        },
+        {
+          "alias": "npm run gameplay",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/gameplay.ps1"
+        },
+        {
+          "alias": "npm run replay",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/replay.ps1"
+        },
+        {
+          "alias": "npm run test",
+          "command": "node --test tests/*.test.mjs"
+        },
+        {
+          "alias": "npm run test:native",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/test-native.ps1"
+        },
+        {
+          "alias": "npm run verify",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/verify.ps1"
+        },
+        {
+          "alias": "npm run test:world",
+          "command": "node --test .incrementalTesting/core/world/world-contract.test.mjs"
+        },
+        {
+          "alias": "npm run test:world-native",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .incrementalTesting/core/world/test-world.ps1"
+        },
+        {
+          "alias": "npm run world:build",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/build-world.ps1"
+        },
+        {
+          "alias": "npm run world:verify",
+          "command": "node .incrementalTesting/rendering/world/world-render-check.mjs"
+        },
+        {
+          "alias": "npm run world -- <command>",
+          "command": "node tools/world.mjs"
+        }
+      ]
+    }
+  }
+}

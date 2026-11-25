@@ -33,8 +33,7 @@ constexpr UINT kHitGroupOffset = kSlotStride * 2;
 constexpr UINT kSbtSize = kSlotStride * 3;
 
 // The three numbers must match the raster pixel shader's key light direction.
-void normalizedKeyLightDirection(float out[3]) {
-    constexpr float source[3] = {-0.45f, 0.85f, -0.55f};
+void normalizedKeyLightDirection(const float source[3], float out[3]) {
     const float length = std::sqrt(source[0] * source[0] + source[1] * source[1] +
                                    source[2] * source[2]);
     const float inverse = length > 1.0e-6f ? 1.0f / length : 1.0f;
@@ -248,7 +247,9 @@ bool Renderer::Impl::dispatchShadowRays(ID3D12GraphicsCommandList4* list, unsign
     constants.cameraPosition[2] = cameraPosition[2];
     constants.cameraPosition[3] = 1.0f;
     float direction[3];
-    normalizedKeyLightDirection(direction);
+    // The scene's key light can represent either sun or moon. Legacy scenes retain
+    // the original direction through Environment's default, rather than a second copy.
+    normalizedKeyLightDirection(environment.keyDirection, direction);
     constants.keyLightDirection[0] = direction[0];
     constants.keyLightDirection[1] = direction[1];
     constants.keyLightDirection[2] = direction[2];

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import * as fs from 'node:fs/promises';
+import {findGameplayAssets} from '../engine/scene/gameplay.mjs';
 import {
   SceneError, validateScene, loadScene, queryScene, previewTransaction,
   commitScene, undoSceneFile, buildScene, recoverScene,
@@ -19,7 +20,7 @@ const USAGE = `Scene tools (JSON output)
   node tools/scene.mjs lint <scene.json> [--json] [--max-entities N]
 Transactions: {projectId, expectedRevision, commands: [{op:"set", entityId, changes:{position:[0,1,0]}}]}
 lint: --json is the default (and only) output format; exits 1 if any error-severity finding exists.
-query: --query/--file uses the typed query language (docs/SCENE-QUERY.md); exits 1 on NG-E-QUERY-* errors.
+query: --query/--file uses the typed query language (.developmentAgent/core/SCENE-QUERY.md); exits 1 on NG-E-QUERY-* errors.
 `;
 
 function fail(message) { throw new SceneError('INVALID_ARGUMENT', message); }
@@ -72,7 +73,7 @@ async function main() {
   if (command === 'validate') {
     if (args.length) fail('validate takes only a scene path');
     const scene = await json(file);
-    const result = validateScene(scene);
+    const result = validateScene(scene,{assetsDirectory:findGameplayAssets(file)});
     if (!result.valid) throw new SceneError('INVALID_SCENE', 'Scene validation failed', result.errors);
     return { valid: true, projectId: scene.projectId, revision: scene.revision, entityCount: scene.entities.length };
   }

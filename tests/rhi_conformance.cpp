@@ -67,6 +67,15 @@ public:
     bool meshShadersEnabled() const override { return mesh_; }
     void setCompositeDebugView(unsigned view) override { view_ = view; }
     void setCompute(bool enabled, bool corrupt) override { compute_ = enabled; computeCorrupt_ = corrupt; }
+    void setParticles(bool enabled) override { particles_ = enabled; }
+    bool setEffectSprites(std::vector<nativegpu::EffectSprite>, std::string&) override { return true; }
+    void setFieldColliders(const std::vector<nativegpu::FieldCollider>& colliders) override {
+        colliders_ = static_cast<unsigned>(colliders.size());
+    }
+    void setFireEffect(bool firePreset, unsigned explodeAtFrame) override {
+        firePreset_ = firePreset;
+        explodeAt_ = explodeAtFrame;
+    }
     bool requestScreenshot(const std::string&, std::string&) override { return true; }
     bool captureScreenshot(const std::string&, std::string&) override { return true; }
     nativegpu::FrameStats stats() const override {
@@ -91,6 +100,10 @@ private:
     unsigned width_ = 0, height_ = 0;
     bool compute_ = false;
     bool computeCorrupt_ = false;
+    bool particles_ = false;
+    unsigned colliders_ = 0;
+    bool firePreset_ = false;
+    unsigned explodeAt_ = 0;
     unsigned frames_ = 0;
     unsigned initializeCalls_ = 0;
 };

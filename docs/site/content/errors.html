@@ -1,0 +1,108 @@
+<p class="lede">错误码是契约，错误文本不是。调用方只应该对 <code>code</code> 做分支，<code>message</code> 随时可能为了可读性改动。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">稳定</span>
+  <span class="meta">来源：各模块 throw 点 · .developmentAgent/core/STATUS.md §维护约束</span>
+</div>
+
+<h2 id="envelope">错误信封</h2>
+
+<pre><code>{
+  "ok": false,
+  "error": {
+    "code": "NG-E-MAT-STALE",
+    "message": "material handle generation mismatch",
+    "details": []
+  }
+}</code></pre>
+
+<p>无法归类的异常统一包成 <code>TOOL_FAILURE</code>——它的出现说明有未被分类的失败路径，应当被修掉，而不是被依赖。</p>
+
+<h2 id="families">错误码族</h2>
+
+<table>
+<thead><tr><th>前缀</th><th>域</th><th>典型场景</th></tr></thead>
+<tbody>
+<tr><td><code>NG-E-RHI-*</code></td><td>RHI 边界</td><td><code>BACKEND</code> 请求了未编译进来的后端 · <code>WINDOW</code> 没有窗口句柄 · <code>SIZE</code> 宽高为 0 · <code>STATE</code> 未初始化就提交</td></tr>
+<tr><td><code>NG-E-PIPE-COMPILE</code></td><td>管线</td><td>着色器编译失败、PSO 创建失败</td></tr>
+<tr><td><code>NG-E-MAT-*</code></td><td>材质</td><td><code>MISSING</code> 材质不存在 · <code>STALE</code> 句柄代际过期 · <code>TABLE</code> 槽位耗尽</td></tr>
+<tr><td><code>NG-E-RT-*</code></td><td>光追</td><td>RTPSO / SBT / 加速结构构建失败</td></tr>
+<tr><td><code>NG-E-MESH-*</code></td><td>Mesh Shader</td><td><code>PSO</code> 创建失败 · <code>UNSUPPORTED</code> 硬件不支持</td></tr>
+<tr><td><code>NG-E-DEVICE-REMOVED</code></td><td>设备</td><td>设备丢失：检测 → 停止 → 重建 → 继续</td></tr>
+<tr><td><code>NG-E-IO-SCENE</code> / <code>-GAMEPLAY</code></td><td>I/O</td><td>场景 / 玩法资源读写失败</td></tr>
+</tbody>
+</table>
+
+<h3 id="sim">仿真与内容</h3>
+
+<table>
+<thead><tr><th>前缀</th><th>域</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>NG-E-ANIM-*</code></td><td>动画</td><td><code>SKELETON</code> 骨架不合法 · <code>CLIP</code> 片段数据错误 · <code>FORMAT</code> 格式不支持 · <code>SKIN</code> 蒙皮数据错误 · <code>MASK</code> 通道越界写 · <code>GRAPH</code> DAG 顺序/成环 · <code>BLEND</code> 混合参数 · <code>POSE</code> 姿态非法 · <code>IO</code></td></tr>
+<tr><td><code>NG-E-SCRIPT-*</code></td><td>Lua 行为</td><td><code>BUDGET</code> 指令/命令超限 · <code>MEMORY</code> 堆超限 · <code>STATE</code> 状态 schema 不符 · <code>DEPENDENCY</code> 依赖缺失或成环 · <code>PATH</code> 路径越界 · <code>IO</code> · <code>RUNTIME</code></td></tr>
+<tr><td><code>NG-E-SNAPSHOT-*</code></td><td>存档</td><td><code>STATE</code> 状态不匹配 · <code>CONTENT</code> 内容指纹不符 · <code>ANIMATION</code> 动画契约不符</td></tr>
+<tr><td><code>NG-E-REPLAY-*</code></td><td>回放</td><td><code>MISMATCH</code> 摘要不符（含帧号）· <code>CONTENT</code> 内容契约不符</td></tr>
+<tr><td><code>NG-E-RELOAD-MIGRATION</code></td><td>热重载</td><td>状态迁移失败，保留旧模块</td></tr>
+<tr><td><code>NG-E-EVENT-SCHEMA</code></td><td>事件</td><td>事件负载不符合声明</td></tr>
+<tr><td><code>NG-E-ENTITY-STALE</code></td><td>实体</td><td>使用了已销毁实体的句柄</td></tr>
+<tr><td><code>NG-E-SYSTEM-*</code></td><td>系统调度</td><td><code>DUPLICATE</code> 重名 · <code>CYCLE</code> 依赖成环</td></tr>
+<tr><td><code>NG-E-SAVE-IO</code></td><td>存档 I/O</td><td>写盘失败</td></tr>
+</tbody>
+</table>
+
+<h3 id="offline">离线工具</h3>
+
+<table>
+<thead><tr><th>前缀</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>NG-E-GEOMETRY-*</code></td><td><code>INPUT</code> 输入不合法 · <code>MANIFEST</code> 清单错误 · <code>TAMPERED</code> 哈希不符</td></tr>
+<tr><td><code>NG-E-GLTF-MISSING</code></td><td>引用的 buffer / 文件不存在</td></tr>
+<tr><td><code>NG-E-SDF-*</code></td><td><code>INPUT</code> · <code>IO</code> · <code>MANIFEST</code> · <code>MISSING</code> · <code>PATH</code> · <code>TAMPERED</code> · <code>ARGUMENT</code></td></tr>
+</tbody>
+</table>
+
+<h3 id="query">查询</h3>
+
+<table>
+<thead><tr><th>码</th><th>触发</th></tr></thead>
+<tbody>
+<tr><td><code>NG-E-QUERY-SHAPE</code></td><td>文档结构不对（<code>entities</code> 不是数组）</td></tr>
+<tr><td><code>NG-E-QUERY-FIELD</code></td><td>字段名不在允许集合</td></tr>
+<tr><td><code>NG-E-QUERY-OP</code></td><td>操作符不在允许集合</td></tr>
+</tbody>
+</table>
+
+<h2 id="scene">场景层错误码</h2>
+
+<p>场景事务使用<strong>裸大写码</strong>（不带前缀），这是历史原因，也是公开契约的一部分。</p>
+
+<table>
+<thead><tr><th>码</th><th>含义</th><th>能否重试</th></tr></thead>
+<tbody>
+<tr><td><code>PROJECT_MISMATCH</code></td><td>事务的 <code>projectId</code> 与场景不符</td><td>否，改 ID</td></tr>
+<tr><td><code>REVISION_CONFLICT</code></td><td><code>expectedRevision</code> 过期</td><td>是，重新读取后重试</td></tr>
+<tr><td><code>INVALID_SCENE</code></td><td>Schema / 不变量失败</td><td>否，修数据</td></tr>
+<tr><td><code>INVALID_COMMAND</code></td><td>未知 <code>op</code> 或命令结构错误</td><td>否</td></tr>
+<tr><td><code>INVALID_JSON</code></td><td>JSON 解析失败</td><td>否</td></tr>
+<tr><td><code>DUPLICATE_ENTITY</code></td><td>UUID 重复</td><td>否</td></tr>
+<tr><td><code>ENTITY_NOT_FOUND</code></td><td>目标实体不存在</td><td>是，重新查询</td></tr>
+<tr><td><code>PROJECT_BUSY</code></td><td><code>.lock</code> 被占用</td><td>是，确认进程停止后删锁</td></tr>
+<tr><td><code>RECOVERY_REQUIRED</code></td><td>存在未完成提交</td><td>是，先 <code>recover</code></td></tr>
+<tr><td><code>NOTHING_TO_UNDO</code></td><td>历史为空</td><td>否</td></tr>
+<tr><td><code>NO_SNAPSHOT</code></td><td>没有可恢复快照</td><td>否</td></tr>
+<tr><td><code>HISTORY_CONFLICT</code></td><td>撤销历史与当前 revision 不一致</td><td>否，需人工检查</td></tr>
+<tr><td><code>BUILD_CONFLICT</code></td><td>构建目标冲突</td><td>是，换目标</td></tr>
+<tr><td><code>FILE_TOO_LARGE</code></td><td>超过 16 MiB</td><td>否</td></tr>
+<tr><td><code>UNSAFE_PATH</code></td><td>路径逃逸</td><td>否</td></tr>
+<tr><td><code>REVISION_EXHAUSTED</code></td><td>revision 到达上限</td><td>否</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice">处理建议</h2>
+
+<ol>
+<li><strong>只对 code 分支。</strong> 不要用 <code>message.includes(...)</code> 判断错误类型。</li>
+<li><strong>区分可重试与不可重试。</strong> 上表的"能否重试"列就是依据；<code>REVISION_CONFLICT</code> 是正常的并发结果，不是 bug。</li>
+<li><strong>失败要留证据。</strong> 报告里的 <code>error</code> 字段与 <code>dispatchFailures</code> 这类计数，比控制台日志更可靠。</li>
+<li><strong>不要吞掉 <code>TOOL_FAILURE</code>。</strong> 它意味着有一条失败路径没被分类，应该补一个错误码。</li>
+</ol>

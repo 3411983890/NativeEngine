@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // B7: minimal glTF 2.0 importer that feeds the content-addressed geometry package.
 //
-// Supported subset (documented in docs/GEOMETRY-PACKAGE.md §8):
+// Supported subset (documented in .developmentAgent/rendering/GEOMETRY-PACKAGE.md §8):
 //   - .gltf JSON only; buffers embedded as base64 data URIs or a sibling .bin
 //   - exactly one scene; transform-free node graph; one or more indexed
 //     TRIANGLES primitives with POSITION and optional NORMAL
@@ -12,7 +12,7 @@
 //
 // The package adapter reuses geometry-package.mjs for canonical JSON, package
 // digest hashing, manifest constants and manifest writing. Its cluster packing
-// mirrors the rules documented in §3 of docs/GEOMETRY-PACKAGE.md because
+// mirrors the rules documented in §3 of .developmentAgent/rendering/GEOMETRY-PACKAGE.md because
 // geometry-package.mjs does not export its internal createPackageData(); the
 // tests run the emitted package through the real verifyPackage() so the two
 // cannot drift silently.
@@ -119,7 +119,7 @@ function decodeDataUri(uri, index) {
   return Buffer.from(base64, 'base64');
 }
 
-async function readBuffers(document, gltfPath) {
+export async function readBuffers(document, gltfPath) {
   if (!Array.isArray(document.buffers) || document.buffers.length === 0) {
     fail(ERROR_CODES.UNSUPPORTED, 'glTF has no buffers');
   }

@@ -1,0 +1,166 @@
+<p class="lede">玩法运行时是数据驱动的：C++ 提供组件与系统，行为写在 Lua 5.4.9 里，两者通过一份共享的字段契约连接。新增一把钥匙、一扇门、一个开关，不需要改 C++——但也不能偷偷绕过契约。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">已实现</span>
+  <span class="meta">engine/native/gameplay/ · assets/gameplay/components.json · .developmentAgent/simulation-effects/GAMEPLAY.md</span>
+</div>
+
+<h2 id="model">组件模型</h2>
+
+<p><code>assets/gameplay/components.json</code> 是组件字段契约。原生 Registry、场景工具和 AI 共用它；未知类型或未知字段会被<strong>拒绝</strong>，不会静默丢弃。</p>
+
+<pre><code>{
+  "components": {
+    "interactable": { "range": 2.5, "prompt": "打开门" },
+    "behavior": {
+      "instances": [
+        { "id": "lock", "script": "gameplay/locked_door",
+          "properties": { "requiredItem": "silver_key" } }
+      ]
+    }
+  }
+}</code></pre>
+
+<p>同一脚本的多个实例各自拥有 properties / state / RNG；行为 ID 在同一实体上唯一。第二把钥匙和第二扇门不需要写第二份 C++。</p>
+
+<h3 id="identity">实体身份</h3>
+
+<p>实体使用持久 ID；原生高频访问使用 index + generation 的 Handle。销毁后的 ID <strong>不允许重新分配</strong>，旧句柄立即失效。查询按实体 ID 排序，保证遍历顺序确定。</p>
+
+<h2 id="behavior">行为描述文件</h2>
+
+<p><code>assets/scripts/&lt;name&gt;.behavior.json</code> 声明：<code>apiVersion: 1</code>、正整数 <code>version</code>、properties / state 的字段 schema。持续更新的行为还要声明 <code>update: true</code>。</p>
+
+<pre><code>{
+  "apiVersion": 1,
+  "version": 3,
+  "update": false,
+  "dependencies": ["gameplay/common"],
+  "properties": {
+    "type": "object",
+    "required": ["requiredItem"],
+    "properties": { "requiredItem": { "type": "string" } }
+  },
+  "state": {
+    "type": "object",
+    "properties": { "opened": { "type": "boolean", "default": false } }
+  }
+}</code></pre>
+
+<p>schema 支持 object / array / boolean / string / integer / number、<code>oneOf</code>、<code>required</code>、<code>default</code>、<code>enum</code>、范围和数量上限，默认严格拒绝未知字段。<code>dependencies</code> 声明行为资源依赖，引擎与打包工具递归解析并拒绝循环——它<strong>不是</strong> Lua 的 <code>require</code>。</p>
+
+<h2 id="lua">Lua 回调</h2>
+
+<pre><code>return {
+  on_start = function(ctx)
+    ctx:timer("pulse", 120, "pulse", {}, 120)
+  end,
+  on_event = function(ctx, event)
+    if event.name == "pulse" then
+      ctx.state.count = ctx.state.count + 1
+    end
+  end
+}</code></pre>
+
+<p>生命周期：<code>on_start</code>、<code>on_update</code>、<code>on_interact</code>、<code>on_trigger_enter</code>、<code>on_trigger_exit</code>、<code>on_event</code>、<code>on_destroy</code>、<code>on_reload</code>。</p>
+
+<div class="callout callout--warn">
+<span class="callout-title">每次回调都是新环境</span>
+<p>全局变量和闭包局部变量<strong>不会</strong>跨回调保留。影响未来模拟的数据必须写进已声明的 <code>ctx.state</code>。这是刻意的：隐式状态会让存档、回放和确定性全部失效。</p>
+</div>
+
+<h2 id="api">脚本 API</h2>
+
+<table>
+<thead><tr><th>API</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td><code>ctx.entity / properties / state / tick / dt / input</code></td><td>当前实例、配置、状态与模拟输入</td></tr>
+<tr><td><code>ctx:get(id, component)</code></td><td>组件副本；修改副本必须再提交</td></tr>
+<tr><td><code>ctx:query(component)</code></td><td>按 ID 排序的实体列表</td></tr>
+<tr><td><code>ctx:set(id, component, value)</code></td><td>替换组件，补全 schema 默认值</td></tr>
+<tr><td><code>ctx:remove(id, component)</code></td><td>移除组件</td></tr>
+<tr><td><code>ctx:spawn(id, components)</code> / <code>destroy(id)</code></td><td>在结构提交阶段创建 / 销毁实体</td></tr>
+<tr><td><code>ctx:emit(target, name, payload)</code></td><td>下一 tick 的事件；空目标为广播</td></tr>
+<tr><td><code>ctx:timer(id, delay, name, payload, interval)</code></td><td>整数 tick 计时器；<code>interval = 0</code> 为一次</td></tr>
+<tr><td><code>ctx:cancel_timer(id)</code></td><td>取消本实例的同名计时器</td></tr>
+<tr><td><code>ctx:random(name, bound)</code></td><td>独立命名随机流，整数 [0, bound)</td></tr>
+<tr><td><code>ctx:hud(actor, text, ticks)</code></td><td>设置 HUD 文本状态</td></tr>
+<tr><td><code>ctx:play(id, clip)</code></td><td>请求原生动画蒙太奇</td></tr>
+<tr><td><code>ctx:presentation(name, payload)</code></td><td>表现请求，<strong>不能</strong>反馈进模拟</td></tr>
+<tr><td><code>ctx:keys(table)</code> / <code>ctx:array()</code></td><td>排序键列表 / 明确标记的空数组</td></tr>
+</tbody>
+</table>
+
+<p><code>set</code> 是<strong>替换</strong>而不是合并：省略的字段会恢复默认值。要保留旧字段，先 <code>get</code>，改完再 <code>set</code>。</p>
+
+<h3 id="sandbox">沙箱</h3>
+
+<p>默认不开放：文件、系统时间、动态加载、<code>debug</code>、协程、无序 <code>pairs</code> / <code>next</code>、进程随机数、<code>pcall</code> / <code>xpcall</code>。排序遍历用 <code>query</code> / <code>keys</code> / <code>ipairs</code>。</p>
+
+<p>随机使用有状态整数 LCG，每个「实体 + 行为 + 名字」独立派生；其状态进入快照与摘要，失败回调<strong>不消耗</strong>随机流。</p>
+
+<h2 id="schedule">调度</h2>
+
+<pre><code>Input → Events → Behaviors → Simulation → Collect → Commit</code></pre>
+
+<p>系统名唯一，依赖必须存在且不能逆阶段；循环依赖拒绝执行。原生 Game 的角色/物理/动画保持在既有固定步长路径，适配层同步组件状态。</p>
+
+<p>脚本创建的 <code>transform</code> / <code>collider</code> / <code>rigidbody</code> / <code>renderable</code> 实体自动获得方盒显示与原生物理生命周期；移除或禁用碰撞体会停用对应物理体；修改尺寸/质量会重算惯量。玩家 transform 位置修改按<strong>传送</strong>处理。</p>
+
+<p>事件按 due tick、递增序号排序。碰撞/触发采集产生<strong>下一 tick</strong> 的事件，避免同步递归。计时器身份是「实体 ID + 行为 ID + timer ID」，同名设置替换旧计时器。</p>
+
+<h2 id="budget">预算与失败隔离</h2>
+
+<table>
+<thead><tr><th>项</th><th>上限</th></tr></thead>
+<tbody>
+<tr><td>每回调 Lua 指令</td><td>100,000</td></tr>
+<tr><td>Lua 堆</td><td>4 MiB</td></tr>
+<tr><td>每回调命令</td><td>128</td></tr>
+<tr><td>回调结果展开节点</td><td>32,768</td></tr>
+<tr><td>字符串 / 键总字节</td><td>1 MiB</td></tr>
+<tr><td>事件 / 计时器</td><td>各 4,096</td></tr>
+<tr><td>结构请求</td><td>1,024</td></tr>
+</tbody>
+</table>
+
+<p>每次回调先生成状态、RNG 和命令副本，全部校验通过后才提交。失败会<strong>禁用该实例</strong>并记录实体、行为、tick、错误码，其他实例继续运行。创建/销毁延迟提交，销毁时执行受限的 <code>on_destroy</code> 并清除该实体计时器。</p>
+
+<p>这是<em>单实例隔离</em>，不是进程级不可信代码隔离。宿主 C++ 故障不在承诺范围内。</p>
+
+<h2 id="reload">热重载</h2>
+
+<p>候选模块编译、字段验证及所有受影响实例迁移都成功，才在 tick 边界一起替换；失败保留旧模块和实例状态。</p>
+
+<p>状态 <code>version</code> 改变时，候选模块可提供 <code>migrate(ctx, event)</code>（<code>event.oldVersion</code> 为旧版本），迁移后按新 schema 检查。相同版本直接保留登记状态。<code>on_reload</code> 用于无世界副作用的修整。迁移和 reload 回调<strong>不允许</strong>提交世界命令。</p>
+
+<h2 id="save">存档与回放</h2>
+
+<table>
+<thead><tr><th>操作</th><th>入口</th></tr></thead>
+<tbody>
+<tr><td>快速存档</td><td><kbd>F7</kbd> → <code>saves/quicksave.json</code></td></tr>
+<tr><td>恢复存档</td><td><kbd>F12</kbd></td></tr>
+<tr><td>退出时保存</td><td><code>--save &lt;path&gt;</code></td></tr>
+<tr><td>启动时恢复</td><td><code>--load-save &lt;path&gt;</code></td></tr>
+</tbody>
+</table>
+
+<p>完整快照包含：组件、实例状态、RNG、事件、计时器、触发重叠、待提交结构、待处理输入边沿、固定步累积余量、车辆、刚体内部状态、破坏状态、动画过渡与蒙太奇状态。派生物理接触缓存不保存，下一步重建。</p>
+
+<p>快照用版本化 JSON + 校验和 + 临时文件 + 原子替换。恢复先在候选状态上验证；场景/脚本/组件/动画内容不匹配直接拒绝。磁盘旧版本存档明确拒绝——目前<strong>没有</strong>跨版本游戏进度升级器。</p>
+
+<h2 id="tools">工具</h2>
+
+<table>
+<thead><tr><th>工具</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>gameplay_catalog</code></td><td>组件与行为字段描述</td></tr>
+<tr><td><code>gameplay_validate</code></td><td>校验行为参数与依赖（不执行 Lua）</td></tr>
+<tr><td><code>gameplay_inspect</code></td><td>读取 <code>reports/</code> 内的状态/错误报告</td></tr>
+</tbody>
+</table>
+
+<p>场景组件修改仍走 <code>scene_preview</code> / <code>scene_apply</code> / <code>scene_undo</code>。运行中的状态报告在 <code>reports/gameplay/live.json</code>。构建包包含组件目录、Lua、行为描述文件及其 SHA-256——改脚本会改变构建键，篡改缓存包会被拒绝。</p>
+
+<pre><code>npm run gameplay</code></pre>

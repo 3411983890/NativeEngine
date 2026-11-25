@@ -1,0 +1,108 @@
+<p class="lede">AI 接入面是一个本地 stdio MCP 服务，不监听端口、不持有模型凭证、不接受任意 shell 文本。它只做一件事：把"改场景"变成可校验、可拒绝、可回滚的事务。</p>
+
+<div class="meta-row">
+  <span class="badge badge--done">12 个工具</span>
+  <span class="meta">ai/mcp-server.mjs · ai/tool-service.mjs · ai/README.md</span>
+</div>
+
+<h2 id="start">启动与注册</h2>
+
+<pre><code>node ai/mcp-server.mjs</code></pre>
+
+<pre><code>[mcp_servers.nativegpu]
+command = "node"
+args = ["ai/mcp-server.mjs"]
+cwd = "C:\\path\\to\\AI-Native Game Engine"</code></pre>
+
+<p>直接测协议，不需要任何客户端：</p>
+
+<pre><code>'{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node ai/mcp-server.mjs</code></pre>
+
+<h2 id="tools">工具</h2>
+
+<table>
+<thead><tr><th>工具</th><th>作用</th><th>写盘</th></tr></thead>
+<tbody>
+<tr><td><code>scene_validate</code></td><td>Schema + 不变量校验</td><td>否</td></tr>
+<tr><td><code>scene_query</code></td><td>声明式查询（实体 / 材质 / 灯光）</td><td>否</td></tr>
+<tr><td><code>scene_preview</code></td><td>在副本上应用事务，返回差异</td><td>否</td></tr>
+<tr><td><code>scene_apply</code></td><td>原子提交（需 <code>projectId</code> + <code>expectedRevision</code>）</td><td>是</td></tr>
+<tr><td><code>scene_undo</code></td><td>回退一步</td><td>是</td></tr>
+<tr><td><code>scene_build</code></td><td>内容寻址构建包</td><td>是（<code>outputs/</code>）</td></tr>
+<tr><td><code>material_patch</code></td><td>材质参数原子修改</td><td>是</td></tr>
+<tr><td><code>gameplay_catalog</code></td><td>组件与行为字段描述</td><td>否</td></tr>
+<tr><td><code>gameplay_validate</code></td><td>行为参数与依赖校验（不执行 Lua）</td><td>否</td></tr>
+<tr><td><code>gameplay_inspect</code></td><td>读取 <code>reports/</code> 内的状态/错误报告</td><td>否</td></tr>
+<tr><td><code>runtime_smoke</code></td><td>启动原生程序跑冒烟</td><td>是（<code>reports/</code>）</td></tr>
+<tr><td><code>engine_probe</code></td><td>设备能力与子系统探针</td><td>是（<code>reports/</code>）</td></tr>
+</tbody>
+</table>
+
+<p>注意"写盘"那一列的分布：能改场景的只有 <code>scene_apply</code> / <code>scene_undo</code> / <code>material_patch</code>，且三者都走同一套事务实现。其余工具要么只读，要么只写构建产物与报告。</p>
+
+<h2 id="policy">路径策略</h2>
+
+<table>
+<thead><tr><th>目标</th><th>允许目录</th></tr></thead>
+<tbody>
+<tr><td>场景文件</td><td><code>assets/</code></td></tr>
+<tr><td>构建输出</td><td><code>outputs/</code></td></tr>
+<tr><td>冒烟报告</td><td><code>reports/</code></td></tr>
+</tbody>
+</table>
+
+<p>拒绝 <code>..</code>、根目录外的绝对路径和符号链接逃逸。工具不接受任意 shell 文本——没有 <code>exec</code> 参数，也就没有命令注入面。</p>
+
+<h2 id="loop">一次典型的 Agent 闭环</h2>
+
+<pre><code>1. scene_query    "玩家 4 m 内的道具"           → 拿到实体 ID 列表
+2. scene_preview  把其中一个移到 (-4, 0.6, 1)   → 返回差异，不写盘
+3. scene_apply    projectId + expectedRevision  → 原子提交，revision +1
+4. runtime_smoke  跑 120 帧                     → 报告写入 reports/
+5. 读报告         摘要、GPU P95、错误码          → 判断是否达标
+6. 不达标 → scene_undo，回到第 2 步</code></pre>
+
+<p>每一步都有结构化返回，失败带稳定错误码。Agent 不需要"猜"上一次操作有没有成功。</p>
+
+<h2 id="principles">三条设计原则</h2>
+
+<ol>
+<li><strong>模型无关。</strong> 服务不绑定任何模型或供应商，不需要模型凭证。换模型不影响工具面。</li>
+<li><strong>不伪造能力。</strong> 没有接入模型时，就只说"提供模型无关的工具面"。工具描述里不会出现"AI 自动完成"这类措辞。</li>
+<li><strong>不可绕过的闸门。</strong> 不允许模型直接写 <code>assets/</code>；必须走 <code>scene_preview</code> / <code>scene_apply</code>，并携带项目 ID 与 <code>expectedRevision</code>。</li>
+</ol>
+
+<h2 id="example">请求示例</h2>
+
+<pre><code>{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "method": "tools/call",
+  "params": {
+    "name": "scene_preview",
+    "arguments": {
+      "scene": "assets/courtyard.scene.json",
+      "transaction": {
+        "projectId": "a1e00000-0000-4000-8000-000000000001",
+        "expectedRevision": 3,
+        "commands": [
+          { "op": "set", "entityId": "a1e00000-0000-4000-8000-000000000030",
+            "changes": { "position": [-4, 0.6, 1] } }
+        ]
+      }
+    }
+  }
+}</code></pre>
+
+<div class="callout callout--warn">
+<span class="callout-title">安全边界</span>
+<p>这是<strong>受信本地工具</strong>。加入网络服务、模型凭证或远程执行之前，必须先补权限、配额、审计和超时。浏览器入口只监听本机，不要暴露到不可信网络。</p>
+</div>
+
+<h2 id="limits">边界</h2>
+<ul>
+<li>没有自然语言任务编排层——那是调用方的事。</li>
+<li>没有多 Agent 协作、没有会话状态、没有记忆。</li>
+<li>不提供代码补丁能力；只能改场景与材质。</li>
+<li>MCP 协议冒烟只验证协议层，不验证 Agent 的决策质量。</li>
+</ul>

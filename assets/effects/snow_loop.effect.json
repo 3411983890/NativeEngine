@@ -1,0 +1,27 @@
+{
+  "schema": "nativegpu.effect/1",
+  "id": "snow_loop",
+  "revision": 0,
+  "seed": 503,
+  "durationTicks": 120,
+  "loop": true,
+  "maxAlive": 3000,
+  "bounds": { "min": [-14, -1, -14], "max": [14, 14, 14] },
+  "budget": { "maxSpawnPerTick": 96, "maxEventsPerTick": 0, "maxDepth": 0 },
+  "emitters": [{
+    "id": "flakes",
+    "shape": { "type": "box", "extent": [24, 0.4, 24] },
+    "position": [0, 11, 0],
+    "ratePerSecond": 320,
+    "bursts": [],
+    "lifetimeTicks": [600, 840],
+    "localSpace": false,
+    "modules": [
+      { "id": "initial", "type": "initialize", "params": { "velocity": [0.25, -0.65, -0.15], "color": [0.92, 0.95, 1, 0.8], "size": [0.02, 0.045] } },
+      { "id": "flutter", "type": "curlNoise", "after": ["initial"], "params": { "amplitude": 0.55, "frequency": 0.45 } },
+      { "id": "drag", "type": "drag", "after": ["initial"], "params": { "coefficient": 0.35 } }
+    ],
+    "renderers": [{ "type": "sprite", "texture": "effects/textures/reference_glow.albedo.ngtex", "blend": "premultiplied", "lit": false }]
+  }],
+  "events": []
+}

@@ -1,6 +1,6 @@
 # Downloads and pins the DirectX Shader Compiler used to build every native shader.
 # The version, archive name and SHA-256 below are the single source of truth; both
-# tools/build.ps1 and tools/ci.ps1 go through this script so a build can never pick up
+# tools/build.ps1 and .incrementalTesting/core/ci.ps1 go through this script so a build can never pick up
 # a different DXC from PATH or from a developer machine's Visual Studio install.
 param(
     [string]$Version = '1.9.2609',

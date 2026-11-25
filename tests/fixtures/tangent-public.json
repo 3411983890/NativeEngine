@@ -1,0 +1,13 @@
+{
+  "model": "NormalTangentMirrorTest",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/NormalTangentMirrorTest/README.md",
+  "license": "CC-BY-4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "copyright": "Copyright 2018 Analytical Graphics, Inc.",
+  "author": "Ed Mackey",
+  "files": [
+    {"file":"NormalTangentMirrorTest.glb","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/NormalTangentMirrorTest/glTF-Binary/NormalTangentMirrorTest.glb","bytes":1567084,"sha256":"31ce5f3c873fc55531a17ccacf001e3d1d482a508695aa826fa79cc196e0ce78"},
+    {"file":"README.md","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/NormalTangentMirrorTest/README.md","bytes":4436,"sha256":"f7a39616f1e33b7b743dbac044a1fff1eb262c8488a718b1a2b7873b381997d8"}
+  ]
+}

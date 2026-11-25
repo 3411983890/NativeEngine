@@ -1,0 +1,14 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {writeMultiUvFixture} from './texture-coordinates-fixture.mjs';
+import {readGltf,readAccessor} from '../../engine/assets/gltf-document.mjs';
+import {encodePng} from '../textures.mjs';
+export async function writeClearcoatFixture(directory,{character=false,onlyLayer=false,baked=false,normalMap=true,constant=false}={}){
+  const file=await writeMultiUvFixture(directory,{character,all:true}),input=await readGltf(file),doc=structuredClone(input.document);
+  const append=rows=>{const bytes=Buffer.alloc(rows.length*8);rows.flat().forEach((v,i)=>bytes.writeFloatLE(v,i*4));const buffer=doc.buffers.length,view=doc.bufferViews.length,index=doc.accessors.length;doc.buffers.push({byteLength:bytes.length,uri:'data:application/octet-stream;base64,'+bytes.toString('base64')});doc.bufferViews.push({buffer,byteLength:bytes.length});doc.accessors.push({bufferView:view,componentType:5126,type:'VEC2',count:rows.length});return index;};
+  const transforms=[{offset:[.11,.23],scale:[1.4,-.8],rotation:.31},{offset:[.27,.14],scale:[.7,1.1],rotation:-.22},{offset:[.19,.07],scale:[1.2,.8],rotation:0}];
+  for(const mesh of doc.meshes)for(const p of mesh.primitives){const uv=readAccessor(input,p.attributes.TEXCOORD_0,'VEC2');for(let slot=0;slot<3;slot++){let rows=uv.map(([u,v])=>[.04*slot+.45*u,.08+.7*v]);if(baked){const t=transforms[slot],c=Math.cos(t.rotation),s=Math.sin(t.rotation);rows=rows.map(([u,v])=>[c*u*t.scale[0]-s*v*t.scale[1]+t.offset[0],s*u*t.scale[0]+c*v*t.scale[1]+t.offset[1]]);}p.attributes['TEXCOORD_'+(8+slot)]=append(rows);}}
+  const indices=[];for(let slot=0;slot<3;slot++){const pixels=Buffer.alloc(8*8*4);for(let y=0;y<8;y++)for(let x=0;x<8;x++){const row=slot===0?[constant?128:x<4?255:32,17,91,255]:slot===1?[245,constant?128:y<4?60:240,13,255]:constant?[160,145,248,255]:[x<4?176:88,y<4?157:105,244,255];pixels.set(row,(y*8+x)*4);}const source=doc.images.length,index=doc.textures.length;doc.images.push({uri:'data:image/png;base64,'+encodePng({width:8,height:8,data:pixels}).toString('base64')});doc.textures.push({source,sampler:0});indices.push(index);}
+  for(const m of doc.materials){if(onlyLayer){m.pbrMetallicRoughness={baseColorFactor:[.2,.2,.2,1],metallicFactor:0,roughnessFactor:.7};delete m.normalTexture;delete m.occlusionTexture;delete m.emissiveTexture;delete m.emissiveFactor;}const info=slot=>({index:indices[slot],texCoord:8+slot,...(baked?{}:{extensions:{KHR_texture_transform:transforms[slot]}})});m.extensions={...(m.extensions??{}),KHR_materials_clearcoat:{clearcoatFactor:.8,clearcoatRoughnessFactor:.6,clearcoatTexture:info(0),clearcoatRoughnessTexture:info(1),...(normalMap?{clearcoatNormalTexture:{...info(2),scale:.7}}:{})}};}
+  doc.extensionsRequired=[...new Set([...(doc.extensionsRequired??[]),'KHR_materials_clearcoat'])];const out=path.join(directory,'clearcoat.gltf');await fs.writeFile(out,JSON.stringify(doc)+'\n');return out;
+}

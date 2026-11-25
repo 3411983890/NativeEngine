@@ -1,6 +1,6 @@
 name: windows
 
-# The authoritative CI entry point is tools/ci.ps1. This workflow only provisions the
+# The authoritative CI entry point is .incrementalTesting/core/ci.ps1. This workflow only provisions the
 # runner and uploads the evidence; all build/test/verify logic stays in the repository
 # so a developer can replay the exact same run locally.
 on:
@@ -48,7 +48,7 @@ jobs:
       - name: CI
         shell: pwsh
         run: |
-          $arguments = @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools/ci.ps1','-Clean')
+          $arguments = @('-NoProfile','-ExecutionPolicy','Bypass','-File','.incrementalTesting/core/ci.ps1','-Clean')
           if ('${{ inputs.allowUnsupportedGpu }}' -eq 'true' -or '${{ github.event_name }}' -ne 'workflow_dispatch') {
             $arguments += '-AllowUnsupportedGpu'
           }

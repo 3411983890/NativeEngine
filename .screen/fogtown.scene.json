@@ -1,0 +1,8463 @@
+{
+  "schemaVersion": 2,
+  "projectId": "f0900000-0000-4000-8000-000000000000",
+  "name": "雾镇重启 · 第一人称冒险",
+  "revision": 0,
+  "settings": {
+    "walkSpeed": 3.5,
+    "runSpeed": 6,
+    "jumpSpeed": 6.5,
+    "gravity": 20
+  },
+  "materials": {
+    "brick_red": {
+      "albedo": "brick_red",
+      "normal": "brick_red",
+      "orm": "brick_red",
+      "uvScale": 2.2,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0,
+      "wear": 0.16
+    },
+    "brick_grey": {
+      "albedo": "brick_grey",
+      "normal": "brick_grey",
+      "orm": "brick_grey",
+      "uvScale": 2.4,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0.05,
+      "wear": 0.12
+    },
+    "plaster": {
+      "albedo": "plaster",
+      "normal": "plaster",
+      "orm": "plaster",
+      "uvScale": 2.6,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0,
+      "wear": 0.2
+    },
+    "roof_tile": {
+      "albedo": "roof_tile",
+      "normal": "roof_tile",
+      "orm": "roof_tile",
+      "uvScale": 1.6,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0.12,
+      "wear": 0.1
+    },
+    "wood": {
+      "albedo": "wood",
+      "normal": "wood",
+      "orm": "wood",
+      "uvScale": 1.2,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0.05,
+      "wear": 0.18
+    },
+    "metal": {
+      "albedo": "metal",
+      "normal": "metal",
+      "orm": "metal",
+      "uvScale": 1.5,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0,
+      "wear": 0.25
+    },
+    "cobble": {
+      "albedo": "cobble",
+      "normal": "cobble",
+      "orm": "cobble",
+      "uvScale": 2,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0.35,
+      "wear": 0.1
+    },
+    "stone": {
+      "albedo": "stone",
+      "normal": "stone",
+      "orm": "stone",
+      "uvScale": 2.2,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0.2,
+      "wear": 0.1
+    },
+    "grass": {
+      "albedo": "grass",
+      "normal": "grass",
+      "orm": "grass",
+      "uvScale": 3,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0.1,
+      "wear": 0
+    },
+    "water": {
+      "albedo": "water",
+      "normal": "water",
+      "orm": "water",
+      "uvScale": 2.5,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 1,
+      "wear": 0
+    },
+    "lamp": {
+      "albedo": "lamp",
+      "normal": "flat",
+      "orm": "lamp",
+      "uvScale": 0.8,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0,
+      "wear": 0
+    },
+    "awning": {
+      "albedo": "awning",
+      "normal": "awning",
+      "orm": "awning",
+      "uvScale": 1.4,
+      "roughness": 1,
+      "metalness": 1,
+      "wetness": 0.1,
+      "wear": 0
+    },
+    "flat": {
+      "albedo": "flat",
+      "normal": "flat",
+      "orm": "flat",
+      "uvScale": 1,
+      "roughness": 1,
+      "metalness": 1
+    },
+    "dark_glass": {
+      "albedo": "flat",
+      "normal": "flat",
+      "orm": "flat",
+      "uvScale": 1,
+      "roughness": 0.16,
+      "metalness": 0.8
+    }
+  },
+  "lighting": {
+    "ambient": [
+      0.13,
+      0.18,
+      0.23
+    ],
+    "skyColor": [
+      0.035,
+      0.065,
+      0.095
+    ],
+    "keyDirection": [
+      -0.35,
+      0.7,
+      -0.25
+    ],
+    "keyColor": [
+      0.55,
+      0.7,
+      1
+    ],
+    "keyIntensity": 0.7,
+    "fogColor": [
+      0.19,
+      0.28,
+      0.34
+    ],
+    "fogDensity": 0.022,
+    "fogHeightFalloff": 0.18,
+    "fogBaseHeight": 0,
+    "toneMap": true,
+    "exposure": 1.2,
+    "cloudCoverage": 0.65,
+    "cloudHeight": 90,
+    "cloudThickness": 35,
+    "cloudSpeed": 0.012,
+    "quality": 1,
+    "localShadows": true,
+    "ibl": true,
+    "ddgi": true,
+    "cloudShadows": true,
+    "temporal": true,
+    "maxShadowLights": 4
+  },
+  "audio": {
+    "masterGainDb": -3,
+    "loudnessTargetLufs": -16,
+    "emitters": [
+      {
+        "id": "warehouse-lamp",
+        "entity": "f0900000-0000-4000-8000-0000000000dc",
+        "sound": "fogtown/power",
+        "trigger": "ambient",
+        "bus": "ambience",
+        "gainDb": -9,
+        "minDistance": 2.5,
+        "maxDistance": 26,
+        "loop": true,
+        "occlusion": true
+      },
+      {
+        "id": "warehouse-door",
+        "entity": "f0900000-0000-4000-8000-0000000000d4",
+        "sound": "fogtown/door",
+        "trigger": "door-open",
+        "bus": "sfx",
+        "gainDb": 0,
+        "minDistance": 1.5,
+        "maxDistance": 34,
+        "occlusion": true
+      },
+      {
+        "id": "spare-key",
+        "entity": "f0900000-0000-4000-8000-0000000000dd",
+        "sound": "fogtown/power",
+        "trigger": "key",
+        "bus": "ui",
+        "gainDb": -4,
+        "minDistance": 1,
+        "maxDistance": 20,
+        "occlusion": false
+      },
+      {
+        "id": "signal-gate",
+        "entity": "f0900000-0000-4000-8000-0000000000fb",
+        "sound": "fogtown/complete",
+        "trigger": "complete",
+        "bus": "music",
+        "gainDb": -2,
+        "minDistance": 1.5,
+        "maxDistance": 60,
+        "occlusion": false
+      },
+      {
+        "id": "main-street-blast",
+        "entity": "f0900000-0000-4000-8000-000000000004",
+        "sound": "fogtown/blast",
+        "trigger": "blast",
+        "bus": "sfx",
+        "gainDb": -2,
+        "minDistance": 2,
+        "maxDistance": 48,
+        "occlusion": true
+      },
+      {
+        "id": "main-street-shot",
+        "entity": "f0900000-0000-4000-8000-000000000004",
+        "sound": "fogtown/fail",
+        "trigger": "fire",
+        "bus": "sfx",
+        "gainDb": -6,
+        "minDistance": 2,
+        "maxDistance": 40,
+        "occlusion": true
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "f0900000-0000-4000-8000-000000000003",
+      "name": "雾镇地基",
+      "kind": "ground",
+      "position": [
+        0,
+        -0.3,
+        -22
+      ],
+      "scale": [
+        40,
+        0.6,
+        100
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "grass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000004",
+      "name": "湿石主街",
+      "kind": "prop",
+      "position": [
+        0,
+        0.025,
+        -22
+      ],
+      "scale": [
+        10,
+        0.05,
+        86
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "cobble"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000005",
+      "name": "人行道 -1",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.08,
+        -22
+      ],
+      "scale": [
+        2,
+        0.16,
+        86
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000006",
+      "name": "边界围墙 -1",
+      "kind": "wall",
+      "position": [
+        -19,
+        2,
+        -22
+      ],
+      "scale": [
+        0.5,
+        4,
+        100
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000007",
+      "name": "人行道 1",
+      "kind": "prop",
+      "position": [
+        6,
+        0.08,
+        -22
+      ],
+      "scale": [
+        2,
+        0.16,
+        86
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000008",
+      "name": "边界围墙 1",
+      "kind": "wall",
+      "position": [
+        19,
+        2,
+        -22
+      ],
+      "scale": [
+        0.5,
+        4,
+        100
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000009",
+      "name": "镇口封闭护栏",
+      "kind": "prop",
+      "position": [
+        0,
+        1.1,
+        18
+      ],
+      "scale": [
+        38,
+        2.2,
+        0.4
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000000a",
+      "name": "塔后围墙",
+      "kind": "prop",
+      "position": [
+        0,
+        2,
+        -65
+      ],
+      "scale": [
+        38,
+        4,
+        0.5
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000001",
+      "name": "player",
+      "kind": "player",
+      "position": [
+        0,
+        0,
+        12
+      ],
+      "scale": [
+        0.6,
+        1.8,
+        0.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "flat",
+      "components": {
+        "camera": {
+          "mode": "firstPerson",
+          "eyeHeight": 1.64,
+          "fov": 1.15,
+          "worldExtent": 90
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000002",
+      "name": "quest",
+      "kind": "prop",
+      "position": [
+        0,
+        -3,
+        0
+      ],
+      "scale": [
+        0.01,
+        0.01,
+        0.01
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "flat",
+      "components": {
+        "renderable": {
+          "enabled": false
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/quest",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "rubble": [
+                  "f0900000-0000-4000-8000-00000000000b",
+                  "f0900000-0000-4000-8000-00000000000c",
+                  "f0900000-0000-4000-8000-00000000000d"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000000e",
+      "name": "西街-16 主体",
+      "kind": "wall",
+      "position": [
+        -12,
+        3.25,
+        -16
+      ],
+      "scale": [
+        8,
+        6.5,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000000f",
+      "name": "西街-16 台基",
+      "kind": "prop",
+      "position": [
+        -12,
+        0.25,
+        -16
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000010",
+      "name": "西街-16 檐口",
+      "kind": "prop",
+      "position": [
+        -12,
+        6.65,
+        -16
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000011",
+      "name": "西街-16 屋顶 0",
+      "kind": "prop",
+      "position": [
+        -12,
+        6.9,
+        -16
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000012",
+      "name": "西街-16 屋顶 1",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.220000000000001,
+        -16
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000013",
+      "name": "西街-16 屋顶 2",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.54,
+        -16
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000014",
+      "name": "西街-16 屋顶 3",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.86,
+        -16
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000015",
+      "name": "西街-16 烟囱",
+      "kind": "prop",
+      "position": [
+        -10,
+        7.5,
+        -18
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000016",
+      "name": "西街-16 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -18.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000017",
+      "name": "西街-16 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -18.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000018",
+      "name": "西街-16 窗框 00",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -16
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000019",
+      "name": "西街-16 玻璃 00",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -16
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000001a",
+      "name": "西街-16 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -13.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000001b",
+      "name": "西街-16 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -13.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000001c",
+      "name": "西街-16 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -18.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000001d",
+      "name": "西街-16 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -18.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000001e",
+      "name": "西街-16 窗框 10",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -16
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000001f",
+      "name": "西街-16 玻璃 10",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -16
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000020",
+      "name": "西街-16 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -13.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000021",
+      "name": "西街-16 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -13.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000022",
+      "name": "西街-32 主体",
+      "kind": "wall",
+      "position": [
+        -12,
+        3.25,
+        -32
+      ],
+      "scale": [
+        8,
+        6.5,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000023",
+      "name": "西街-32 台基",
+      "kind": "prop",
+      "position": [
+        -12,
+        0.25,
+        -32
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000024",
+      "name": "西街-32 檐口",
+      "kind": "prop",
+      "position": [
+        -12,
+        6.65,
+        -32
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000025",
+      "name": "西街-32 屋顶 0",
+      "kind": "prop",
+      "position": [
+        -12,
+        6.9,
+        -32
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000026",
+      "name": "西街-32 屋顶 1",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.220000000000001,
+        -32
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000027",
+      "name": "西街-32 屋顶 2",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.54,
+        -32
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000028",
+      "name": "西街-32 屋顶 3",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.86,
+        -32
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000029",
+      "name": "西街-32 烟囱",
+      "kind": "prop",
+      "position": [
+        -10,
+        7.5,
+        -34
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000002a",
+      "name": "西街-32 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -34.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000002b",
+      "name": "西街-32 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -34.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000002c",
+      "name": "西街-32 窗框 00",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -32
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000002d",
+      "name": "西街-32 玻璃 00",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -32
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000002e",
+      "name": "西街-32 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -29.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000002f",
+      "name": "西街-32 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -29.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000030",
+      "name": "西街-32 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -34.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000031",
+      "name": "西街-32 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -34.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000032",
+      "name": "西街-32 窗框 10",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -32
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000033",
+      "name": "西街-32 玻璃 10",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -32
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000034",
+      "name": "西街-32 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -29.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000035",
+      "name": "西街-32 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -29.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000036",
+      "name": "西街-43 主体",
+      "kind": "wall",
+      "position": [
+        -12,
+        4.5,
+        -43
+      ],
+      "scale": [
+        8,
+        9,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000037",
+      "name": "西街-43 台基",
+      "kind": "prop",
+      "position": [
+        -12,
+        0.25,
+        -43
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000038",
+      "name": "西街-43 檐口",
+      "kind": "prop",
+      "position": [
+        -12,
+        9.15,
+        -43
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000039",
+      "name": "西街-43 屋顶 0",
+      "kind": "prop",
+      "position": [
+        -12,
+        9.4,
+        -43
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000003a",
+      "name": "西街-43 屋顶 1",
+      "kind": "prop",
+      "position": [
+        -12,
+        9.72,
+        -43
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000003b",
+      "name": "西街-43 屋顶 2",
+      "kind": "prop",
+      "position": [
+        -12,
+        10.040000000000001,
+        -43
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000003c",
+      "name": "西街-43 屋顶 3",
+      "kind": "prop",
+      "position": [
+        -12,
+        10.36,
+        -43
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000003d",
+      "name": "西街-43 烟囱",
+      "kind": "prop",
+      "position": [
+        -10,
+        10,
+        -45
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000003e",
+      "name": "西街-43 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -45.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000003f",
+      "name": "西街-43 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -45.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000040",
+      "name": "西街-43 窗框 00",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -43
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000041",
+      "name": "西街-43 玻璃 00",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -43
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000042",
+      "name": "西街-43 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -40.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000043",
+      "name": "西街-43 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -40.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000044",
+      "name": "西街-43 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -45.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000045",
+      "name": "西街-43 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -45.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000046",
+      "name": "西街-43 窗框 10",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -43
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000047",
+      "name": "西街-43 玻璃 10",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -43
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000048",
+      "name": "西街-43 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -40.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000049",
+      "name": "西街-43 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -40.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000004a",
+      "name": "西街-56 主体",
+      "kind": "wall",
+      "position": [
+        -12,
+        3.25,
+        -56
+      ],
+      "scale": [
+        8,
+        6.5,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000004b",
+      "name": "西街-56 台基",
+      "kind": "prop",
+      "position": [
+        -12,
+        0.25,
+        -56
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000004c",
+      "name": "西街-56 檐口",
+      "kind": "prop",
+      "position": [
+        -12,
+        6.65,
+        -56
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000004d",
+      "name": "西街-56 屋顶 0",
+      "kind": "prop",
+      "position": [
+        -12,
+        6.9,
+        -56
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000004e",
+      "name": "西街-56 屋顶 1",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.220000000000001,
+        -56
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000004f",
+      "name": "西街-56 屋顶 2",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.54,
+        -56
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000050",
+      "name": "西街-56 屋顶 3",
+      "kind": "prop",
+      "position": [
+        -12,
+        7.86,
+        -56
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000051",
+      "name": "西街-56 烟囱",
+      "kind": "prop",
+      "position": [
+        -10,
+        7.5,
+        -58
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000052",
+      "name": "西街-56 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -58.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000053",
+      "name": "西街-56 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -58.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000054",
+      "name": "西街-56 窗框 00",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -56
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000055",
+      "name": "西街-56 玻璃 00",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -56
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000056",
+      "name": "西街-56 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        1.7,
+        -53.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000057",
+      "name": "西街-56 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        1.7,
+        -53.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000058",
+      "name": "西街-56 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -58.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000059",
+      "name": "西街-56 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -58.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000005a",
+      "name": "西街-56 窗框 10",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -56
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000005b",
+      "name": "西街-56 玻璃 10",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -56
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000005c",
+      "name": "西街-56 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        -7.96,
+        4.2,
+        -53.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000005d",
+      "name": "西街-56 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        -7.9,
+        4.2,
+        -53.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000005e",
+      "name": "东街6 主体",
+      "kind": "wall",
+      "position": [
+        12,
+        3.25,
+        6
+      ],
+      "scale": [
+        8,
+        6.5,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "plaster"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000005f",
+      "name": "东街6 台基",
+      "kind": "prop",
+      "position": [
+        12,
+        0.25,
+        6
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000060",
+      "name": "东街6 檐口",
+      "kind": "prop",
+      "position": [
+        12,
+        6.65,
+        6
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000061",
+      "name": "东街6 屋顶 0",
+      "kind": "prop",
+      "position": [
+        12,
+        6.9,
+        6
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000062",
+      "name": "东街6 屋顶 1",
+      "kind": "prop",
+      "position": [
+        12,
+        7.220000000000001,
+        6
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000063",
+      "name": "东街6 屋顶 2",
+      "kind": "prop",
+      "position": [
+        12,
+        7.54,
+        6
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000064",
+      "name": "东街6 屋顶 3",
+      "kind": "prop",
+      "position": [
+        12,
+        7.86,
+        6
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000065",
+      "name": "东街6 烟囱",
+      "kind": "prop",
+      "position": [
+        14,
+        7.5,
+        4
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000066",
+      "name": "东街6 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        3.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000067",
+      "name": "东街6 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        3.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000068",
+      "name": "东街6 窗框 00",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000069",
+      "name": "东街6 玻璃 00",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000006a",
+      "name": "东街6 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        8.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000006b",
+      "name": "东街6 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        8.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000006c",
+      "name": "东街6 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        3.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000006d",
+      "name": "东街6 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        3.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000006e",
+      "name": "东街6 窗框 10",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000006f",
+      "name": "东街6 玻璃 10",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000070",
+      "name": "东街6 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        8.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000071",
+      "name": "东街6 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        8.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000072",
+      "name": "东街-16 主体",
+      "kind": "wall",
+      "position": [
+        12,
+        3.25,
+        -16
+      ],
+      "scale": [
+        8,
+        6.5,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000073",
+      "name": "东街-16 台基",
+      "kind": "prop",
+      "position": [
+        12,
+        0.25,
+        -16
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000074",
+      "name": "东街-16 檐口",
+      "kind": "prop",
+      "position": [
+        12,
+        6.65,
+        -16
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000075",
+      "name": "东街-16 屋顶 0",
+      "kind": "prop",
+      "position": [
+        12,
+        6.9,
+        -16
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000076",
+      "name": "东街-16 屋顶 1",
+      "kind": "prop",
+      "position": [
+        12,
+        7.220000000000001,
+        -16
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000077",
+      "name": "东街-16 屋顶 2",
+      "kind": "prop",
+      "position": [
+        12,
+        7.54,
+        -16
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000078",
+      "name": "东街-16 屋顶 3",
+      "kind": "prop",
+      "position": [
+        12,
+        7.86,
+        -16
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000079",
+      "name": "东街-16 烟囱",
+      "kind": "prop",
+      "position": [
+        14,
+        7.5,
+        -18
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000007a",
+      "name": "东街-16 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -18.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000007b",
+      "name": "东街-16 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -18.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000007c",
+      "name": "东街-16 窗框 00",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -16
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000007d",
+      "name": "东街-16 玻璃 00",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -16
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000007e",
+      "name": "东街-16 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -13.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000007f",
+      "name": "东街-16 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -13.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000080",
+      "name": "东街-16 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -18.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000081",
+      "name": "东街-16 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -18.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000082",
+      "name": "东街-16 窗框 10",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -16
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000083",
+      "name": "东街-16 玻璃 10",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -16
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000084",
+      "name": "东街-16 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -13.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000085",
+      "name": "东街-16 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -13.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000086",
+      "name": "东街-32 主体",
+      "kind": "wall",
+      "position": [
+        12,
+        3.25,
+        -32
+      ],
+      "scale": [
+        8,
+        6.5,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000087",
+      "name": "东街-32 台基",
+      "kind": "prop",
+      "position": [
+        12,
+        0.25,
+        -32
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000088",
+      "name": "东街-32 檐口",
+      "kind": "prop",
+      "position": [
+        12,
+        6.65,
+        -32
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000089",
+      "name": "东街-32 屋顶 0",
+      "kind": "prop",
+      "position": [
+        12,
+        6.9,
+        -32
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000008a",
+      "name": "东街-32 屋顶 1",
+      "kind": "prop",
+      "position": [
+        12,
+        7.220000000000001,
+        -32
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000008b",
+      "name": "东街-32 屋顶 2",
+      "kind": "prop",
+      "position": [
+        12,
+        7.54,
+        -32
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000008c",
+      "name": "东街-32 屋顶 3",
+      "kind": "prop",
+      "position": [
+        12,
+        7.86,
+        -32
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000008d",
+      "name": "东街-32 烟囱",
+      "kind": "prop",
+      "position": [
+        14,
+        7.5,
+        -34
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000008e",
+      "name": "东街-32 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -34.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000008f",
+      "name": "东街-32 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -34.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000090",
+      "name": "东街-32 窗框 00",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -32
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000091",
+      "name": "东街-32 玻璃 00",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -32
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000092",
+      "name": "东街-32 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -29.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000093",
+      "name": "东街-32 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -29.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000094",
+      "name": "东街-32 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -34.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000095",
+      "name": "东街-32 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -34.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000096",
+      "name": "东街-32 窗框 10",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -32
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000097",
+      "name": "东街-32 玻璃 10",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -32
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000098",
+      "name": "东街-32 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -29.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000099",
+      "name": "东街-32 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -29.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000009a",
+      "name": "东街-43 主体",
+      "kind": "wall",
+      "position": [
+        12,
+        4.5,
+        -43
+      ],
+      "scale": [
+        8,
+        9,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000009b",
+      "name": "东街-43 台基",
+      "kind": "prop",
+      "position": [
+        12,
+        0.25,
+        -43
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000009c",
+      "name": "东街-43 檐口",
+      "kind": "prop",
+      "position": [
+        12,
+        9.15,
+        -43
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000009d",
+      "name": "东街-43 屋顶 0",
+      "kind": "prop",
+      "position": [
+        12,
+        9.4,
+        -43
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000009e",
+      "name": "东街-43 屋顶 1",
+      "kind": "prop",
+      "position": [
+        12,
+        9.72,
+        -43
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000009f",
+      "name": "东街-43 屋顶 2",
+      "kind": "prop",
+      "position": [
+        12,
+        10.040000000000001,
+        -43
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a0",
+      "name": "东街-43 屋顶 3",
+      "kind": "prop",
+      "position": [
+        12,
+        10.36,
+        -43
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a1",
+      "name": "东街-43 烟囱",
+      "kind": "prop",
+      "position": [
+        14,
+        10,
+        -45
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a2",
+      "name": "东街-43 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -45.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a3",
+      "name": "东街-43 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -45.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a4",
+      "name": "东街-43 窗框 00",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -43
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a5",
+      "name": "东街-43 玻璃 00",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -43
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a6",
+      "name": "东街-43 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -40.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a7",
+      "name": "东街-43 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -40.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a8",
+      "name": "东街-43 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -45.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000a9",
+      "name": "东街-43 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -45.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000aa",
+      "name": "东街-43 窗框 10",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -43
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ab",
+      "name": "东街-43 玻璃 10",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -43
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ac",
+      "name": "东街-43 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -40.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ad",
+      "name": "东街-43 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -40.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ae",
+      "name": "东街-56 主体",
+      "kind": "wall",
+      "position": [
+        12,
+        3.25,
+        -56
+      ],
+      "scale": [
+        8,
+        6.5,
+        8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_red"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000af",
+      "name": "东街-56 台基",
+      "kind": "prop",
+      "position": [
+        12,
+        0.25,
+        -56
+      ],
+      "scale": [
+        8.2,
+        0.5,
+        8.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b0",
+      "name": "东街-56 檐口",
+      "kind": "prop",
+      "position": [
+        12,
+        6.65,
+        -56
+      ],
+      "scale": [
+        8.8,
+        0.3,
+        8.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b1",
+      "name": "东街-56 屋顶 0",
+      "kind": "prop",
+      "position": [
+        12,
+        6.9,
+        -56
+      ],
+      "scale": [
+        8.6,
+        0.34,
+        8.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b2",
+      "name": "东街-56 屋顶 1",
+      "kind": "prop",
+      "position": [
+        12,
+        7.220000000000001,
+        -56
+      ],
+      "scale": [
+        7.699999999999999,
+        0.34,
+        7.699999999999999
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b3",
+      "name": "东街-56 屋顶 2",
+      "kind": "prop",
+      "position": [
+        12,
+        7.54,
+        -56
+      ],
+      "scale": [
+        6.8,
+        0.34,
+        6.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b4",
+      "name": "东街-56 屋顶 3",
+      "kind": "prop",
+      "position": [
+        12,
+        7.86,
+        -56
+      ],
+      "scale": [
+        5.8999999999999995,
+        0.34,
+        5.8999999999999995
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b5",
+      "name": "东街-56 烟囱",
+      "kind": "prop",
+      "position": [
+        14,
+        7.5,
+        -58
+      ],
+      "scale": [
+        0.6,
+        2,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b6",
+      "name": "东街-56 窗框 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -58.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b7",
+      "name": "东街-56 玻璃 0-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -58.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b8",
+      "name": "东街-56 窗框 00",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -56
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000b9",
+      "name": "东街-56 玻璃 00",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -56
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ba",
+      "name": "东街-56 窗框 02.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        1.7,
+        -53.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000bb",
+      "name": "东街-56 玻璃 02.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        1.7,
+        -53.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000bc",
+      "name": "东街-56 窗框 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -58.4
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000bd",
+      "name": "东街-56 玻璃 1-2.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -58.4
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000be",
+      "name": "东街-56 窗框 10",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -56
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000bf",
+      "name": "东街-56 玻璃 10",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -56
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c0",
+      "name": "东街-56 窗框 12.4",
+      "kind": "prop",
+      "position": [
+        7.96,
+        4.2,
+        -53.6
+      ],
+      "scale": [
+        0.16,
+        1.55,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c1",
+      "name": "东街-56 玻璃 12.4",
+      "kind": "prop",
+      "position": [
+        7.9,
+        4.2,
+        -53.6
+      ],
+      "scale": [
+        0.13,
+        1.3,
+        1.02
+      ],
+      "color": [
+        0.045,
+        0.09,
+        0.11
+      ],
+      "collider": false,
+      "material": "dark_glass"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c2",
+      "name": "值守亭 背墙",
+      "kind": "prop",
+      "position": [
+        0,
+        1.7,
+        5.8
+      ],
+      "scale": [
+        4,
+        3.4,
+        0.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c3",
+      "name": "值守亭 顶棚",
+      "kind": "prop",
+      "position": [
+        0,
+        3.5,
+        7
+      ],
+      "scale": [
+        4.7,
+        0.25,
+        3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c4",
+      "name": "值守亭 立柱 -1.9",
+      "kind": "prop",
+      "position": [
+        -1.9,
+        1.7,
+        7
+      ],
+      "scale": [
+        0.18,
+        3.4,
+        0.18
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c5",
+      "name": "值守亭 立柱 1.9",
+      "kind": "prop",
+      "position": [
+        1.9,
+        1.7,
+        7
+      ],
+      "scale": [
+        0.18,
+        3.4,
+        0.18
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c6",
+      "name": "值守员",
+      "kind": "prop",
+      "position": [
+        0,
+        1.1,
+        8
+      ],
+      "scale": [
+        0.65,
+        1.15,
+        0.4
+      ],
+      "color": [
+        0.12,
+        0.32,
+        0.36
+      ],
+      "collider": false,
+      "material": "flat",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "与值守员交谈"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "briefing",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c7",
+      "name": "值守员 头部",
+      "kind": "prop",
+      "position": [
+        0,
+        1.88,
+        8
+      ],
+      "scale": [
+        0.42,
+        0.42,
+        0.42
+      ],
+      "color": [
+        0.76,
+        0.59,
+        0.43
+      ],
+      "collider": false,
+      "material": "flat"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c8",
+      "name": "值守员 帽檐",
+      "kind": "prop",
+      "position": [
+        0,
+        2.12,
+        8
+      ],
+      "scale": [
+        0.54,
+        0.13,
+        0.48
+      ],
+      "color": [
+        0.15,
+        0.24,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000c9",
+      "name": "值守员 腿 -0.18",
+      "kind": "prop",
+      "position": [
+        -0.18,
+        0.35,
+        8
+      ],
+      "scale": [
+        0.22,
+        0.7,
+        0.28
+      ],
+      "color": [
+        0.09,
+        0.16,
+        0.2
+      ],
+      "collider": false,
+      "material": "flat"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ca",
+      "name": "值守员 腿 0.18",
+      "kind": "prop",
+      "position": [
+        0.18,
+        0.35,
+        8
+      ],
+      "scale": [
+        0.22,
+        0.7,
+        0.28
+      ],
+      "color": [
+        0.09,
+        0.16,
+        0.2
+      ],
+      "collider": false,
+      "material": "flat"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000cb",
+      "name": "值守亭灯",
+      "kind": "light",
+      "position": [
+        0,
+        3,
+        7.6
+      ],
+      "scale": [
+        0.3,
+        0.25,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "lamp",
+      "light": {
+        "color": [
+          1,
+          0.65,
+          0.3
+        ],
+        "intensity": 8,
+        "range": 9
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000cc",
+      "name": "仓库侧墙 -11",
+      "kind": "wall",
+      "position": [
+        -11,
+        1.9,
+        -6.8
+      ],
+      "scale": [
+        0.3,
+        3.8,
+        12.4
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000cd",
+      "name": "仓库侧墙 -5",
+      "kind": "wall",
+      "position": [
+        -5,
+        1.9,
+        -6.8
+      ],
+      "scale": [
+        0.3,
+        3.8,
+        12.4
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ce",
+      "name": "仓库后墙",
+      "kind": "wall",
+      "position": [
+        -8,
+        1.9,
+        -13
+      ],
+      "scale": [
+        6,
+        3.8,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000cf",
+      "name": "仓库前墙 -10.2",
+      "kind": "wall",
+      "position": [
+        -10.2,
+        1.9,
+        -1
+      ],
+      "scale": [
+        1.6,
+        3.8,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d0",
+      "name": "仓库前墙 -5.8",
+      "kind": "wall",
+      "position": [
+        -5.8,
+        1.9,
+        -1
+      ],
+      "scale": [
+        1.6,
+        3.8,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d1",
+      "name": "仓库门楣",
+      "kind": "prop",
+      "position": [
+        -8,
+        3.3,
+        -1
+      ],
+      "scale": [
+        2.8,
+        1,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d2",
+      "name": "仓库屋面",
+      "kind": "prop",
+      "position": [
+        -8,
+        4,
+        -7
+      ],
+      "scale": [
+        6.5,
+        0.3,
+        12.7
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "roof_tile"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d3",
+      "name": "仓库地面",
+      "kind": "prop",
+      "position": [
+        -8,
+        0.02,
+        -7
+      ],
+      "scale": [
+        6,
+        0.04,
+        12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d4",
+      "name": "仓库正门",
+      "kind": "door",
+      "position": [
+        -8,
+        1.4,
+        -1
+      ],
+      "scale": [
+        2.8,
+        2.8,
+        0.22
+      ],
+      "color": [
+        0.35,
+        0.48,
+        0.53
+      ],
+      "collider": true,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "用钥匙打开 仓库正门"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/door",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "item": "warehouse_key",
+                "message": "仓库已打开。把右侧木箱推到黄色压力板上。",
+                "lockedMessage": "仓库上锁了，先向镇口值守员领取钥匙。"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d5",
+      "name": "后室闸门",
+      "kind": "door",
+      "position": [
+        -8,
+        1.4,
+        -9.3
+      ],
+      "scale": [
+        2.5,
+        2.8,
+        0.2
+      ],
+      "color": [
+        0.35,
+        0.48,
+        0.53
+      ],
+      "collider": true,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "检查 后室闸门"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/door",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "plate",
+                "lockedMessage": "将木箱推上黄色压力板，两道闸门会同时打开。"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d6",
+      "name": "侧窗闸门",
+      "kind": "door",
+      "position": [
+        -10.2,
+        1.4,
+        -9.3
+      ],
+      "scale": [
+        1.4,
+        2.8,
+        0.2
+      ],
+      "color": [
+        0.35,
+        0.48,
+        0.53
+      ],
+      "collider": true,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "检查 侧窗闸门"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/door",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "plate",
+                "lockedMessage": "与后室闸门共用压力板。"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d7",
+      "name": "后室隔墙",
+      "kind": "prop",
+      "position": [
+        -5.6,
+        1.6,
+        -9.3
+      ],
+      "scale": [
+        1.2,
+        3.2,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d8",
+      "name": "仓库木箱",
+      "kind": "prop",
+      "position": [
+        -6.6,
+        0.6,
+        -4.7
+      ],
+      "scale": [
+        1.1,
+        1.2,
+        1.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood",
+      "physics": {
+        "mode": "dynamic",
+        "mass": 9,
+        "friction": 0.5,
+        "restitution": 0
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000d9",
+      "name": "黄色压力板",
+      "kind": "prop",
+      "position": [
+        -6.6,
+        0.045,
+        -7.8
+      ],
+      "scale": [
+        1.65,
+        0.09,
+        1.65
+      ],
+      "color": [
+        1,
+        0.66,
+        0.12
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/plate",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "weights": [
+                  "f0900000-0000-4000-8000-0000000000d8"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000da",
+      "name": "维修工具箱",
+      "kind": "prop",
+      "position": [
+        -8,
+        1,
+        -11
+      ],
+      "scale": [
+        0.8,
+        0.45,
+        0.5
+      ],
+      "color": [
+        0.95,
+        0.53,
+        0.12
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "拿取维修工具"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "tool",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000db",
+      "name": "工具台",
+      "kind": "prop",
+      "position": [
+        -8,
+        0.6,
+        -11
+      ],
+      "scale": [
+        1.8,
+        0.75,
+        0.8
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000dc",
+      "name": "仓库工作灯",
+      "kind": "light",
+      "position": [
+        -8,
+        3.3,
+        -6
+      ],
+      "scale": [
+        0.3,
+        0.25,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "lamp",
+      "light": {
+        "color": [
+          0.65,
+          0.78,
+          1
+        ],
+        "intensity": 5,
+        "range": 8
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000dd",
+      "name": "备用钥匙",
+      "kind": "key",
+      "position": [
+        -9.8,
+        0.8,
+        -11
+      ],
+      "scale": [
+        0.15,
+        0.3,
+        0.15
+      ],
+      "color": [
+        0.4,
+        0.8,
+        1
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "拾取备用钥匙"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "cache",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000de",
+      "name": "维修柜",
+      "kind": "door",
+      "position": [
+        5.5,
+        1,
+        -37
+      ],
+      "scale": [
+        1.2,
+        2,
+        0.6
+      ],
+      "color": [
+        0.35,
+        0.48,
+        0.53
+      ],
+      "collider": true,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "用钥匙打开 维修柜"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/door",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "item": "service_key",
+                "message": "备用维修柜已开启。供能线索：水井、钟楼、风车。",
+                "lockedMessage": "这把锁需要仓库后室的备用钥匙。"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000000b",
+      "name": "塌方 西",
+      "kind": "prop",
+      "position": [
+        -3.2,
+        0.85,
+        -23
+      ],
+      "scale": [
+        3.15,
+        1.7,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey",
+      "physics": {
+        "mode": "static",
+        "mass": 45,
+        "friction": 0.65,
+        "restitution": 0.04
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 8,
+        "fragments": 7,
+        "debrisLifetime": 9,
+        "structural": false,
+        "seed": 21
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000000c",
+      "name": "塌方 中",
+      "kind": "prop",
+      "position": [
+        0,
+        0.85,
+        -23
+      ],
+      "scale": [
+        3.15,
+        1.7,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey",
+      "physics": {
+        "mode": "static",
+        "mass": 45,
+        "friction": 0.65,
+        "restitution": 0.04
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 8,
+        "fragments": 7,
+        "debrisLifetime": 9,
+        "structural": false,
+        "seed": 21
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000000d",
+      "name": "塌方 东",
+      "kind": "prop",
+      "position": [
+        3.2,
+        0.85,
+        -23
+      ],
+      "scale": [
+        3.15,
+        1.7,
+        0.65
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey",
+      "physics": {
+        "mode": "static",
+        "mass": 45,
+        "friction": 0.65,
+        "restitution": 0.04
+      },
+      "destructible": {
+        "enabled": true,
+        "strength": 8,
+        "fragments": 7,
+        "debrisLifetime": 9,
+        "structural": false,
+        "seed": 21
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000df",
+      "name": "维修院横墙 -1",
+      "kind": "prop",
+      "position": [
+        -12,
+        1.8,
+        -23
+      ],
+      "scale": [
+        14,
+        3.6,
+        0.45
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e0",
+      "name": "维修院横墙 1",
+      "kind": "prop",
+      "position": [
+        12,
+        1.8,
+        -23
+      ],
+      "scale": [
+        14,
+        3.6,
+        0.45
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "brick_grey"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e1",
+      "name": "受控爆破起爆器",
+      "kind": "prop",
+      "position": [
+        3.5,
+        1,
+        -20
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        0.78,
+        0.14,
+        0.08
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "使用维修工具 · 受控爆破"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "demolish",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e2",
+      "name": "供能发电机",
+      "kind": "prop",
+      "position": [
+        -3,
+        1,
+        -28
+      ],
+      "scale": [
+        1.5,
+        1.8,
+        0.9
+      ],
+      "color": [
+        0.22,
+        0.48,
+        0.38
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "修复供能发电机"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "repair",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e3",
+      "name": "发电机散热片 0",
+      "kind": "prop",
+      "position": [
+        -3,
+        1.1,
+        -27.52
+      ],
+      "scale": [
+        1.25,
+        0.12,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e4",
+      "name": "发电机散热片 1",
+      "kind": "prop",
+      "position": [
+        -3,
+        1.1,
+        -27.52
+      ],
+      "scale": [
+        1.25,
+        0.12,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e5",
+      "name": "发电机散热片 2",
+      "kind": "prop",
+      "position": [
+        -3,
+        1.1,
+        -27.52
+      ],
+      "scale": [
+        1.25,
+        0.12,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e6",
+      "name": "发电机排气管",
+      "kind": "prop",
+      "position": [
+        -3.6,
+        2.3,
+        -28
+      ],
+      "scale": [
+        0.18,
+        1,
+        0.18
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e7",
+      "name": "发电机状态灯",
+      "kind": "prop",
+      "position": [
+        -3,
+        2.15,
+        -28
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        0.22,
+        1,
+        0.53
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            0.22,
+            1,
+            0.53
+          ],
+          "intensity": 6,
+          "range": 8
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "repaired"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e8",
+      "name": "广场铺装",
+      "kind": "prop",
+      "position": [
+        0,
+        0.04,
+        -36
+      ],
+      "scale": [
+        14,
+        0.08,
+        13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000e9",
+      "name": "水井 节点台座",
+      "kind": "prop",
+      "position": [
+        -3.6,
+        0.25,
+        -35
+      ],
+      "scale": [
+        1.5,
+        0.5,
+        1.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ea",
+      "name": "水井 供能节点",
+      "kind": "prop",
+      "position": [
+        -3.6,
+        1.1,
+        -35
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        0.15,
+        0.55,
+        1
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "启动 水井 节点"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "node",
+                "value": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000eb",
+      "name": "水井 节点灯",
+      "kind": "prop",
+      "position": [
+        -3.6,
+        2,
+        -35
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        0.15,
+        0.55,
+        1
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            0.15,
+            0.55,
+            1
+          ],
+          "intensity": 12,
+          "range": 10
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "node2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ec",
+      "name": "水井井沿",
+      "kind": "prop",
+      "position": [
+        -3.6,
+        0.6,
+        -36.8
+      ],
+      "scale": [
+        2,
+        0.45,
+        1.6
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ed",
+      "name": "井水",
+      "kind": "prop",
+      "position": [
+        -3.6,
+        0.84,
+        -36.8
+      ],
+      "scale": [
+        1.55,
+        0.04,
+        1.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "water"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ee",
+      "name": "钟楼 节点台座",
+      "kind": "prop",
+      "position": [
+        0,
+        0.25,
+        -38
+      ],
+      "scale": [
+        1.5,
+        0.5,
+        1.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ef",
+      "name": "钟楼 供能节点",
+      "kind": "prop",
+      "position": [
+        0,
+        1.1,
+        -38
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        1,
+        0.63,
+        0.17
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "启动 钟楼 节点"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "node",
+                "value": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f0",
+      "name": "钟楼 节点灯",
+      "kind": "prop",
+      "position": [
+        0,
+        2,
+        -38
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.63,
+        0.17
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.63,
+            0.17
+          ],
+          "intensity": 12,
+          "range": 10
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "node1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f1",
+      "name": "钟楼支架",
+      "kind": "prop",
+      "position": [
+        0,
+        3.5,
+        -39.2
+      ],
+      "scale": [
+        0.3,
+        7,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f2",
+      "name": "钟体",
+      "kind": "prop",
+      "position": [
+        0,
+        5.9,
+        -39.2
+      ],
+      "scale": [
+        1.1,
+        1.3,
+        0.7
+      ],
+      "color": [
+        0.78,
+        0.53,
+        0.17
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f3",
+      "name": "风车 节点台座",
+      "kind": "prop",
+      "position": [
+        3.6,
+        0.25,
+        -35
+      ],
+      "scale": [
+        1.5,
+        0.5,
+        1.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "stone"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f4",
+      "name": "风车 供能节点",
+      "kind": "prop",
+      "position": [
+        3.6,
+        1.1,
+        -35
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        0.25,
+        1,
+        0.55
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "启动 风车 节点"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "node",
+                "value": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f5",
+      "name": "风车 节点灯",
+      "kind": "prop",
+      "position": [
+        3.6,
+        2,
+        -35
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        0.25,
+        1,
+        0.55
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            0.25,
+            1,
+            0.55
+          ],
+          "intensity": 12,
+          "range": 10
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "node3"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f6",
+      "name": "风车立柱",
+      "kind": "prop",
+      "position": [
+        3.6,
+        2,
+        -36.6
+      ],
+      "scale": [
+        0.2,
+        4,
+        0.2
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f7",
+      "name": "风车横叶",
+      "kind": "prop",
+      "position": [
+        3.6,
+        3.8,
+        -36.6
+      ],
+      "scale": [
+        2.3,
+        0.18,
+        0.15
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f8",
+      "name": "风车竖叶",
+      "kind": "prop",
+      "position": [
+        3.6,
+        3.8,
+        -36.6
+      ],
+      "scale": [
+        0.18,
+        2.3,
+        0.15
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000f9",
+      "name": "信号塔围栏 -1",
+      "kind": "prop",
+      "position": [
+        -11,
+        1.5,
+        -43
+      ],
+      "scale": [
+        16,
+        3,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000fa",
+      "name": "信号塔围栏 1",
+      "kind": "prop",
+      "position": [
+        11,
+        1.5,
+        -43
+      ],
+      "scale": [
+        16,
+        3,
+        0.3
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000fb",
+      "name": "信号塔闸门",
+      "kind": "door",
+      "position": [
+        0,
+        1.4,
+        -43
+      ],
+      "scale": [
+        6,
+        2.8,
+        0.25
+      ],
+      "color": [
+        0.35,
+        0.48,
+        0.53
+      ],
+      "collider": true,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "检查 信号塔闸门"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/door",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "square",
+                "lockedMessage": "广场的三个供能节点全部接通后，信号塔自动解锁。"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000fc",
+      "name": "信号塔启动控制台",
+      "kind": "prop",
+      "position": [
+        0,
+        1,
+        -46
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        0.25,
+        0.66,
+        0.72
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "启动 45 秒中继连接"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "start",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000fd",
+      "name": "西侧中继",
+      "kind": "prop",
+      "position": [
+        -4,
+        1,
+        -49
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        1,
+        0.58,
+        0.2
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "连接西侧中继"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "relay",
+                "value": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000fe",
+      "name": "东侧中继",
+      "kind": "prop",
+      "position": [
+        4,
+        1,
+        -52
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        0.15,
+        0.65,
+        1
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "连接东侧中继"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "relay",
+                "value": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-0000000000ff",
+      "name": "塔基发射终端",
+      "kind": "prop",
+      "position": [
+        0,
+        1,
+        -57
+      ],
+      "scale": [
+        0.65,
+        1.25,
+        0.55
+      ],
+      "color": [
+        0.3,
+        0.9,
+        0.6
+      ],
+      "collider": false,
+      "material": "metal",
+      "components": {
+        "interactable": {
+          "range": 2.6,
+          "prompt": "连接塔基 · 发出信号"
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/action",
+              "properties": {
+                "quest": "f0900000-0000-4000-8000-000000000002",
+                "action": "relay",
+                "value": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000100",
+      "name": "信号塔支柱 -1.2-58",
+      "kind": "prop",
+      "position": [
+        -1.2,
+        7,
+        -58
+      ],
+      "scale": [
+        0.25,
+        14,
+        0.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000101",
+      "name": "信号塔支柱 -1.2-60",
+      "kind": "prop",
+      "position": [
+        -1.2,
+        7,
+        -60
+      ],
+      "scale": [
+        0.25,
+        14,
+        0.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000102",
+      "name": "信号塔支柱 1.2-58",
+      "kind": "prop",
+      "position": [
+        1.2,
+        7,
+        -58
+      ],
+      "scale": [
+        0.25,
+        14,
+        0.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000103",
+      "name": "信号塔支柱 1.2-60",
+      "kind": "prop",
+      "position": [
+        1.2,
+        7,
+        -60
+      ],
+      "scale": [
+        0.25,
+        14,
+        0.25
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000104",
+      "name": "信号塔横梁 3",
+      "kind": "prop",
+      "position": [
+        0,
+        3,
+        -59
+      ],
+      "scale": [
+        2.8,
+        0.2,
+        2.5
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000105",
+      "name": "信号塔横梁 6",
+      "kind": "prop",
+      "position": [
+        0,
+        6,
+        -59
+      ],
+      "scale": [
+        2.8,
+        0.2,
+        2.5
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000106",
+      "name": "信号塔横梁 9",
+      "kind": "prop",
+      "position": [
+        0,
+        9,
+        -59
+      ],
+      "scale": [
+        2.8,
+        0.2,
+        2.5
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000107",
+      "name": "信号塔横梁 12",
+      "kind": "prop",
+      "position": [
+        0,
+        12,
+        -59
+      ],
+      "scale": [
+        2.8,
+        0.2,
+        2.5
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000108",
+      "name": "信号塔横梁 14",
+      "kind": "prop",
+      "position": [
+        0,
+        14,
+        -59
+      ],
+      "scale": [
+        2.8,
+        0.2,
+        2.5
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000109",
+      "name": "信号塔天线",
+      "kind": "prop",
+      "position": [
+        0,
+        16,
+        -59
+      ],
+      "scale": [
+        0.16,
+        5,
+        0.16
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000010a",
+      "name": "信号塔天线横杆",
+      "kind": "prop",
+      "position": [
+        0,
+        17,
+        -59
+      ],
+      "scale": [
+        5,
+        0.12,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000010b",
+      "name": "信号塔蓝色信标",
+      "kind": "prop",
+      "position": [
+        0,
+        18,
+        -59
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        0.2,
+        0.65,
+        1
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            0.2,
+            0.65,
+            1
+          ],
+          "intensity": 40,
+          "range": 28
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "complete"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000010c",
+      "name": "信号塔工作灯",
+      "kind": "prop",
+      "position": [
+        0,
+        3,
+        -47
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        0.2,
+        0.65,
+        1
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            0.2,
+            0.65,
+            1
+          ],
+          "intensity": 15,
+          "range": 14
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "tower_running"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000010d",
+      "name": "街灯立柱 -5.71",
+      "kind": "prop",
+      "position": [
+        -5.7,
+        2.1,
+        1
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000010e",
+      "name": "街灯横臂 -5.71",
+      "kind": "prop",
+      "position": [
+        -5.3,
+        4.1,
+        1
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000010f",
+      "name": "街灯光源 -5.71",
+      "kind": "prop",
+      "position": [
+        -4.9,
+        4,
+        1
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "repaired"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000110",
+      "name": "街灯立柱 -5.7-13",
+      "kind": "prop",
+      "position": [
+        -5.7,
+        2.1,
+        -13
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000111",
+      "name": "街灯横臂 -5.7-13",
+      "kind": "prop",
+      "position": [
+        -5.3,
+        4.1,
+        -13
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000112",
+      "name": "街灯光源 -5.7-13",
+      "kind": "prop",
+      "position": [
+        -4.9,
+        4,
+        -13
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "repaired"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000113",
+      "name": "街灯立柱 -5.7-29",
+      "kind": "prop",
+      "position": [
+        -5.7,
+        2.1,
+        -29
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000114",
+      "name": "街灯横臂 -5.7-29",
+      "kind": "prop",
+      "position": [
+        -5.3,
+        4.1,
+        -29
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000115",
+      "name": "街灯光源 -5.7-29",
+      "kind": "prop",
+      "position": [
+        -4.9,
+        4,
+        -29
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "square"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000116",
+      "name": "街灯立柱 -5.7-39",
+      "kind": "prop",
+      "position": [
+        -5.7,
+        2.1,
+        -39
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000117",
+      "name": "街灯横臂 -5.7-39",
+      "kind": "prop",
+      "position": [
+        -5.3,
+        4.1,
+        -39
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000118",
+      "name": "街灯光源 -5.7-39",
+      "kind": "prop",
+      "position": [
+        -4.9,
+        4,
+        -39
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "square"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000119",
+      "name": "街灯立柱 -5.7-50",
+      "kind": "prop",
+      "position": [
+        -5.7,
+        2.1,
+        -50
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000011a",
+      "name": "街灯横臂 -5.7-50",
+      "kind": "prop",
+      "position": [
+        -5.3,
+        4.1,
+        -50
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000011b",
+      "name": "街灯光源 -5.7-50",
+      "kind": "prop",
+      "position": [
+        -4.9,
+        4,
+        -50
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "complete"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000011c",
+      "name": "街灯立柱 5.71",
+      "kind": "prop",
+      "position": [
+        5.7,
+        2.1,
+        1
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000011d",
+      "name": "街灯横臂 5.71",
+      "kind": "prop",
+      "position": [
+        5.3,
+        4.1,
+        1
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000011e",
+      "name": "街灯光源 5.71",
+      "kind": "prop",
+      "position": [
+        4.9,
+        4,
+        1
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "repaired"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000011f",
+      "name": "街灯立柱 5.7-13",
+      "kind": "prop",
+      "position": [
+        5.7,
+        2.1,
+        -13
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000120",
+      "name": "街灯横臂 5.7-13",
+      "kind": "prop",
+      "position": [
+        5.3,
+        4.1,
+        -13
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000121",
+      "name": "街灯光源 5.7-13",
+      "kind": "prop",
+      "position": [
+        4.9,
+        4,
+        -13
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "repaired"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000122",
+      "name": "街灯立柱 5.7-29",
+      "kind": "prop",
+      "position": [
+        5.7,
+        2.1,
+        -29
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000123",
+      "name": "街灯横臂 5.7-29",
+      "kind": "prop",
+      "position": [
+        5.3,
+        4.1,
+        -29
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000124",
+      "name": "街灯光源 5.7-29",
+      "kind": "prop",
+      "position": [
+        4.9,
+        4,
+        -29
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "square"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000125",
+      "name": "街灯立柱 5.7-39",
+      "kind": "prop",
+      "position": [
+        5.7,
+        2.1,
+        -39
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000126",
+      "name": "街灯横臂 5.7-39",
+      "kind": "prop",
+      "position": [
+        5.3,
+        4.1,
+        -39
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000127",
+      "name": "街灯光源 5.7-39",
+      "kind": "prop",
+      "position": [
+        4.9,
+        4,
+        -39
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "square"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000128",
+      "name": "街灯立柱 5.7-50",
+      "kind": "prop",
+      "position": [
+        5.7,
+        2.1,
+        -50
+      ],
+      "scale": [
+        0.13,
+        4.2,
+        0.13
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000129",
+      "name": "街灯横臂 5.7-50",
+      "kind": "prop",
+      "position": [
+        5.3,
+        4.1,
+        -50
+      ],
+      "scale": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000012a",
+      "name": "街灯光源 5.7-50",
+      "kind": "prop",
+      "position": [
+        4.9,
+        4,
+        -50
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "color": [
+        1,
+        0.7,
+        0.36
+      ],
+      "collider": false,
+      "material": "lamp",
+      "components": {
+        "illumination": {
+          "enabled": false,
+          "color": [
+            1,
+            0.7,
+            0.36
+          ],
+          "intensity": 10,
+          "range": 12
+        },
+        "behavior": {
+          "instances": [
+            {
+              "id": "main",
+              "script": "fogtown/light",
+              "properties": {
+                "actor": "f0900000-0000-4000-8000-000000000001",
+                "flag": "complete"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000012b",
+      "name": "长椅 -1-15",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.65,
+        -15
+      ],
+      "scale": [
+        0.6,
+        0.15,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000012c",
+      "name": "长椅椅背 -1-15",
+      "kind": "prop",
+      "position": [
+        -6.22,
+        1,
+        -15
+      ],
+      "scale": [
+        0.12,
+        0.7,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000012d",
+      "name": "椅腿 -1-15-0.75",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.3,
+        -15.75
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000012e",
+      "name": "椅腿 -1-150.75",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.3,
+        -14.25
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000012f",
+      "name": "长椅 -1-31",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.65,
+        -31
+      ],
+      "scale": [
+        0.6,
+        0.15,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000130",
+      "name": "长椅椅背 -1-31",
+      "kind": "prop",
+      "position": [
+        -6.22,
+        1,
+        -31
+      ],
+      "scale": [
+        0.12,
+        0.7,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000131",
+      "name": "椅腿 -1-31-0.75",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.3,
+        -31.75
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000132",
+      "name": "椅腿 -1-310.75",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.3,
+        -30.25
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000133",
+      "name": "长椅 -1-40",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.65,
+        -40
+      ],
+      "scale": [
+        0.6,
+        0.15,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000134",
+      "name": "长椅椅背 -1-40",
+      "kind": "prop",
+      "position": [
+        -6.22,
+        1,
+        -40
+      ],
+      "scale": [
+        0.12,
+        0.7,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000135",
+      "name": "椅腿 -1-40-0.75",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.3,
+        -40.75
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000136",
+      "name": "椅腿 -1-400.75",
+      "kind": "prop",
+      "position": [
+        -6,
+        0.3,
+        -39.25
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000137",
+      "name": "长椅 1-15",
+      "kind": "prop",
+      "position": [
+        6,
+        0.65,
+        -15
+      ],
+      "scale": [
+        0.6,
+        0.15,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000138",
+      "name": "长椅椅背 1-15",
+      "kind": "prop",
+      "position": [
+        6.22,
+        1,
+        -15
+      ],
+      "scale": [
+        0.12,
+        0.7,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000139",
+      "name": "椅腿 1-15-0.75",
+      "kind": "prop",
+      "position": [
+        6,
+        0.3,
+        -15.75
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000013a",
+      "name": "椅腿 1-150.75",
+      "kind": "prop",
+      "position": [
+        6,
+        0.3,
+        -14.25
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000013b",
+      "name": "长椅 1-31",
+      "kind": "prop",
+      "position": [
+        6,
+        0.65,
+        -31
+      ],
+      "scale": [
+        0.6,
+        0.15,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000013c",
+      "name": "长椅椅背 1-31",
+      "kind": "prop",
+      "position": [
+        6.22,
+        1,
+        -31
+      ],
+      "scale": [
+        0.12,
+        0.7,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000013d",
+      "name": "椅腿 1-31-0.75",
+      "kind": "prop",
+      "position": [
+        6,
+        0.3,
+        -31.75
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000013e",
+      "name": "椅腿 1-310.75",
+      "kind": "prop",
+      "position": [
+        6,
+        0.3,
+        -30.25
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000013f",
+      "name": "长椅 1-40",
+      "kind": "prop",
+      "position": [
+        6,
+        0.65,
+        -40
+      ],
+      "scale": [
+        0.6,
+        0.15,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": true,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000140",
+      "name": "长椅椅背 1-40",
+      "kind": "prop",
+      "position": [
+        6.22,
+        1,
+        -40
+      ],
+      "scale": [
+        0.12,
+        0.7,
+        2.1
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "wood"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000141",
+      "name": "椅腿 1-40-0.75",
+      "kind": "prop",
+      "position": [
+        6,
+        0.3,
+        -40.75
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000142",
+      "name": "椅腿 1-400.75",
+      "kind": "prop",
+      "position": [
+        6,
+        0.3,
+        -39.25
+      ],
+      "scale": [
+        0.5,
+        0.6,
+        0.12
+      ],
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000143",
+      "name": "排水沟 -4.511",
+      "kind": "prop",
+      "position": [
+        -4.5,
+        0.064,
+        11
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000144",
+      "name": "排水沟 4.511",
+      "kind": "prop",
+      "position": [
+        4.5,
+        0.064,
+        11
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000145",
+      "name": "排水沟 -4.51",
+      "kind": "prop",
+      "position": [
+        -4.5,
+        0.064,
+        1
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000146",
+      "name": "排水沟 4.51",
+      "kind": "prop",
+      "position": [
+        4.5,
+        0.064,
+        1
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000147",
+      "name": "排水沟 -4.5-14",
+      "kind": "prop",
+      "position": [
+        -4.5,
+        0.064,
+        -14
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000148",
+      "name": "排水沟 4.5-14",
+      "kind": "prop",
+      "position": [
+        4.5,
+        0.064,
+        -14
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-000000000149",
+      "name": "排水沟 -4.5-26",
+      "kind": "prop",
+      "position": [
+        -4.5,
+        0.064,
+        -26
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000014a",
+      "name": "排水沟 4.5-26",
+      "kind": "prop",
+      "position": [
+        4.5,
+        0.064,
+        -26
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000014b",
+      "name": "排水沟 -4.5-34",
+      "kind": "prop",
+      "position": [
+        -4.5,
+        0.064,
+        -34
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000014c",
+      "name": "排水沟 4.5-34",
+      "kind": "prop",
+      "position": [
+        4.5,
+        0.064,
+        -34
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000014d",
+      "name": "排水沟 -4.5-45",
+      "kind": "prop",
+      "position": [
+        -4.5,
+        0.064,
+        -45
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000014e",
+      "name": "排水沟 4.5-45",
+      "kind": "prop",
+      "position": [
+        4.5,
+        0.064,
+        -45
+      ],
+      "scale": [
+        0.35,
+        0.035,
+        2.2
+      ],
+      "color": [
+        0.2,
+        0.23,
+        0.25
+      ],
+      "collider": false,
+      "material": "metal"
+    },
+    {
+      "id": "f0900000-0000-4000-8000-00000000014f",
+      "name": "停靠维修车",
+      "kind": "vehicle",
+      "position": [
+        5.2,
+        0.9,
+        11
+      ],
+      "scale": [
+        1.9,
+        1.3,
+        3.8
+      ],
+      "color": [
+        0.3,
+        0.38,
+        0.4
+      ],
+      "collider": true,
+      "material": "metal",
+      "vehicle": {
+        "speed": 0,
+        "direction": 1
+      }
+    }
+  ]
+}

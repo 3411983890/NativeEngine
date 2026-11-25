@@ -255,7 +255,7 @@ test('a clean scene returns ok true with no findings and is not mutated', () => 
 
 test('the courtyard asset passes with zero error findings', async () => {
   const document = JSON.parse(await fs.readFile(
-    new URL('../assets/courtyard.scene.json', import.meta.url), 'utf8',
+    new URL('../.screen/courtyard.scene.json', import.meta.url), 'utf8',
   ));
   const result = lintScene(document);
   const errors = result.findings.filter(finding => finding.severity === 'error');
